@@ -1,0 +1,11 @@
+<FilesMatch "\.php$">
+AddHandler x-httpd-php5.4 .php
+</FilesMatch>
+AuthGroupFile /dev/null
+AuthType CAS
+AuthName "IU Network ID"
+
+<Limit GET POST>
+require valid-user
+</Limit>
+RewriteRule ^(.*)$ https://www.iu.edu/~iubrand/admin/public/index.php
