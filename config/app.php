@@ -1,5 +1,5 @@
 <?php
-
+require_once app_path()."/Providers/BootFormsServiceProvider.php";
 return [
 
 	/*
@@ -143,7 +143,9 @@ return [
 		'App\Providers\BusServiceProvider',
 		'App\Providers\ConfigServiceProvider',
 		'App\Providers\EventServiceProvider',
-		'App\Providers\RouteServiceProvider',
+		'App\Providers\RouteServiceProvider'
+
+
 
 	],
 
@@ -192,7 +194,10 @@ return [
 		'URL'       => 'Illuminate\Support\Facades\URL',
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
+        'BootForm' => 'AdamWathan\BootForms\Facades\BootForm'
 
-	],
+
+
+    ],
 
 ];

@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Laravel</title>
+	<title>{{ $title }}</title>
 
 	<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
     <link href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -21,30 +21,31 @@
 	<![endif]-->
 </head>
 <body>
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-					<span class="sr-only">Toggle Navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="{{ url('/home') }}">Brand Admin</a>
-			</div>
 
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					<li><a href="{{ url('/signatures') }}">Signatures</a></li>
-                    <li><a href="{{ url('/signatures/create') }}">Create New Signature</a></li>
-				</ul>
+@include('navigation',array('navigation'=>$navigation))
+
+<div class="container-fluid">
+	<!-- Navigation -->
+	<div class="row">
+
+    <div class="col-md-3 col-md-offset-1">
+ 		 @yield('left-navigation')
+	</div>
+
+	<div class="col-md-10 col-md-offset-2">
+	 <div class="page-header" id="pageTitle">
+		   <h2>{{$title}}</h2>
+	  </div>
+	 @yield('content')
+	</div>
+
+    </div>
+
+</div>
 
 
-			</div>
-		</div>
-	</nav>
 
-	@yield('content')
+
 
 	<!-- Scripts -->
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -52,6 +53,10 @@
     <script src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 
+
+
     @yield('bodyScripts');
+
+
 </body>
 </html>

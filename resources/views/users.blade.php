@@ -1,26 +1,41 @@
 @extends('app')
-@section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Users List</div>
 
-                    <div class="panel-body">
-                        <p>Table with a list of users will be shown here.</p>
+@section('content')
+<div class="row">
+<div class="col-lg-10">
+ <a href="{{url("/users/search")}}" class="<?php echo \App\Models\BootstrapSettings::$primaryButtonClass;?>
+ pull-right" data-toggle="modal"  data-target="#userSearchModal">
+ Add New User
+ </a>
+</div>
+
+</div>
+
+<div class="row">
+<div class="col-lg-10">
+
+
+  <p>Table with a list of users will be shown here.</p>
                         <?php
-                            $itemsCollection = ($dt["usersCollection"]);
+                            $itemsCollection = ($model);
                             $usersArray = $itemsCollection -> toArray();
                         ?>
                         <table class="table" id="usersTable">
                            <thead>
                             <tr>
                                 <th>
-                                    Username
+                                    First Name
                                 </th>
                                 <th>
-                                    Email Address
+                                    Last Name
                                 </th>
+                                 <th>
+                                	 Email Address
+                                 </th>
+                                  <th>
+                                      Role
+                                  </th>
+                                  <th></th>
                             </tr>
                            </thead>
                             <tbody>
@@ -29,29 +44,56 @@
                                 ?>
                                 <tr>
                                     <td>
-                                        {{{$user -> username}}}
+                                        {{{$user -> firstName}}}
                                     </td>
                                     <td>
-                                        {{{$user -> email}}}
+                                        {{{$user -> lastName}}}
                                     </td>
+                                    <td>
+                                                                            {{{$user -> email}}}
+                                                                        </td>
+                                                                         <td>
+                                                                                                                                                    {{{$user -> role->name}}}
+
+                                      <td>  <a href="{{ url('/users/get?username='.$user['username']) }}"
+                                                                               data-toggle="modal"
+                                                                               data-target="#viewModel">View</a>&nbsp;|&nbsp;
+
+                                                                            <a href="{{ url('/users/edit?username='.$user['username'])
+                                                                             }}"  data-toggle="modal" data-target="#editModal">Edit</a>
+                                                                                                                                                                                                                               </td>
                                 </tr>
                                 <?php
                                     });
                                 ?>
                             </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                   </table>
+
+
+</div>
 
 @endsection
-
 @section('bodyScripts')
-    <script>
+
+     <script>
         $(document).ready(function() {
+
+
+
             $('#usersTable').dataTable();
-        } );
+
+$('[data-toggle="modal"]').click(function(e) {
+  e.preventDefault();
+  var url = $(this).attr('href');
+  //var modal_id = $(this).attr('data-target');
+  $.get(url, function(data) {
+      $(data).modal();
+  });
+});
+
+
+});
+
     </script>
+
 @endsection

@@ -15,14 +15,28 @@ Route::get('/', 'HomeController@index');
 
 Route::get('/home', 'HomeController@index');
 
-Route::get('/users', 'UsersController@index');
+
 Route::get('/signatures', 'SignaturesController@index');
 Route::get('/signatures/create', 'SignaturesController@create');
 Route::post('/signatures/save', 'SignaturesController@save');
 Route::post("signatures/approve/{id}/{comment?}", 'SignaturesController@approve');
 Route::post("/signatures/approve/{id}/{comment?}", 'SignaturesController@approve');
 Route::post("/signatures/deny/{id}/{comment?}", 'SignaturesController@deny');
-Route::controllers([
-	'auth' => 'Auth\AuthController',
-	'password' => 'Auth\PasswordController',
-]);
+
+
+
+Route::group(array('prefix' => 'users'), function () {
+
+    Route::get('/', 'UsersController@index');
+
+    Route::get('/search', 'UsersController@search');
+
+
+    Route::get('/get', 'UsersController@get');
+    Route::get('/edit', 'UsersController@edit');
+    Route::post('/save', 'UsersController@save');
+    Route::get('/save', 'UsersController@save');
+    Route::post('/searchResults', 'UsersController@searchResults');
+
+
+});

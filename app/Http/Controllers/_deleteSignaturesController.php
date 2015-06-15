@@ -3,13 +3,12 @@
 use App\Models\AppUser;
 use App\Models\Review;
 use App\Models\Signature;
-use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 
-class SignaturesController extends Controller {
+class DeleteSignaturesController extends Controller {
 
     /*
     |--------------------------------------------------------------------------
@@ -27,11 +26,11 @@ class SignaturesController extends Controller {
      *
      * @return void
      */
-    protected $currentUser  ;
+
     public function __construct()
     {
-        //$this->middleware('auth');
-        $this -> currentUser =AppUser::find($_SERVER["HTTP_CAS_USER"]);
+
+        parent::__construct();
     }
 
     /**

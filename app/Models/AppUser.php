@@ -8,10 +8,17 @@ class AppUser extends Model
     protected $table = 'users';
     // a user can have many signatures
     public function signatures(){
-        return $this -> hasMany("App\Models\Signature", 'userid');
+        return $this->hasMany("App\Models\Signature", 'userid');
     }
     public function reviews(){
-        return $this -> hasMany("\App\Models\Review", 'reviewedby');
+        return $this->hasMany("\App\Models\Review", 'reviewedby');
+    }
+    public function role(){
+        return $this->hasOne("\App\Models\Role", 'id','roleId');
+
+    }
+    public function getName(){
+        return sprintf("%s, %s",$this->firstName,$this->lastName);
     }
 }
 ?>
