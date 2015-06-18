@@ -33,6 +33,7 @@
 	</div>
 
 	<div class="col-md-10 col-md-offset-2">
+	@include('alerts')
 	 <div class="page-header" id="pageTitle">
 		   <h2>{{$title}}</h2>
 	  </div>

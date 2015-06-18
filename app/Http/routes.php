@@ -24,19 +24,18 @@ Route::post("/signatures/approve/{id}/{comment?}", 'SignaturesController@approve
 Route::post("/signatures/deny/{id}/{comment?}", 'SignaturesController@deny');
 
 
+Route::group(array('prefix' => 'admin'), function () {
 
-Route::group(array('prefix' => 'users'), function () {
+    Route::get('/', 'AdministratorsController@index');
 
-    Route::get('/', 'UsersController@index');
-
-    Route::get('/search', 'UsersController@search');
+    Route::get('/search', 'AdministratorsController@search');
 
 
-    Route::get('/get', 'UsersController@get');
-    Route::get('/edit', 'UsersController@edit');
-    Route::post('/save', 'UsersController@save');
-    Route::get('/save', 'UsersController@save');
-    Route::post('/searchResults', 'UsersController@searchResults');
+    Route::get('/get', 'AdministratorsController@get');
+    Route::get('/edit', 'AdministratorsController@edit');
+    Route::post('/save', 'AdministratorsController@save');
+    Route::get('/save', 'AdministratorsController@save');
+    Route::post('/searchResults', 'AdministratorsController@searchResults');
 
 
 });

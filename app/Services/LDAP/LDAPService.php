@@ -18,8 +18,8 @@ class LDAPService
     protected $ldapconn;
     protected $domain='LDAP://ads.iu.edu/';
     protected $port=389;
-    protected $user='xxxx';
-    protected $password='xxxx';
+    protected $user='pagriet';
+    protected $password='we love hawa11an p1zza and sh1rts';
     protected $error;
     protected $sizeLimit = 20;
     const  DefaultSearchRoot = "OU=Accounts,DC=ads,DC=iu,DC=edu" ;
@@ -118,9 +118,54 @@ class LDAPService
     }
 
 
+    public function getFirstName($networkId){
+        $directory_entry = $this->getDirectoryEntryForPerson($networkId);
+        $fname = $this->extract_value($directory_entry,(string)new FirstName());
+        return $fname;
+
+    }
+
+    public function getLastName($networkId){
+        $directory_entry = $this->getDirectoryEntryForPerson($networkId);
+        $lname = $this->extract_value($directory_entry,(string)new LastName());
+        return $lname;
+
+    }
+
+
+    public function getEmail($networkId){
+        $directory_entry = $this->getDirectoryEntryForPerson($networkId);
+        $email = $this->extract_value($directory_entry,(string)new Email());
+        return $email;
+
+    }
+
+
     private function extract_value($entry,$string){
         return isset($entry[$string])?$entry[$string][0]:'';
     }
+
+
+
+    private  function getDirectoryEntryForPerson($networkId){
+        $searchPath =  sprintf("CN=%s", $networkId);
+
+        if ($this->ldapconn){
+
+            $link_id = ldap_bind($this->ldapconn, "ADS\\" . $this->user, $this->password);
+
+            //bind successful
+            if ($link_id) {
+                $sr = ldap_search($this->ldapconn, self::DefaultSearchRoot, $searchPath);
+                $info = ldap_get_entries($this->ldapconn,$sr);
+                return $info[0];
+
+            }
+        }
+
+    }
+
+
 
 
 }

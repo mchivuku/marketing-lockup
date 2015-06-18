@@ -15,7 +15,7 @@
 				<ul class="nav navbar-nav">
 					<li><a href="{{ url('/signatures') }}">Manage Signatures</a></li>
 					@if($navigation['isAdmin'])
-                    <li><a href="{{ url('/users') }}">Manage Users</a></li>
+                    <li><a href="{{ url('/admin') }}">Manage Administrators</a></li>
                     @endif
 				</ul>
 				 <div class="pull-right" id="loginUserControl">

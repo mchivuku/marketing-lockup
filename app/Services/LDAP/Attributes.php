@@ -31,3 +31,12 @@ class LastName{
     }
 
 }
+
+
+class Email{
+
+    function __toString(){
+        return "mail";
+    }
+
+}

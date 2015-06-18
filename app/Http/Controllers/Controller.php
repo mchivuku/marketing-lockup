@@ -23,7 +23,7 @@ abstract class Controller extends BaseController {
 
         $this->middleware('cas');
 
-        $this->currentUser =  Models\AppUser::find($_SERVER["HTTP_CAS_USER"]);;
+        $this->currentUser =  Models\AppAdmin::find($_SERVER["HTTP_CAS_USER"]);;
 
         // Layout - pass data for the partial views in the layout
         $this->renderNavigation();
@@ -37,8 +37,7 @@ abstract class Controller extends BaseController {
 
         if(isset($this->currentUser))
         {
-            if(stripos($this->currentUser->role->name,'admin')!==false)
-                $is_admin=true;
+            $is_admin=true;
         }
 
         return \View::share("navigation",

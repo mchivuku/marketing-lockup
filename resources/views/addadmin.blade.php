@@ -1,4 +1,4 @@
- <form class="form-horizontal" action="{{url("/users/searchResults")}}" method="post" id="usersearch">
+ <form class="form-horizontal" action="{{url("/admin/searchResults")}}" method="post" id="usersearch">
 
 <input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
 <!-- Username -->

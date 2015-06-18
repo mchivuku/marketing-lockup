@@ -6,9 +6,7 @@
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
                     <div class="panel-heading">Your Signatures</div>
-                    <?php
 
-                        ?>
                     <div class="panel-body">
                         <p>Below is a list of all the signatures created by you.</p>
                         <?php
@@ -69,7 +67,7 @@
                                     <ul style="list-style: none; padding-left:0;">
                                         <li>
                                            <a href ="#" class="approveLink" url="{{{"signatures/approve/" .  $signature->signatureid}}}" > Approve </a>
-					   
+
                                         </li>
                                         <li>
                                             <a href ="#" class="denylink" url="{{{"signatures/deny/" .  $signature->signatureid}}}" > Deny </a>

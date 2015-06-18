@@ -3,9 +3,9 @@
 @section('content')
 <div class="row">
 <div class="col-lg-10">
- <a href="{{url("/users/search")}}" class="<?php echo \App\Models\BootstrapSettings::$primaryButtonClass;?>
+ <a href="{{url("/admin/search")}}" class="<?php echo \App\Models\BootstrapSettings::$primaryButtonClass;?>
  pull-right" data-toggle="modal"  data-target="#userSearchModal">
- Add New User
+ Add New Administrator
  </a>
 </div>
 
@@ -18,7 +18,7 @@
   <p>Table with a list of users will be shown here.</p>
                         <?php
                             $itemsCollection = ($model);
-                            $usersArray = $itemsCollection -> toArray();
+
                         ?>
                         <table class="table" id="usersTable">
                            <thead>
@@ -32,15 +32,13 @@
                                  <th>
                                 	 Email Address
                                  </th>
-                                  <th>
-                                      Role
-                                  </th>
+
                                   <th></th>
                             </tr>
                            </thead>
                             <tbody>
                                 <?php
-                                    $itemsCollection -> each(function($user){
+                                    foreach($model as $user){
                                 ?>
                                 <tr>
                                     <td>
@@ -52,19 +50,17 @@
                                     <td>
                                                                             {{{$user -> email}}}
                                                                         </td>
-                                                                         <td>
-                                                                                                                                                    {{{$user -> role->name}}}
 
-                                      <td>  <a href="{{ url('/users/get?username='.$user['username']) }}"
+
+                                      <td>  <a href="{{ url('/admin/get?username='.$user->username) }}"
                                                                                data-toggle="modal"
-                                                                               data-target="#viewModel">View</a>&nbsp;|&nbsp;
+                                                                               data-target="#viewModel">View</a>
 
-                                                                            <a href="{{ url('/users/edit?username='.$user['username'])
-                                                                             }}"  data-toggle="modal" data-target="#editModal">Edit</a>
-                                                                                                                                                                                                                               </td>
+ 									 </td>
+                                                                                                                                                              </td>
                                 </tr>
                                 <?php
-                                    });
+                                    };
                                 ?>
                             </tbody>
                    </table>
