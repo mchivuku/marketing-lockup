@@ -16,65 +16,32 @@
 
 
   <p>Table with a list of users will be shown here.</p>
-                        <?php
-                            $itemsCollection = ($model);
+<?php
+$table = new StdClass;
+    $table->header = array('First Name','Last Name','Email Address','&nbsp;');
+    $table->data = array_map(function($item){
 
-                        ?>
-                        <table class="table" id="usersTable">
-                           <thead>
-                            <tr>
-                                <th>
-                                    First Name
-                                </th>
-                                <th>
-                                    Last Name
-                                </th>
-                                 <th>
-                                	 Email Address
-                                 </th>
+        $view_link = "<a href='admin/get?username=".$item->username."' data-toggle=\"modal\"
+        data-target=\"#viewModel\">View</a>";
+        $delete_link = "<a href='admin/delete?username=".$item->username."' data-toggle=\"modal\"
+        data-target=\"#viewModel\">Delete</a>";
+        return
+                array($item->firstName,$item->lastName,$item->email,$view_link." | ".$delete_link);},$model);
 
-                                  <th></th>
-                            </tr>
-                           </thead>
-                            <tbody>
-                                <?php
-                                    foreach($model as $user){
-                                ?>
-                                <tr>
-                                    <td>
-                                        {{{$user -> firstName}}}
-                                    </td>
-                                    <td>
-                                        {{{$user -> lastName}}}
-                                    </td>
-                                    <td>
-                                                                            {{{$user -> email}}}
-                                                                        </td>
+    $table->attributes = array('class'=>'table','id'=>'usersTable');
 
+    ?>
 
-                                      <td>  <a href="{{ url('/admin/get?username='.$user->username) }}"
-                                                                               data-toggle="modal"
-                                                                               data-target="#viewModel">View</a>
+  @include('table',
+  array('model'=>$table
+  ))
 
- 									 </td>
-                                                                                                                                                              </td>
-                                </tr>
-                                <?php
-                                    };
-                                ?>
-                            </tbody>
-                   </table>
-
-
-</div>
 
 @endsection
 @section('bodyScripts')
 
      <script>
         $(document).ready(function() {
-
-
 
             $('#usersTable').dataTable();
 

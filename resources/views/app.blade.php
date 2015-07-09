@@ -28,23 +28,29 @@
 	<!-- Navigation -->
 	<div class="row">
 
-    <div class="col-md-3 col-md-offset-1">
+	<!-- sidebar -->
+     <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+
  		 @yield('left-navigation')
 	</div>
 
-	<div class="col-md-10 col-md-offset-2">
-	@include('alerts')
-	 <div class="page-header" id="pageTitle">
-		   <h2>{{$title}}</h2>
-	  </div>
-	 @yield('content')
-	</div>
+	<!-- main -->
+	 <div class="col-xs-12 col-sm-7">
 
-    </div>
+		 @include('alerts')
+		 @if($title!='')
+		 <div class="page-header" id="pageTitle">
+
+			   <h2>{{$title}}</h2>
+		  </div>
+
+		  @endif
+		 @yield('content')
+	 </div>
+
+  </div>
 
 </div>
-
-
 
 
 

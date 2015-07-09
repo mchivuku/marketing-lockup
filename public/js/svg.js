@@ -7,7 +7,6 @@ $(document).ready(function () {
         console.log(src);
         $.get(src, function(data) {
             $('.panel-body').find('svg').remove();
-            //$('.panel-body').append(data.substr(22));
             $('.panel-body').append(data);
         });
 

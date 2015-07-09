@@ -1,4 +1,4 @@
-@extends('app')
+@extends('signatureslayout')
 
 @section('content')
     <style>
@@ -20,9 +20,7 @@
         }
     </style>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
+
                 <div class="panel panel-default">
                     <div class="panel-heading">Signature Options</div>
 
@@ -34,9 +32,8 @@
                         <img src="{{{asset("img/option5.png")}}}" class="sigtype hover-border" data-v="5"/>
                         <img src="{{{asset("img/option6.png")}}}" class="sigtype hover-border" data-v="6"/>
                         <img src="{{{asset("img/option7.png")}}}" class="sigtype hover-border" data-v="7"/>
-                        <img src="{{{asset("img/option8.png")}}}" class="sigtype hover-border" data-v="8"/>
                         <br/>
-                        <form id="svgform" action="{{url('/signatures/save')}}" method="post">
+                        <form id="svgform" action="{{url('/signatures/savesignature')}}" method="post">
                             <input type="hidden" id="hdnsignaturetype" value="1" name="hdnsignaturetype"/>
                             <label for="p">Primary</label><br/>
                             <textarea rows="4" cols="40" name="p">PRIMARY</textarea><br/>
@@ -51,9 +48,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+
 @endsection
 @section('bodyScripts')
     <script src="{{{asset("js/scripts.js")}}}"></script>

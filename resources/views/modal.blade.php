@@ -1,22 +1,9 @@
 <?php
+
+
 $html = array();
 $attributes = $model->getAttributes();
-
-$attributeElement = function($key,$value){
-if (is_numeric($key)) $key = $value;
-
-		if ( ! is_null($value)) return $key.'="'.e($value).'"';
-
-};
-
-foreach ((array) $attributes as $key => $value)
-		{
-			$element = $attributeElement($key, $value);
-
-			if ( ! is_null($element)) $html[] = $element;
-		}
-
-$render_html= count($html) > 0 ? ' '.implode(' ', $html) : '';
+$render_html=  \App\Models\ViewModels\BootstrapSettings::renderAttributes($attributes);
 ?>
 
 
@@ -32,10 +19,6 @@ $render_html= count($html) > 0 ? ' '.implode(' ', $html) : '';
         {!!$model->content !!}
 
       </div>
-      <!--div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div-->
     </div>
   </div>
 </div>

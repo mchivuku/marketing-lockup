@@ -29,8 +29,7 @@ class AdministratorsController extends Controller{
        parent::__construct();
 
        // Service
-
-        $this->ldapService=new Services\LDAPService();
+       $this->ldapService=new Services\LDAPService();
 
     }
 
@@ -89,6 +88,7 @@ class AdministratorsController extends Controller{
     }
 
 
+
     // save user function for both 'add/edit' - TODO fix flash
     public function save(){
 
@@ -112,6 +112,23 @@ class AdministratorsController extends Controller{
 
         return  \Redirect::action('AdministratorsController@index');
     }
+
+
+    // save user function for both 'add/edit' - TODO fix flash
+    public function delete(){
+
+        $inputs = \Input::all();
+
+       Models\AppAdmin::where('username','=',$inputs['username'])
+            ->delete();
+
+
+        exit;
+
+       // return  \Redirect::action('AdministratorsController@index');
+    }
+
+
 
 
     /**

@@ -30,6 +30,7 @@ class HomeController extends Controller {
 	 */
 	public function index()
 	{
+        View::share('title','Home');
 		return View::make('home');
 	}
 
