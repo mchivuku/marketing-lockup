@@ -12,13 +12,12 @@ namespace App\Http\Controllers;
 use DB;
 use App\Models as Models;
 use App\Models\ViewModels as ViewModels;
-use App\Services as Services;
 
-require_once app_path()."/Services/LDAP/LDAPService.php";
 
+ 
 class AdministratorsController extends Controller{
 
-    protected $ldapService;
+
     /**
      * Create a new controller instance.
      *
@@ -28,31 +27,21 @@ class AdministratorsController extends Controller{
     {
        parent::__construct();
 
-       // Service
-       $this->ldapService=new Services\LDAPService();
 
     }
 
-    private function construct_admin_object($username){
 
-        $p  = new \StdClass;
-        $p->username = $username;
-
-        $p->firstName = $this->ldapService->getFirstName($username);
-        $p->lastName = $this->ldapService->getLastName($username);
-        $p->email = $this->ldapService->getEmail($username);
-
-        return $p;
-
-    }
+    /**
+     * Function to construct index page
+     * @return mixed
+     */
     public function index()
     {
         //Connect to the database ;
-        $result = array();
+        $result = [];
         $admins = Models\AppAdmin::all();
         foreach($admins as $admin){
-
-            $result[]=$this->construct_admin_object($admin->username);
+            $result[]=$this->construct_ldap_object($admin->username);
         }
 
         return $this->view('admins')->model($result)->title('Manage Administrators');
@@ -61,7 +50,10 @@ class AdministratorsController extends Controller{
 
 
 
-    // Get User
+    /**
+     * Function to get information of the user
+     * @return mixed
+     */
     public function get(){
         $username = \Input::get('username');
 
@@ -70,33 +62,30 @@ class AdministratorsController extends Controller{
         $model = new Models\ViewModels\Modal();
 
         if(isset($user)){
-            $user_obj = $this->construct_admin_object($username);
+            $user_obj = $this->construct_ldap_object($username);
             $model->content= view('viewadmin', array('model'=>$user_obj));
             $model->title= sprintf("%s,%s",$user_obj->firstName,$user_obj->lastName);
 
         }else{
             $model->title= 'Not Found';
-
             $model->content='Administrator was not found.';
         }
-
-
         $model->setAttribute('id','viewModel');
 
-         return view('modal',array('model'=>$model));
+        return view('modal',array('model'=>$model));
 
     }
 
 
-
-    // save user function for both 'add/edit' - TODO fix flash
+    /**
+     * Save user information
+     * @return mixed
+     */
     public function save(){
 
         $inputs = \Input::all();
 
-
         $user = Models\AppAdmin::where('username','=',$inputs['username'])->first();
-
 
         if(isset($user)){
             \Session::flash('flash-message', 'User couldn\'t be added as the user already exists');
@@ -114,21 +103,17 @@ class AdministratorsController extends Controller{
     }
 
 
-    // save user function for both 'add/edit' - TODO fix flash
+    /***
+     * Delete user - software
+     * @return mixed
+     */
     public function delete(){
 
         $inputs = \Input::all();
+        Models\AppAdmin::where("username","=",$inputs['username'])->delete();
 
-       Models\AppAdmin::where('username','=',$inputs['username'])
-            ->delete();
-
-
-        exit;
-
-       // return  \Redirect::action('AdministratorsController@index');
+        return  \Redirect::action('AdministratorsController@index');
     }
-
-
 
 
     /**
@@ -143,10 +128,9 @@ class AdministratorsController extends Controller{
         return view('modal',array('model'=>$model));
     }
 
-    /*
-     *
-     * User Search Results
-     *
+    /**
+     * Get LDAP user search results
+     * @return mixed
      */
     public function searchResults(){
         $inputs = \Input::all();
@@ -166,9 +150,7 @@ class AdministratorsController extends Controller{
             $link=\URL::to(action('AdministratorsController@save') . '?' . http_build_query($params));
             $user['addLink'] =  "<a  class='btn btn-sm btn-primary' href='$link'>Add Admin</a>";
 
-
         });
-
         return  \View::make('searchresults',array('model' => $results));
 
     }

@@ -13,7 +13,7 @@ class Signature extends Model {
     protected $primaryKey = 'signatureid';
     protected $table = 'signature';
 
-    protected $fillable = array('username', 'primaryText', 'secondaryText','tertiaryText','type');
+    public $fillable = array('username', 'primaryText', 'secondaryText','tertiaryText','type');
 
     public function signaturereviews(){
         $this->hasMany('SignatureReview');
@@ -26,9 +26,7 @@ class Signature extends Model {
     public function getSignaturePreview(){
 
         $ch = curl_init();
-
         $output  = '<div style="margin-right:10px; display:inline">';
-
         curl_setopt($ch, CURLOPT_URL, 'https://iet.communications.iu.edu/mercerjd/svg/s.php?p=' .
             urlencode($this -> primaryText) .'&s=' .urlencode($this -> secondaryText)  . '&t=' .urlencode
             ($this -> tertiaryText) . '&v=' . $this->type);
@@ -43,4 +41,5 @@ class Signature extends Model {
 
         return $output;
     }
+
 }

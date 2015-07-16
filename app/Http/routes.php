@@ -38,14 +38,11 @@ Route::group(array('prefix'=>'signatures'),function(){
 Route::group(array('prefix' => 'admin'), function () {
 
     Route::get('/', 'AdministratorsController@index');
-
     Route::get('/search', 'AdministratorsController@search');
-
     Route::get('/get', 'AdministratorsController@get');
     Route::get('/delete', 'AdministratorsController@delete');
     Route::post('/save', 'AdministratorsController@save');
     Route::get('/save', 'AdministratorsController@save');
     Route::post('/searchResults', 'AdministratorsController@searchResults');
-
 
 });

@@ -8,6 +8,7 @@
 
 
 namespace App\Http\Controllers;
+date_default_timezone_set('UTC');
 
 use App\Models as Models;
 
@@ -62,7 +63,6 @@ class SignaturesController extends Controller {
             ->select(array('signatureid','status','reviewedby','created_at','updated_at','signatureReview.id',
                 'emailsent','comments'))->toSql();
 
-
         // Admin
         if(isset($user)){
 
@@ -72,7 +72,25 @@ class SignaturesController extends Controller {
                     's.emailsent','s.status','s.reviewedby','s.created_at','s.updated_at','s.id'
                 ))->get();
 
-         }else{
+
+            $CI = $this;
+            array_walk($signatures, function($signature)use($CI){
+
+                $s = new Models\Signature();
+
+                foreach($s->fillable as $var){
+                    $s->{$var}= $signature->{$var};
+
+                }
+
+                $signature -> preview =  $s->getSignaturePreview();
+                $obj =  $CI->construct_ldap_object($signature->username);
+                $signature->name = sprintf("%s,%s",$obj->lastName,$obj->firstName);
+            });
+
+
+
+        }else{
              $signatures = \DB::table('signature')->join(\DB::Raw("($review_status_query) as s"),"s.signatureid","=",
                 "signature.signatureid")->where('username','=',$this->currentUser)
                 ->select(array('primaryText', 'secondaryText', 'tertiaryText', 'type', 'username','s.comments',
@@ -81,19 +99,13 @@ class SignaturesController extends Controller {
 
        }
 
-        // build array - view
-        array_walk($signatures, function()use($user){
-
-
-
-        });
 
         return $this->view('signatures')->model($signatures)->title('Manage Signatures');
     }
 
 
     //Method to return json view for previewing signature.
-    public function getSignaturePreview(){
+    public function getPreview(){
             $input = \Input::all();
 
             $primary=$input['primary'];
@@ -121,7 +133,11 @@ class SignaturesController extends Controller {
 
     }
 
-    //TODO: add validation - on input
+    /***
+     * Save signature
+     *
+     * @return mixed
+     */
     public function save(){
 
         $signature = new Models\Signature();
@@ -142,7 +158,12 @@ class SignaturesController extends Controller {
 
             $review_status = Models\ReviewStatus::where('status','like','pending%')->first();
 
-            $timestamp = date('Y-m-d H:i:s');
+            $tz = 'America/Indiana/Indianapolis';
+            $timestamp = time();
+            $dt = new \DateTime("now", new \DateTimeZone($tz)); //first argument "must" be a string
+            $dt->setTimestamp($timestamp); //adjust the object to correct timestamp
+
+            $timestamp = $dt->format('Y-m-d H:i:s');
 
             $review->create(array(
                     'signatureid'     => $signature_id,

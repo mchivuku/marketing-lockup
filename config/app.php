@@ -1,4 +1,8 @@
 <?php
+
+
+
+
 require_once app_path()."/Providers/BootFormsServiceProvider.php";
 return [
 
@@ -12,9 +16,7 @@ return [
 	| application. If disabled, a simple generic error page is shown.
 	|
 	*/
-
-	//'debug' => env('APP_DEBUG'),
-    'debug' => true,
+	'debug' => true,
 	/*
 	|--------------------------------------------------------------------------
 	| Application URL
@@ -202,3 +204,4 @@ return [
     ],
 
 ];
+

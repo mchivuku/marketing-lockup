@@ -3,7 +3,11 @@
 use Illuminate\Foundation\Bus\DispatchesCommands;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+
 use App\Models as Models;
+use App\Services as Services;
+
+require_once app_path()."/Services/LDAP/LDAPService.php";
 
 
 abstract class Controller extends BaseController {
@@ -13,6 +17,7 @@ abstract class Controller extends BaseController {
     protected $currentUser;
     protected $role;
     protected $layout = 'app';
+    protected $ldapService;
 
     //model returned to the view
     protected $model;
@@ -25,15 +30,23 @@ abstract class Controller extends BaseController {
 
         $this->currentUser =$_SERVER["HTTP_CAS_USER"];
 
+        // Service
+        $this->ldapService=new Services\LDAPService();
+
+
         // Layout - pass data for the partial views in the layout
         $this->renderNavigation();
 
+
+
     }
+
 
 
     private  function renderNavigation(){
 
         $user = Models\AppAdmin::find($this->currentUser);
+
         $is_admin= isset($user)?true:false;
 
         return \View::share("navigation",
@@ -71,4 +84,23 @@ abstract class Controller extends BaseController {
         return $this;
     }
 
+
+    /*** HELPERS **/
+    /***
+     * Function to return ldap object
+     * @param $username
+     * @return \StdClass
+     */
+    public function construct_ldap_object($username){
+
+        $p  = new \StdClass;
+        $p->username = $username;
+
+        $p->firstName = $this->ldapService->getFirstName($username);
+        $p->lastName = $this->ldapService->getLastName($username);
+        $p->email = $this->ldapService->getEmail($username);
+
+        return $p;
+
+    }
 }

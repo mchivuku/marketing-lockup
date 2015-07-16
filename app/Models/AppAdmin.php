@@ -9,7 +9,18 @@ class AppAdmin extends Model
 
     protected $primaryKey = 'username';
     protected $table = 'administrator';
-    protected $dates = ['deleted_at'];
+    protected $dates = array('deleted_at');
+
+    /***
+     * Function to return name
+     * @param $username
+     * @return \StdClass
+     */
+
+    public function getName(){
+           return  sprintf("%s,%s", $this->ldapService->getLastName($this->username),
+                $this->ldapService->getFirstName($this->username));
+    }
 
 }
 ?>
