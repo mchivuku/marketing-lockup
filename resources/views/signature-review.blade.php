@@ -5,7 +5,7 @@
 
     <section class="section page-title bg-none">
         <div class="row"><div class="layout">
-                <h1><span>Signature Summary - </span> {{$model->content->signatureid}}</h1>
+                <h1><span>Signature Review - </span> {{$model->signatureid}}</h1>
             </div>
         </div>
     </section>
@@ -15,73 +15,40 @@
         <div class="row">
             <div class="layout">
                 <div class="full-width">
-                    <form>
+                    <form class="filter">
+
 
                         <div class="row">
                             <div class="small-3 columns">
-                                <label for="Preview" class="right">Preview:</label>
+                                <label for="review comments">Comments</label>
+
                             </div>
                             <div class="small-9 columns">
-                                {!! $model->content->getSignaturePreview() !!}
+                            <textarea name="comment" placeholder="enter review comments"></textarea>
                             </div>
                         </div>
+
+                        <input type="hidden" name="signatureid" value="{{$model->signatureid}}"/>
 
                         <div class="row">
-                            <div class="small-3 columns">
-                                <label for="Created Date" class="right">Created Date:</label>
-                            </div>
-                            <div class="small-9 columns">
-                               {{$model->content->created_at}}
-                            </div>
-                        </div>
+                            <div class="small-9 columns right">
+                        <ul class="button-group radius">
+                            @foreach($model->statuses as $status)
+                                <?php $action_name = strtolower($status->action);?>
+                                <li><a href="{{url("/signatures/$action_name")}}" class="medium button">{{$status->action}}</a></li>
+                            @endforeach
+                            <li><a href="{{url("/signatures")}}" class="button">Cancel</a></li>
+                        </ul>
 
-                        <div class="row">
-                            <div class="small-3 columns">
-                                <label for="Status" class="right">Status:</label>
                             </div>
-                            <div class="small-9 columns">
-                             {{$model->content->reviewStatus->status}}
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="small-3 columns">
-                                <label for="Created Date" class="right">Created By:</label>
-                            </div>
-                            <div class="small-9 columns">
-                                {{$model->content->username}}
-                            </div>
-                        </div>
 
 
-                        <div class="row">
-                            <div class="small-3 columns">
-                                <label for="Updated Date" class="right">Updated Date:</label>
-                            </div>
-                            <div class="small-9 columns"> &nbsp;
-                            </div>
-                        </div>
+                   </form>
 
-                        <div class="row">
-                            <div class="small-3 columns">
-                                <label for="Updated Date" class="right">Updated Date:</label>
-                            </div>
-                            <div class="small-9 columns">
 
-                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="small-3 columns">
-                                <label for="review comments" class="right">Review Comments:</label>
-                            </div>
-                            <div class="small-9 columns">
-                                {{$model->content->signaturereviews()->where(func_get_arg())}}
-                            </div>
-                        </div>
-
-            </form>
                 </div>
         </div></div>
     </section>
     @endsection
+

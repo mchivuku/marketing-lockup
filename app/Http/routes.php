@@ -33,12 +33,10 @@ Route::group(array('prefix'=>'signatures'),function(){
     Route::get('/review', array('as'=>'signaturereview','uses'=>'SignaturesController@review'));
 
     Route::post('/savesignature', array('as'=>'save','uses'=>'SignaturesController@save'));
-    Route::post('/approve/{id}/{comment?}', array('as'=>'save','uses'=>'SignaturesController@save'));
 
 
-    Route::post("signatures", 'SignaturesController@approve');
-    Route::post("/signatures/approve/{id}/{comment?}", 'SignaturesController@approve');
-    Route::post("/signatures/deny/{id}/{comment?}", 'SignaturesController@deny');
+    Route::get("/approve", 'SignaturesController@approve');
+    Route::get("/deny/{id}/{comment?}", 'SignaturesController@deny');
 
 
 });

@@ -21,9 +21,8 @@ class SignatureReview  extends Model{
         return $this->hasMany('Signature');
     }
 
-    public function status(){
-        return $this->hasOne('ReviewStatus','reviewstatus','id');
-
+    public function reviewstatus(){
+        return $this->hasOne('App\Models\ReviewStatus','id','reviewstatus');
     }
 
 }

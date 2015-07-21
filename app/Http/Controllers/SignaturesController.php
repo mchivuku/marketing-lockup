@@ -96,14 +96,19 @@ class SignaturesController extends Controller {
 
                     $link_name = 'Approve/Deny';
                     $signature->nextAction .="<a  href='$next_action_link'>$link_name</a>";
-                    $signature->signaturereviews->each(function($item)use($signature){
-                        $signature->comments.= $item->comments;
-                    });
+
 
                 }else{
 
                     $signature->nextAction = $signature->reviewstatus->status;
+
                 }
+
+                $signature->signaturereviews->each(function($item)use($signature){
+                    if($signature->comments!="")
+                        $signature->comments.="; ";
+                    $signature->comments.= $item->comments;
+                });
 
             }
         }
@@ -152,7 +157,10 @@ class SignaturesController extends Controller {
     }
 
 
-    //Method to return json view for previewing signature.
+    /**
+     * Method to return json view of the signature preview
+     * @return \Illuminate\View\View
+     */
     public function getPreview(){
         $input = \Input::all();
         $id = $input['id'];
@@ -214,12 +222,8 @@ class SignaturesController extends Controller {
 
             $review_status = Models\ReviewStatus::where('status','like','pending%')->first();
 
-            $tz = 'America/Indiana/Indianapolis';
-            $timestamp = time();
-            $dt = new \DateTime("now", new \DateTimeZone($tz)); //first argument "must" be a string
-            $dt->setTimestamp($timestamp); //adjust the object to correct timestamp
 
-            $timestamp = $dt->format('Y-m-d H:i:s');
+            $timestamp = $this->getcurrentTimestamp();
 
             $review->create(array(
                     'signatureid'     => $signature_id,
@@ -240,10 +244,129 @@ class SignaturesController extends Controller {
         $signatureId = \Input::get('signatureid');
 
         $model = new \StdClass;
-        $model->states = Models\ReviewStatus::where('status','not like','pending%')->get();
+        $model->statuses = Models\ReviewStatus::where('status','not like','pending%')->get();
         $model->signatureid = $signatureId;
 
-        return $this->view('review')->model($model)->title('Review Signature');
+        return $this->view('signature-review')->model($model)->title('Review Signature');
 
     }
+
+    /***
+     * Method gets called on approve
+     * @return mixed
+     */
+    public function approve(){
+        $inputs =  \Input::all();
+
+        $signature = Models\Signature::find($inputs['signatureid']);
+        $review_status = Models\ReviewStatus::where('action','like','approve%')->first();
+
+        /** Transaction to implement all the changes in one go */
+        $id = $this->saveSignatureReview($review_status,$signature,$inputs);
+
+
+        $data = $inputs['comment'];
+        $d = array("data" => $data);
+
+        $obj  = $this->construct_ldap_object($signature->username);
+        \Mail::send('emails.approve', $d, function($message)use($obj)
+        {
+            $message->to($obj->email, $obj->name)->subject('Signature Approved!');
+        });
+
+
+        //update that email has been sent;
+        $review = Models\SignatureReview::find($id);
+        $review->emailsent = 1;
+        $review->save();
+
+
+        return \Redirect::action('SignaturesController@index');
+
+    }
+
+    /***
+     * Method gets called when a signature is denied
+     * @return mixed
+     */
+    public function deny(){
+        $inputs =  \Input::all();
+
+        $signature = Models\Signature::find($inputs['signatureid']);
+        $review_status = Models\ReviewStatus::where('action','like','denied%')->first();
+
+        /** Transaction to implement all the changes in one go */
+        $id = $this->saveSignatureReview($review_status,$signature,$inputs);
+
+
+        $data = $inputs['comment'];
+        $d = array("data" => $data);
+
+        $obj  = $this->construct_ldap_object($signature->username);
+        \Mail::send('emails.deny', $d, function($message)use($obj)
+        {
+            $message->to($obj->email, $obj->name)->subject('Signature Request Denied!');
+        });
+
+
+        //update that email has been sent;
+        $review = Models\SignatureReview::find($id);
+        $review->emailsent = 1;
+        $review->save();
+
+
+        return \Redirect::action('SignaturesController@index');
+
+    }
+
+    /**** Helper methods ****/
+
+    /***
+     * Helper method to retrieve the current timestamp
+     *
+     * @return int|string
+     */
+    private function getcurrentTimestamp(){
+        $tz = 'America/Indiana/Indianapolis';
+        $timestamp = time();
+        $dt = new \DateTime("now", new \DateTimeZone($tz)); //first argument "must" be a string
+        $dt->setTimestamp($timestamp); //adjust the object to correct timestamp
+
+        $timestamp = $dt->format('Y-m-d H:i:s');
+        return $timestamp;
+    }
+
+    /**
+     * private helper method that saves a signature review for a signature
+     * @param $review_status
+     * @param $signature
+     * @param $inputs
+     * @return mixed
+     */
+    private function saveSignatureReview($review_status,$signature, $inputs){
+        $user = $this->currentUser;
+        $timestamp = $this->getcurrentTimestamp();
+
+        $signatureReview = new Models\SignatureReview();
+        \DB::transaction(function()use($signature,$review_status,$timestamp,$user,$inputs,$signatureReview){
+
+            $signatureReview->reviewstatus = $review_status->id;
+            $signatureReview->reviewedby = $user;
+            $signatureReview->comments =  $inputs['comment'];
+            $signatureReview->created_at =$timestamp;
+            $signatureReview->updated_at = $timestamp;
+            $signatureReview->signatureid = $signature->id;
+
+            $signatureReview->save();
+
+            $signature->updated_at = $timestamp;
+            $signature->statusId = $review_status->signatureid;
+
+            $signature->save();
+
+        });
+
+        return $signatureReview->id;
+    }
+
 }
