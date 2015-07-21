@@ -8,7 +8,6 @@
 
 
 namespace App\Http\Controllers;
-date_default_timezone_set('UTC');
 
 use App\Models as Models;
 
@@ -77,40 +76,42 @@ class SignaturesController extends Controller {
 
             $CI = $this;
 
-            foreach($signatures as &$signature){
-                $signature->preview = $signature->getSignatureThumbnail();
-                $obj =  $CI->construct_ldap_object($signature->username);
-                $signature->name = sprintf("%s,%s",$obj->lastName,$obj->firstName);
+                foreach($signatures as &$signature){
+                    $signature->preview = $signature->getSignatureThumbnail();
+                    $obj =  $CI->construct_ldap_object($signature->username);
+                    $signature->name = sprintf("%s,%s",$obj->lastName,$obj->firstName);
 
-                /** Next state for the required action link */
-                if(stripos($signature->reviewstatus->status,'Pending')!==false){
-                    $next_action_link =\URL::to(action('SignaturesController@review') . '?signatureid='
-                        .$signature->signatureid );
-
-                    $signature->nextAction="";
-                    if($this->currentUser==$signature->username){
-                        $edit_link =\URL::to(action('SignaturesController@edit') . '?signatureid='
+                    /** Next state for the required action link */
+                    if(stripos($signature->reviewstatus->status,'Pending')!==false){
+                        $next_action_link =\URL::to(action('SignaturesController@review') . '?signatureid='
                             .$signature->signatureid );
-                        $signature->nextAction.= "<a  href='$edit_link'>Edit</a> | ";
+
+                        $signature->nextAction="";
+                        if($this->currentUser==$signature->username){
+                            $edit_link =\URL::to(action('SignaturesController@edit') . '?signatureid='
+                                .$signature->signatureid );
+                            $signature->nextAction.= "<a  href='$edit_link'>Edit</a> | ";
+                        }
+
+                        $link_name = 'Approve/Deny';
+                        $signature->nextAction .="<a  href='$next_action_link'>$link_name</a>";
+
+
+                    }else{
+
+                        $signature->nextAction = $signature->reviewstatus->status;
+
                     }
 
-                    $link_name = 'Approve/Deny';
-                    $signature->nextAction .="<a  href='$next_action_link'>$link_name</a>";
-
-
-                }else{
-
-                    $signature->nextAction = $signature->reviewstatus->status;
+                    $signature->signaturereviews->each(function($item)use($signature){
+                        if($signature->comments!="")
+                            $signature->comments.="; ";
+                        $signature->comments.= $item->comments;
+                    });
 
                 }
 
-                $signature->signaturereviews->each(function($item)use($signature){
-                    if($signature->comments!="")
-                        $signature->comments.="; ";
-                    $signature->comments.= $item->comments;
-                });
 
-            }
         }
         else{
 
@@ -162,11 +163,10 @@ class SignaturesController extends Controller {
      * @return \Illuminate\View\View
      */
     public function getPreview(){
-        $input = \Input::all();
-        $id = $input['id'];
+        $inputs = \Input::all();
 
+        $id = $inputs['id'];
         $signature = Models\Signature::where('signatureid','=',$id)->first()->getSignaturePreview();
-
 
         $model = new Models\ViewModels\Modal();
 
@@ -175,7 +175,9 @@ class SignaturesController extends Controller {
         $model->setAttribute('id','viewModel');
 
         return view('modal',array('model'=>$model));
+
     }
+
 
     public function create(){
         $signature = new Models\Signature();
@@ -188,12 +190,11 @@ class SignaturesController extends Controller {
 
 
     public function edit(){
-        $id = \Input::get('id');
+        $id = \Input::get('signatureid');
         $signature  = Models\Signature::find($id);
         return $this->view('addEditSignature')->model($signature)->title('Edit Signature');
 
     }
-
 
 
 
@@ -203,38 +204,68 @@ class SignaturesController extends Controller {
      * @return mixed
      */
     public function save(){
+        //signature id
+        $inputs = \Input::all();
 
-        $signature = new Models\Signature();
+        $user = $this->currentUser;
+        if(isset($inputs['signatureid'])){
+            $signature = Models\Signature::find(\Input::get('signatureid'));
 
-        $signature->create(array(
-            'username'          => $_SERVER["HTTP_CAS_USER"],
-            'primaryText'             => \Input::get('p'),
-            'secondaryText'          => \Input::get('s'),
-            'tertiaryText'          => \Input::get('t'),
-            'type'              =>\Input::get('hdnsignaturetype')
-        ));
+            \DB::transaction(function()use($signature,$user,$inputs)
+            {
+                $timestamp = $this->getcurrentTimestamp();
 
-        $signature_id =  \DB::getPdo()->lastInsertId();
+                $signature->username =  $user;
+                $signature->primaryText =  $inputs['p'];
+                $signature->secondaryText =   $inputs['s'];
+                $signature->tertiaryText =   $inputs['t'];
 
-        // insert record into signature review table.
-        if(isset($signature_id)){
-            $review = new Models\SignatureReview();
+                $signature->updated_at = $timestamp;
+                $signature->named = $inputs['named'];
+                $signature->save();
 
+
+            });
+        }
+        else{
+
+            // Create new signature
+            $signature = new Models\Signature();
             $review_status = Models\ReviewStatus::where('status','like','pending%')->first();
 
+            \DB::transaction(function()use($signature,$user,$inputs,$review_status)
+            {
+                $timestamp = $this->getcurrentTimestamp();
 
-            $timestamp = $this->getcurrentTimestamp();
+                $signature->username =  $user;
+                $signature->primaryText =  $inputs['p'];
+                $signature->secondaryText =   $inputs['s'];
+                $signature->tertiaryText =   $inputs['t'];
+                $signature->named = $inputs['named'];
+                $signatureReview = new Models\SignatureReview();
+                $signatureReview->reviewstatus = $review_status->id;
+                $signatureReview->created_at =$timestamp;
+                $signatureReview->updated_at = $timestamp;
+                $signatureReview->signatureid = $signature->signatureid;
 
-            $review->create(array(
-                    'signatureid'     => $signature_id,
-                    'reviewStatus'    => $review_status->id,
-                    'isActive'    =>  '1',
-                    'created_at'  =>$timestamp,
-                    'updated_at' =>$timestamp
-                ));
+                $signatureReview->save();
 
-            return \Redirect::route('signatures');
+
+                $signature->created_at = $timestamp;
+                $signature->updated_at = $timestamp;
+                $signature->statusId = $review_status->id;
+
+                $signature->save();
+
+
+            });
         }
+
+
+
+
+        return \Redirect::route('signatures');
+
 
 
     }
@@ -280,8 +311,7 @@ class SignaturesController extends Controller {
         $review->emailsent = 1;
         $review->save();
 
-
-        return \Redirect::action('SignaturesController@index');
+        return 'success';
 
     }
 
@@ -289,7 +319,7 @@ class SignaturesController extends Controller {
      * Method gets called when a signature is denied
      * @return mixed
      */
-    public function deny(){
+    public function denied(){
         $inputs =  \Input::all();
 
         $signature = Models\Signature::find($inputs['signatureid']);
@@ -298,12 +328,11 @@ class SignaturesController extends Controller {
         /** Transaction to implement all the changes in one go */
         $id = $this->saveSignatureReview($review_status,$signature,$inputs);
 
-
         $data = $inputs['comment'];
         $d = array("data" => $data);
 
         $obj  = $this->construct_ldap_object($signature->username);
-        \Mail::send('emails.deny', $d, function($message)use($obj)
+        \Mail::send('emails.denied', $d, function($message)use($obj)
         {
             $message->to($obj->email, $obj->name)->subject('Signature Request Denied!');
         });
@@ -315,7 +344,7 @@ class SignaturesController extends Controller {
         $review->save();
 
 
-        return \Redirect::action('SignaturesController@index');
+        return 'success';
 
     }
 
@@ -355,12 +384,12 @@ class SignaturesController extends Controller {
             $signatureReview->comments =  $inputs['comment'];
             $signatureReview->created_at =$timestamp;
             $signatureReview->updated_at = $timestamp;
-            $signatureReview->signatureid = $signature->id;
+            $signatureReview->signatureid = $signature->signatureid;
 
             $signatureReview->save();
 
             $signature->updated_at = $timestamp;
-            $signature->statusId = $review_status->signatureid;
+            $signature->statusId = $review_status->id;
 
             $signature->save();
 

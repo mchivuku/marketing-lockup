@@ -70,8 +70,7 @@
 @endsection
 
 @section('scripts')
-    <script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.tab.js")
-    }}"></script>
+    <script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.tab.js")}}"></script>
     <script type="text/javascript">
         $(document).foundation('reveal', 'reflow');
 
@@ -103,12 +102,7 @@
 
             });
 
-
-
-
         });
-
-
 
     </script>
 

@@ -17,7 +17,6 @@
                 <div class="full-width">
                     <form class="filter">
 
-
                         <div class="row">
                             <div class="small-3 columns">
                                 <label for="review comments">Comments</label>
@@ -52,3 +51,18 @@
     </section>
     @endsection
 
+@section('scripts')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form .button').on('click',function(event){
+                event.preventDefault();
+                var href = $(this).attr('href');
+                $.get(href,$(this).parents('form').serialize(),function($data){
+                    window.location.replace("{{url("/signatures")}}");
+                });
+
+            });
+        })
+    </script>
+
+ @endsection

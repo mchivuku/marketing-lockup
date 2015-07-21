@@ -26,6 +26,12 @@ Route::group(array('prefix'=>'signatures'),function(){
     Route::get('/getSignatures', array('as'=>'signature-table',
         'uses'=>'SignaturesController@getSignatures'));
 
+    Route::get('/namedschoolimages',function(){
+        return view("named-school-image-examples");
+    });
+    Route::get('/allschoolimages',function(){
+        return view("all-school-image-examples");
+    });
 
 
     Route::get('/getPreview', array('as'=>'preview','uses'=>'SignaturesController@getPreview'));
@@ -36,7 +42,7 @@ Route::group(array('prefix'=>'signatures'),function(){
 
 
     Route::get("/approve", 'SignaturesController@approve');
-    Route::get("/deny/{id}/{comment?}", 'SignaturesController@deny');
+    Route::get("/denied", 'SignaturesController@denied');
 
 
 });
