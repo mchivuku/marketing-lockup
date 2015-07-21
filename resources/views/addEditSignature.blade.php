@@ -47,7 +47,7 @@
                                 <div class="small-9 columns">
                                     <input type="radio" name="named" value="1" id="named"><label
                                             for="namedschool">Yes</label>
-                                    <input type="radio" name="named" value="0" id="allschool"><label
+                                    <input type="radio" name="named" checked value="0" id="allschool"><label
                                             for="allschool">No</label>
                                 </div>
                             </div>
