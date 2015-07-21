@@ -1,0 +1,1 @@
+<div id="viewModal" class="reveal-modal" data-reveal></div>

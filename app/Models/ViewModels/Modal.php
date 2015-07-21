@@ -21,5 +21,4 @@ class Modal{
         return $this->attributes;
     }
 
-
 }

@@ -7,7 +7,7 @@ class AppAdmin extends Model
 {
     use SoftDeletes;
 
-    protected $primaryKey = 'username';
+    protected $primaryKey = 'id';
     protected $table = 'administrator';
     protected $dates = array('deleted_at');
 

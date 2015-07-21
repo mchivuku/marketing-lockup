@@ -1,8 +1,8 @@
 
 
-<div class="row">
-<div class="col-lg-10">
-<h4>Search Results</h4>
+			<h4>Search Results:</h4>
+			<div class="full-width">
+				<div class="text">
 
 <table class="table-bordered table table-responsive table-striped table-hover">
 <tr>
@@ -25,5 +25,4 @@
 @endforeach
 
 	</table>
-	</div>
-	</div>
+

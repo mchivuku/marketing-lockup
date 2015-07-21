@@ -40,11 +40,12 @@ class SignaturesController extends Controller {
     }
 
     public function leftnavigation(){
-        $navigation = array(array('route_name'=>'signatures.create','text'=>'Create Signature',
+        $navigation = array(array('route_name'=>'signatures.create',
+            'text'=>'Create Signature',
             'url'=>\URL::to(action('SignaturesController@create'))));
+
         \View::share('leftnavigation',$navigation);
     }
-
 
     /**
      * Show the application dashboard to the user.
@@ -53,85 +54,140 @@ class SignaturesController extends Controller {
      */
     public function index()
     {
-        // get all signatures or get user signature - based on the user role.
-        $user = Models\AppAdmin::find($this->currentUser);
+         $model =new \StdClass;
 
-        // Get only those signatures that are active
-        $review_status_query = \DB::table('signatureReview')
-            ->join('reviewStatus','reviewStatus.id','=','signatureReview.reviewstatus')
-            ->whereRaw('isActive = 1')
-            ->select(array('signatureid','status','reviewedby','created_at','updated_at','signatureReview.id',
-                'emailsent','comments'))->toSql();
+         $model->states = array_merge(array(array('id'=>0,'status'=>'All Signatures')),Models\ReviewStatus::all()
+           ->toArray());
+         $model->content = $this->getSignatures();
+         return $this->view('signatures')->model($model)->title('Manage Signatures');
+
+    }
+
+
+    public function getSignatures(){
+
+        $inputs = \Input::all();
+        $model = new \StdClass;
 
         // Admin
-        if(isset($user)){
+        if($this->isAdmin){
 
-            $signatures = \DB::table('signature')->join(\DB::Raw("($review_status_query) as s"),"s.signatureid","=",
-                "signature.signatureid")
-                ->select(array('primaryText', 'secondaryText', 'tertiaryText', 'type', 'username','s.comments',
-                    's.emailsent','s.status','s.reviewedby','s.created_at','s.updated_at','s.id'
-                ))->get();
-
+            $signatures =isset($inputs['status'])? Models\Signature::where('statusId','=',$inputs['status'])->get():
+                Models\Signature::all();
 
             $CI = $this;
-            array_walk($signatures, function($signature)use($CI){
 
-                $s = new Models\Signature();
-
-                foreach($s->fillable as $var){
-                    $s->{$var}= $signature->{$var};
-
-                }
-
-                $signature -> preview =  $s->getSignaturePreview();
+            foreach($signatures as &$signature){
+                $signature->preview = $signature->getSignatureThumbnail();
                 $obj =  $CI->construct_ldap_object($signature->username);
                 $signature->name = sprintf("%s,%s",$obj->lastName,$obj->firstName);
-            });
+
+                /** Next state for the required action link */
+                if(stripos($signature->reviewstatus->status,'Pending')!==false){
+                    $next_action_link =\URL::to(action('SignaturesController@review') . '?signatureid='
+                        .$signature->signatureid );
+
+                    $signature->nextAction="";
+                    if($this->currentUser==$signature->username){
+                        $edit_link =\URL::to(action('SignaturesController@edit') . '?signatureid='
+                            .$signature->signatureid );
+                        $signature->nextAction.= "<a  href='$edit_link'>Edit</a> | ";
+                    }
+
+                    $link_name = 'Approve/Deny';
+                    $signature->nextAction .="<a  href='$next_action_link'>$link_name</a>";
+                    $signature->signaturereviews->each(function($item)use($signature){
+                        $signature->comments.= $item->comments;
+                    });
+
+                }else{
+
+                    $signature->nextAction = $signature->reviewstatus->status;
+                }
+
+            }
+        }
+        else{
+
+            $signatures =isset($inputs['status'])? Models\Signature::where('statusId','=',$inputs['status'])
+                ->where('username','=',$this->currentUser)->get():
+                Models\Signature::where('username','=',$this->currentUser);
+
+            foreach($signatures as &$signature){
+                $signature->preview = $signature->getSignatureThumbnail();
+                $obj =  $this->construct_ldap_object($signature->username);
+                $signature->name = sprintf("%s,%s",$obj->lastName,$obj->firstName);
+
+                /** Next state for the required action link */
+                if(stripos($signature->reviewstatus->status,'Pending')!==false){
+                    $next_action_link =\URL::to(action('SignaturesController@review') . '?signatureid='
+                        .$signature->signatureid );
+
+                    $signature->nextAction="";
+                    if($this->currentUser==$signature->username){
+                        $edit_link =\URL::to(action('SignaturesController@edit') . '?signatureid='
+                            .$signature->signatureid );
+                        $signature->nextAction.= "<a  href='$edit_link'>Edit</a> &nbsp;| &nbsp;";
+                    }
+
+                    $link_name = 'Approve/Deny';
+                    $signature->nextAction .="<a  href='$next_action_link'>$link_name</a>";
+
+                }else{
+
+                    $signature->nextAction =$signature->reviewstatus->status;
+                }
+
+            }
 
 
+        }
 
-        }else{
-             $signatures = \DB::table('signature')->join(\DB::Raw("($review_status_query) as s"),"s.signatureid","=",
-                "signature.signatureid")->where('username','=',$this->currentUser)
-                ->select(array('primaryText', 'secondaryText', 'tertiaryText', 'type', 'username','s.comments',
-                    's.emailsent','s.status','s.reviewedby','s.created_at','s.updated_at','s.id'
-                ))->get();
+        $model->signatures =  $signatures;
 
-       }
+        $model->currentUser = $this->currentUser;
+        $model->isAdmin = $this->isAdmin;
 
-
-        return $this->view('signatures')->model($signatures)->title('Manage Signatures');
+        return view('signature-table',array('model'=>$model));
     }
 
 
     //Method to return json view for previewing signature.
     public function getPreview(){
-            $input = \Input::all();
+        $input = \Input::all();
+        $id = $input['id'];
 
-            $primary=$input['primary'];
-            $secondary  = $input['secondary'];
-            $tertiary = $input['tertiary'];
-            $v = $input['v'];
+        $signature = Models\Signature::where('signatureid','=',$id)->first()->getSignaturePreview();
 
-            $signature = new Models\Signature();
-            $signature->primaryText = $primary;
-            $signature->secondaryText = $secondary;
-            $signature->tertiaryText = $tertiary;
-            $signature->type  = $v;
 
-            return  \View::make('preview',array('model' => $signature->getSignaturePreview()));
+        $model = new Models\ViewModels\Modal();
+
+        $model->content=   $signature ;
+        $model->title= 'Signature Preview';
+        $model->setAttribute('id','viewModel');
+
+        return view('modal',array('model'=>$model));
     }
 
-
     public function create(){
-        return $this->view('createsignature')->title('Create Signature');
+        $signature = new Models\Signature();
+        $signature->primaryText='Primary';
+        $signature->secondaryText='Secondary';
+        $signature->tertiaryText='Tertiary';
+
+        return $this->view('addEditSignature')->model($signature)->title('Create Signature');
     }
 
 
     public function edit(){
-
+        $id = \Input::get('id');
+        $signature  = Models\Signature::find($id);
+        return $this->view('addEditSignature')->model($signature)->title('Edit Signature');
 
     }
+
+
+
 
     /***
      * Save signature
@@ -176,6 +232,18 @@ class SignaturesController extends Controller {
             return \Redirect::route('signatures');
         }
 
+
+    }
+
+
+    public function review(){
+        $signatureId = \Input::get('signatureid');
+
+        $model = new \StdClass;
+        $model->states = Models\ReviewStatus::where('status','not like','pending%')->get();
+        $model->signatureid = $signatureId;
+
+        return $this->view('review')->model($model)->title('Review Signature');
 
     }
 }

@@ -25,4 +25,5 @@ class SignatureReview  extends Model{
         return $this->hasOne('ReviewStatus','reviewstatus','id');
 
     }
+
 }

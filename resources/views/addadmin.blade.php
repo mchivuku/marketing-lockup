@@ -1,50 +1,52 @@
- <form class="form-horizontal" action="{{url("/admin/searchResults")}}" method="post" id="usersearch">
+
+<section class="collapsed bg-none">
+    <div class="row">
+        <div class="layout">
+            <h4>User Search</h4>
+            <div class="full-width">
+                <div class="text">
+
+<form action="{{url("/admin/searchResults")}}" method="post" id="usersearch">
 
 <input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
-<!-- Username -->
-<div class="control-group">
-  <label class="control-label" for="username">Username</label>
-  <div class="controls">
-    <div class="form-control-static">
-                     <input type="text" name="username"/>
-            </div>
-    </div>
-  </div>
 
-<!-- First Name -->
-<div class="control-group">
-  <label class="control-label" for="firstname">First Name</label>
-  <div class="controls">
-   <div class="form-control-static">
-             <input type="text" name="firstName"/>
-          </div>
-  </div>
+ <!-- Username -->
+<div class="row">
+  <label for="username">Username</label>
+       <input type="text" name="username"/>
+
 </div>
 
+
+<!-- First Name -->
+     <div class="row">
+         <label for="firstname">First Name</label>
+         <input type="text" name="firstName"/>
+
+     </div>
+
+
+
 <!-- Last Name-->
-<div class="control-group">
-  <label class="control-label" for="lastname">Last Name</label>
-  <div class="controls">
-     <div class="form-control-static">
+<div class="row">
+  <label for="lastname">Last Name</label>
+
              <input type="text" name="lastName" />
-            </div>
-    </div>
+
 </div>
 
 
 <div class="row">
-  <div class="col-lg-10 pull-right">
-        <button type="submit" class="btn btn-primary btn-small">Search</button>
-        <button type="reset" class="btn btn-small">Clear</button>
-        </div>
-</div>
+        <button type="submit" class="round tiny">Search</button>
+        <button type="reset" class="round tiny">Clear</button>
 
+</div>
 </form>
 
+
+
 <div id="results"/>
-
-
-
+   </div></div></div></div></section>
 <script type="text/javascript">
 $(document).ready(function(){
 $("#usersearch").submit(function(event) {

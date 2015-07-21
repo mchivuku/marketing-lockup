@@ -1,32 +1,24 @@
-<!-- Navigation - move to navigation  -->
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-					<span class="sr-only">Toggle Navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="{{ url('/home') }}">Brand Admin</a>
-			</div>
-
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					<li><a href="{{ url('/signatures') }}">Manage Signatures</a></li>
-					@if($navigation['isAdmin'])
-                    <li><a href="{{ url('/admin') }}">Manage Administrators</a></li>
-                    @endif
-				</ul>
-				 <div class="pull-right" id="loginUserControl">
-
-                </div>
-
-			</div>
 
 
 
-		</div>
+<nav role="navigation" id="nav-main" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement"
+	 class="main hide-for-medium-down show-for-large-up dropdown">
+	<ul class="row pad">
+		<li class="show-on-sticky home">
+			<a href="{{ url('/') }}">Home</a>
+		</li>
+
+		@if($navigation['isAdmin'])
+			  <li class="first"><a  href="{{ url('/signatures') }}" itemprop="url" class="current">
+					<span itemprop="name">Manage Signatures</span></a>
+			  </li>
+			<li><a href="{{ url('/admin') }}"><span itemprop="name">Manage Administrators</span></a></li>
+
+	    @else
+			<li class="last"><a  href="{{ url('/signatures') }}" itemprop="url" class="current">
+					<span itemprop="name">Manage Signatures</span></a></li>
+		@endif
+
+
+		</ul>
 	</nav>
-
-

@@ -1,26 +1,20 @@
-$(document).ready(function () {
-    $('#previewButton').click(function (e) {
-        e.preventDefault();
-        var tag = $('.focused').attr('data-v');
-        var qstr = $('#svgform').serialize() + '&v=' + tag;
-        var src = 'https://iet.communications.iu.edu/mercerjd/svg/s.php?'+qstr;
-        console.log(src);
-        $.get(src, function(data) {
-            $('.panel-body').find('svg').remove();
-            $('.panel-body').append(data);
+$(document).ready(function(){
+    jQuery.fn.exists = function(){return this.length>0;}
+    if (!$('aside').exists()){
+      $('main').addClass('no-section-nav');
+    }
+
+    $('a.modal').on('click',function(event){
+
+        event.preventDefault();
+        var link = $(this).attr('href');
+
+        $.get(link,null,function(data){
+
+            $('#viewModal').html(data);
+
         });
 
-        return;
     });
-
-    //Modal window
-    $('[data-toggle="modal"]').click(function(e) {
-        e.preventDefault();
-        var url = $(this).attr('href');
-         $.get(url, function(data) {
-            $(data).modal();
-        });
-    });
-
 
 });

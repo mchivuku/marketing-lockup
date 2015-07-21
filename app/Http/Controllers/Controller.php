@@ -15,7 +15,7 @@ abstract class Controller extends BaseController {
 	use DispatchesCommands, ValidatesRequests;
 
     protected $currentUser;
-    protected $role;
+    protected $isAdmin;
     protected $layout = 'app';
     protected $ldapService;
 
@@ -29,6 +29,10 @@ abstract class Controller extends BaseController {
         $this->middleware('cas');
 
         $this->currentUser =$_SERVER["HTTP_CAS_USER"];
+
+        $user = Models\AppAdmin::where('username','=',$this->currentUser)->first();
+        $this->isAdmin = isset($user)?true:false;
+
 
         // Service
         $this->ldapService=new Services\LDAPService();
@@ -45,13 +49,9 @@ abstract class Controller extends BaseController {
 
     private  function renderNavigation(){
 
-        $user = Models\AppAdmin::find($this->currentUser);
-
-        $is_admin= isset($user)?true:false;
-
         return \View::share("navigation",
             array('isAdmin'=>
-                $is_admin));
+                $this->isAdmin));
 
     }
 

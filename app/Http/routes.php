@@ -22,6 +22,15 @@ Route::group(array('prefix'=>'signatures'),function(){
              'uses'=>'SignaturesController@index'));
 
     Route::get('/create', array('as'=>'create','uses'=>'SignaturesController@create'));
+    Route::get('/edit', array('as'=>'edit','uses'=>'SignaturesController@edit'));
+    Route::get('/getSignatures', array('as'=>'signature-table',
+        'uses'=>'SignaturesController@getSignatures'));
+
+
+
+    Route::get('/getPreview', array('as'=>'preview','uses'=>'SignaturesController@getPreview'));
+
+    Route::get('/review', array('as'=>'signaturereview','uses'=>'SignaturesController@review'));
 
     Route::post('/savesignature', array('as'=>'save','uses'=>'SignaturesController@save'));
     Route::post('/approve/{id}/{comment?}', array('as'=>'save','uses'=>'SignaturesController@save'));
@@ -37,7 +46,8 @@ Route::group(array('prefix'=>'signatures'),function(){
 
 Route::group(array('prefix' => 'admin'), function () {
 
-    Route::get('/', 'AdministratorsController@index');
+    Route::get('/', array('as'=>'admins',
+        'uses'=>'AdministratorsController@index'));
     Route::get('/search', 'AdministratorsController@search');
     Route::get('/get', 'AdministratorsController@get');
     Route::get('/delete', 'AdministratorsController@delete');

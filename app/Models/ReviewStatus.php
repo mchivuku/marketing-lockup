@@ -18,4 +18,5 @@ class ReviewStatus  extends Model{
         return $this->hasMany('Signatures');
     }
 
+
 }

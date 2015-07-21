@@ -8,13 +8,14 @@
 
 namespace App\Http\Controllers;
 
-
-use DB;
 use App\Models as Models;
 use App\Models\ViewModels as ViewModels;
 
 
- 
+/**
+ * Class AdministratorsController
+ * @package App\Http\Controllers
+ */
 class AdministratorsController extends Controller{
 
 
@@ -29,7 +30,6 @@ class AdministratorsController extends Controller{
 
 
     }
-
 
     /**
      * Function to construct index page
@@ -148,7 +148,7 @@ class AdministratorsController extends Controller{
                 'username'=>$user['username'],'email'=>$user['email']);
 
             $link=\URL::to(action('AdministratorsController@save') . '?' . http_build_query($params));
-            $user['addLink'] =  "<a  class='btn btn-sm btn-primary' href='$link'>Add Admin</a>";
+            $user['addLink'] =  "<a  class='button tiny round' href='$link'>Add Admin</a>";
 
         });
         return  \View::make('searchresults',array('model' => $results));

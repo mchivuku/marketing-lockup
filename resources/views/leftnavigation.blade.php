@@ -39,8 +39,15 @@ function navigation($items, $attributes = array()) {
 
 };
 
+echo "<aside id=\"section-nav\" class=\"section-nav hide-for-medium-down show-for-large-up\"><div class=\"row\">";
+
+echo "<nav itemtype=\"http://schema.org/SiteNavigationElement\" itemscope=\"itemscope\">";
+
 echo navigation($navigation);
+echo "</nav></div></aside>";
 
 ?>
+
+
 
 

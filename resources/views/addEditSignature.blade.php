@@ -20,7 +20,6 @@
         }
     </style>
 
-
                 <div class="panel panel-default">
                     <div class="panel-heading">Signature Options</div>
 
@@ -36,11 +35,11 @@
                         <form id="svgform" action="{{url('/signatures/savesignature')}}" method="post">
                             <input type="hidden" id="hdnsignaturetype" value="1" name="hdnsignaturetype"/>
                             <label for="p">Primary</label><br/>
-                            <textarea rows="4" cols="40" name="p">PRIMARY</textarea><br/>
+                            <textarea rows="4" cols="40" name="p">{{$model->primaryText}}</textarea><br/>
                             <label for="s">Secondary</label><br/>
-                            <textarea rows="4" cols="40" name="s">SECONDARY</textarea><br/>
+                            <textarea rows="4" cols="40" name="s">{{$model->secondaryText}}</textarea><br/>
                             <label for="t">Tertiary</label><br/>
-                            <textarea rows="4" cols="40" name="t">Tertiary</textarea><br/>
+                            <textarea rows="4" cols="40" name="t">{{$model->tertiaryText}}</textarea><br/>
                         <input type="button" value="Preview" id="previewButton"/>
                         <input type="reset"/>
                         <input type="submit" id="saveSignature" name="saveSignature" value="Save Changes"/>

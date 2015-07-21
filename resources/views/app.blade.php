@@ -1,69 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{{ $title }}</title>
-
-	<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
-    <link href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
-
-	<!-- Fonts -->
-	<link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
-
-	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	<!--[if lt IE 9]>
-		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
-</head>
+@include('...includes.header')
 <body>
+@include('...includes.branding-bar')
+	<div class="inner-wrap">
+		<header>
+			<div class="row pad">
 
-@include('navigation',array('navigation'=>$navigation))
+				<h1><a href="{{url("/")}}">Marketing Lock-up tool</a></h1>
 
-<div class="container-fluid">
-	<!-- Navigation -->
-	<div class="row">
+			</div>
+		</header>
 
-	<!-- sidebar -->
-     <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
 
- 		 @yield('left-navigation')
+		<!-- Navigation -->
+		@include('navigation')
+
+   		 <main  style="min-height: 84px;">
+					@yield('left-navigation')
+
+
+			@include('...includes.alerts')
+
+			@yield('content')
+
+
+		    <!-- Footer -->
+			@include('...includes.footer')
+
+
+		</main>
+
 	</div>
 
-	<!-- main -->
-	 <div class="col-xs-12 col-sm-7">
-
-		 @include('alerts')
-		 @if($title!='')
-		 <div class="page-header" id="pageTitle">
-
-			   <h2>{{$title}}</h2>
-		  </div>
-
-		  @endif
-		 @yield('content')
-	 </div>
-
-  </div>
-
-</div>
+	<div class="right-off-canvas-menu show-for-medium-down">
+		<nav class="mobile off-canvas-list">
+				@include('navigation',array('navigation'=>$navigation))
+ 		</nav>
+	</div>
 
 
 
 	<!-- Scripts -->
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
-    <script src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
-    <script src="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+	<!-- javascript files -->
+	<!-- Include jQuery -->
+	<script src="{{asset("assets/bower_components/foundation/js/vendor/jquery.js")}}" type="text/javascript"></script>
+	<script src="//assets.iu.edu/web/2.x/js/global.js" type="text/javascript"></script>
+	<script src="//assets.iu.edu/search/2.x/search.js" type="text/javascript"></script>
+	<script type="text/javascript" language="javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="{{ asset('/js/dataTables.foundation.js') }}"></script>
+	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.js")}}"></script>
+	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.reveal.js")}}"></script>
+<script src="{{asset("js/svg.js")}}" type="text/javascript"></script>
 
-
-
-    @yield('bodyScripts');
+@yield('scripts')
 
 
 </body>
 </html>
+
