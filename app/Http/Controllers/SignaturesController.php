@@ -71,13 +71,15 @@ class SignaturesController extends Controller {
         // Admin
         if($this->isAdmin){
 
-            $signatures =isset($inputs['status'])? Models\Signature::where('statusId','=',$inputs['status'])->get():
-                Models\Signature::all();
+            $signatures =isset($inputs['status'])? Models\Signature::with('signaturereviews','reviewstatus')->where
+                ('statusId','=',$inputs['status'])->get():
+                Models\Signature::with('signaturereviews','reviewstatus')->get();
 
             $CI = $this;
 
-                foreach($signatures as &$signature){
-                    $signature->preview = $signature->getSignatureThumbnail();
+                foreach($signatures as $signature){
+                 //   $signature->preview = $signature->getSignatureThumbnail();
+                    $signature->preview='';
                     $obj =  $CI->construct_ldap_object($signature->username);
                     $signature->name = sprintf("%s,%s",$obj->lastName,$obj->firstName);
 
@@ -115,7 +117,9 @@ class SignaturesController extends Controller {
         }
         else{
 
-            $signatures =isset($inputs['status'])? Models\Signature::where('statusId','=',$inputs['status'])
+            $signatures =isset($inputs['status'])? Models\Signature::with('signaturereviews','reviewstatus')->where
+            ('statusId','=',
+            $inputs['status'])
                 ->where('username','=',$this->currentUser)->get():
                 Models\Signature::where('username','=',$this->currentUser);
 
@@ -146,13 +150,14 @@ class SignaturesController extends Controller {
 
             }
 
-
         }
 
         $model->signatures =  $signatures;
 
         $model->currentUser = $this->currentUser;
         $model->isAdmin = $this->isAdmin;
+
+
 
         return view('signature-table',array('model'=>$model));
     }

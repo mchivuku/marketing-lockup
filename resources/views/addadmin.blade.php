@@ -8,7 +8,6 @@
 
 <form action="{{url("/admin/searchResults")}}" method="post" id="usersearch">
 
-<input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
 
  <!-- Username -->
 <div class="row">

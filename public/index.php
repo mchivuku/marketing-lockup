@@ -54,4 +54,4 @@ $response = $kernel->handle(
 
 $response->send();
 
-$kernel->terminate($request, $response);
+ $kernel->terminate($request, $response);

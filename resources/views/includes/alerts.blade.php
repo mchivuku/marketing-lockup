@@ -1,5 +1,25 @@
-@if(isset($message))
-     <div class="alert alert-info">
-         <h2>{{ $message }}</h2>
-     </div>
- @endif
+@if(\Session::has('flash-message'))
+
+    <?php
+    $flash_message = \Session::get('flash-message');
+    $type = $flash_message->type;
+    $message = $flash_message->message;
+    ?>
+
+    <section class="collapsed bg-none section">
+        <div class="row">
+            <div class="layout">
+                <div class="full-width">
+                    <div class="text">
+                        <div data-alert class="alert-box {{$type}} radius">
+                            {{$message}}
+                            <a href="#" class="close">&times;</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+@endif

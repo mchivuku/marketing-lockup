@@ -34,4 +34,5 @@ class HomeController extends Controller {
 		return View::make('home');
 	}
 
+
 }

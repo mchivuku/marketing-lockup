@@ -15,10 +15,8 @@
 		@include('navigation')
 
    		 <main  style="min-height: 84px;">
-					@yield('left-navigation')
-
-
-			@include('...includes.alerts')
+			 @yield('left-navigation')
+			 @include('...includes.alerts')
 
 			@yield('content')
 
@@ -49,6 +47,9 @@
 	<script type="text/javascript" language="javascript" src="{{ asset('/js/dataTables.foundation.js') }}"></script>
 	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.js")}}"></script>
 	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.reveal.js")}}"></script>
+    <script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.alert.js")
+ }}"></script>
+
 <script src="{{asset("js/svg.js")}}" type="text/javascript"></script>
 
 @yield('scripts')

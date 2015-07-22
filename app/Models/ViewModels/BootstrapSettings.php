@@ -33,4 +33,6 @@ class BootstrapSettings
         return count($html) > 0 ? ' '.implode(' ', $html) : '';
 
     }
+
+
 }

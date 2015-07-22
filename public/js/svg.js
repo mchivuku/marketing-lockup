@@ -17,4 +17,7 @@ $(document).ready(function(){
 
     });
 
+    // close alert box
+    $('.alert-box > a.close').click(function() { $(this).closest('[data-alert]').fadeOut(); });
+
 });

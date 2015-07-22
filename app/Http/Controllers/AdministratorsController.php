@@ -37,6 +37,12 @@ class AdministratorsController extends Controller{
      */
     public function index()
     {
+
+        $inputs = \Input::all();
+
+         if(isset($inputs['message']))
+            $this->error(\Input::get('message'));
+
         //Connect to the database ;
         $result = [];
         $admins = Models\AppAdmin::all();
@@ -85,23 +91,23 @@ class AdministratorsController extends Controller{
 
         $inputs = \Input::all();
 
-        $user = Models\AppAdmin::where('username','=',$inputs['username'])->first();
+        $user = Models\AppAdmin::where('username','=',$inputs['username'])->whereRaw('deleted_at is null')->first();
 
         if(isset($user)){
-            \Session::flash('flash-message', 'User couldn\'t be added as the user already exists');
+            return \Redirect::action('AdministratorsController@index',array('message'=>'User cannot be added as user
+            already exists
+            '));
 
-        }else{
-
+         }else{
             $user = new Models\AppAdmin();
             $user->username=$inputs['username'];
             $user->email = $inputs['email'];
-
             $user->save();
         }
 
-        return  \Redirect::action('AdministratorsController@index');
-    }
+        return \Redirect::action('AdministratorsController@index');
 
+    }
 
     /***
      * Delete user - software

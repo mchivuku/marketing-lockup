@@ -104,4 +104,50 @@ abstract class Controller extends BaseController {
         return $p;
 
     }
+
+    /** Methods to insert flash messages */
+    public function warning($message){
+        $obj = new \StdClass;
+        $obj->type = Models\ViewModels\Alerts::WARNING;
+        $obj->message = $message;
+
+        \Session::put('flash-message',$obj);
+
+
+    }
+
+    public function error($message){
+        $obj = new \StdClass;
+        $obj->type = Models\ViewModels\Alerts::ALERT;
+        $obj->message = $message;
+
+        \Session::set('flash-message',$obj);
+    }
+
+
+    public function success($message){
+        $obj = new \StdClass;
+        $obj->type = Models\ViewModels\Alerts::SUCCESS;
+        $obj->message = $message;
+
+        \Session::put('flash-message',$obj);
+    }
+
+
+    public function information($message){
+        $obj = new \StdClass;
+        $obj->type = Models\ViewModels\Alerts::INFORMATION;
+        $obj->message = $message;
+
+        \Session::put('flash-message',$obj);
+    }
+
+
+    public function secondary($message){
+        $obj = new \StdClass;
+        $obj->type = Models\ViewModels\Alerts::SECONDARY;
+        $obj->message = $message;
+
+        \Session::put('flash-message',$obj);
+    }
 }
