@@ -1,0 +1,3 @@
+- [ ] add exception handling
+- [ ] integrate svg conversion library
+- [ ] integrate form validation
