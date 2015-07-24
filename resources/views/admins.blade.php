@@ -56,27 +56,13 @@
 
 @endsection
 @section('scripts')
-<script type="text/javascript">
-    $(document).foundation('reveal', 'reflow');
-</script>
 
 <script type="text/javascript">
+
         $(document).ready(function() {
             $('#usersTable').dataTable();
         });
 
-        $('a.modal').on('click',function(event){
-
-            event.preventDefault();
-            var link = $(this).attr('href');
-
-            $.get(link,null,function(data){
-
-                $('#viewModal').html(data);
-
-            });
-
-        });
 
 </script>
 

@@ -189,6 +189,7 @@ class SignaturesController extends Controller {
         $signature->primaryText='Primary';
         $signature->secondaryText='Secondary';
         $signature->tertiaryText='Tertiary';
+        $signature->named=1;
 
         return $this->view('addEditSignature')->model($signature)->title('Create Signature');
     }

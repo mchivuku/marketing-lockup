@@ -2,20 +2,21 @@
 
 @section('content')
     <style>
-        img {
-            width: 200px;
+        svg {
+            width:350px;
 
         }
 
-        img:last-child {
-
+        svg:last-child {
             margin-bottom: 20px;
         }
 
-        .hover-border {
+        div#example-images{
             border: 5px solid #eee;
+            padding:10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
-
         form {
             margin-bottom: 20px;
         }
@@ -23,8 +24,7 @@
 
     <section class="section page-title bg-none">
         <div class="row">
-            <div
-                    class="layout">
+            <div  class="layout">
                 <h1>{{$title}}</h1></div>
         </div>
     </section>
@@ -34,9 +34,11 @@
 
                 <div class="full-width">
 
-                        <div id="example-images">
-                            @include('all-school-image-examples')
+                       <div id="example-images">
+
+                            {!!  $model->getSignaturePreview() !!}
                         </div>
+
 
                         <form id="svgform" action="{{url('/signatures/savesignature')}}" method="post">
 
@@ -79,8 +81,7 @@
 
 
                             <div class="button-group right">
-                                <input type="button" value="Preview" id="previewButton" class="small button"/></li>
-                                <input type="submit" id="saveSignature" name="saveSignature"
+                                 <input type="submit" id="saveSignature" name="saveSignature"
                                        value="Save Changes" class="small button"/></li>
                                 <input type="reset" class="small button secondary"/></li>
 
@@ -104,38 +105,47 @@
     <script type="text/javascript">
 
         $(document).ready(function(){
-            // radio button to show example images
-            $('form input:radio').on('change',function(){
-                var val= $(this).val();
-                var getUrl;
-                if(val==0)
-                 getUrl = "{{url("signatures/allschoolimages") }}";
-                else
-                    getUrl ="{{url("signatures/namedschoolimages")}}";
 
-                $.get(getUrl,null,function(data){
-                    $('div#example-images').html(data);
-                });
-            });
-
-            $('#previewButton').click(function (e) {
-                e.preventDefault();
-                $('#signature-preview').empty();
-
-                $('#example-images img').each(function(){
-                    var tag = $(this).attr('data-v');
-                    var qstr = $('#svgform').serialize() + '&v=' + tag;
-                    var src = 'https://iet.communications.iu.edu/mercerjd/svg/s.php?'+qstr;
-                    $.get(src, function(data) {
-                        $('#signature-preview').append(data)
-                    });
-
-                });
+            $('#svgform textarea,form input:radio').on('change', function (e) {
+                updatePreview(getTags());
                 return;
             });
+
         });
 
+        function updatePreview(tags){
+
+            $('div#example-images').empty();
+
+            for(i=0;i<tags.length;i++){
+
+                 var qstr = $('#svgform').serialize() + '&v=' + tags[i];
+                   var src = 'https://iet.communications.iu.edu/mercerjd/svg/s.php?'+qstr;
+                   $.get(src, function(data) {
+
+                    $('div#example-images').append(data)
+                });
+
+            }
+        }
+
+        function getTags(){
+
+            // radio button to show example images
+            var val= $('form input:radio:checked').val();
 
 
+            if(val==0){
+
+                return {{(json_encode($model->getAllSchoolTags()))}};
+            }
+
+            else
+                return {{json_encode($model->getNamedSchoolTags())}};
+
+
+
+
+        }
     </script>
 @endsection

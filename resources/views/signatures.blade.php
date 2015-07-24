@@ -51,7 +51,8 @@
 
                                 <?php }else{?>
 
-   <section role="tabpanel" aria-hidden="false" class="content" id="{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}"></section>
+                                <section role="tabpanel" aria-hidden="false" class="content"
+                                         id="{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}"></section>
 
                                 <?php }?>
 
@@ -71,40 +72,7 @@
 
 @section('scripts')
     <script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.tab.js")}}"></script>
-    <script type="text/javascript">
-        $(document).foundation('reveal', 'reflow');
 
-        $('ul.tabs li a').on('click',function()
-        {
-            var id = $(this).attr('href');
-            var target = $(this).attr('data-target');
-
-            $('ul.tabs li').removeClass('active');
-            $(this).parent('li').addClass('active');
-            $('div#tabs-content').find('section.active').html("");
-            $('div#tabs-content').find('section.active').removeClass('active');
-
-
-            $.get(target,null,function(data){
-
-                $('section'+id).html(data);
-                $('section'+id).addClass('active');
-
-                $('a.modal').on('click',function(event){
-                    event.preventDefault();
-                    var link = $(this).attr('href');
-                    $.get(link,null,function(data){
-                        console.log(data);
-                        $('#viewModal').html(data);
-                    });
-                });
-                $(document).foundation('reveal', 'reflow');
-
-            });
-
-        });
-
-    </script>
 
 @endsection
 

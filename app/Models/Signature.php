@@ -25,19 +25,25 @@ class Signature extends Model {
 
 
 
+    /** Helper Functions  */
 
-    //TODO - fix - named school
+    public function getNamedSchoolTags(){return array(1,2,3,4);}
+    public function getAllSchoolTags(){return array(1,2,3,4,5,6);}
+
+
+
+    /** Get Preview for signatures  */
     public function getSignaturePreview(){
 
         $output="";
 
         if($this->named=='1'){
-            for ( $i = 1 ; $i < 9 ; $i++ ){
+            foreach($this->getNamedSchoolTags() as $tag){
                 $ch = curl_init();
 
                 curl_setopt($ch, CURLOPT_URL, 'https://iet.communications.iu.edu/mercerjd/svg/s.php?p=' . urlencode
                     ($this-> primaryText) .'&s=' .urlencode($this -> secondaryText)  . '&t=' .
-                    urlencode($this ->tertiaryText) . '&v=' . $i);
+                    urlencode($this ->tertiaryText) . '&v=' . $tag);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 $output .= curl_exec($ch);
 
@@ -45,11 +51,11 @@ class Signature extends Model {
             }
 
         }else{
-            for ( $i = 1 ; $i < 9 ; $i++ ){
+            foreach($this->getAllSchoolTags() as $tag){
                 $ch = curl_init();
                  curl_setopt($ch, CURLOPT_URL, 'https://iet.communications.iu.edu/mercerjd/svg/s.php?p=' . urlencode
                     ($this-> primaryText) .'&s=' .urlencode($this -> secondaryText)  . '&t=' .
-                    urlencode($this ->tertiaryText) . '&v=' . $i);
+                    urlencode($this ->tertiaryText) . '&v=' . $tag);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 $output .= curl_exec($ch);
                  curl_close($ch);
