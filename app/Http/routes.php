@@ -43,6 +43,7 @@ Route::group(array('prefix'=>'signatures'),function(){
 
     Route::get("/approve", 'SignaturesController@approve');
     Route::get("/denied", 'SignaturesController@denied');
+    Route::get("/download", 'SignaturesController@getDownload');
 
 
 });

@@ -6,12 +6,10 @@
  * Time: 11:48 AM
  */
 namespace App\Services\SVGConversion;
-require_once 'OperationStatus.php';
-require_once "SVGCommandBuilder.php";
-require_once "Exec.php";
+
 
 //Download Path
-define('downloadPath',storage_path().'/downloads/');
+define('downloadPath',storage_path().'/downloads');
 /***
  * Class SVGConvert
  * Class the builds the imagick convert command
@@ -52,11 +50,11 @@ class SVGConvert
             $source_save_convert_status= $this->save_source_svgs_and_convert($path);
 
             //TODO check the return path
-            $z = new ZipArchive();
+            $z = new \ZipArchive();
             $parts =pathinfo($path);
 
             $outputZipPath  = $path."/".$parts['filename'].".zip";
-            $z->open($outputZipPath, ZIPARCHIVE::CREATE);
+            $z->open($outputZipPath, \ZIPARCHIVE::CREATE);
 
             //open source path
             if($handle= opendir($path)){
@@ -75,7 +73,7 @@ class SVGConvert
 
             $z->close();
 
-            return new \OperationStatus(true,$outputZipPath);
+            return new ProcessStatus(true,$outputZipPath);
 
         }
 
@@ -91,6 +89,8 @@ class SVGConvert
     function save_source_svgs_and_convert($path){
         $file_curl_get_put_contents = function($p,$s,$t,$attr,$path){
 
+            $info = pathinfo($path);
+
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, 'https://iet.communications.iu.edu/mercerjd/svg/s.php?p=' . urlencode
                 ($p) .'&s=' .urlencode($s)  . '&t=' .
@@ -99,7 +99,7 @@ class SVGConvert
             $contents = curl_exec($ch);
             curl_close($ch);
 
-            $name = $path."/".implode("_",array_filter(array($p,$s,$t)))."_".$attr."_".$this->getDateFormat().".svg";
+            $name = $path."/".$info['filename']."_".$attr."_".$this->getDateFormat().".svg";
             file_put_contents($name,$contents);
             return $name;
 
@@ -110,13 +110,13 @@ class SVGConvert
             $name = $file_curl_get_put_contents($this->primary,$this->secondary,$this->tertiary,$tag,$path);
             $status = $this->convert($name);
             if($status->status==false){
-                return $status->messsage;
+                return $status->message;
             }
         }
 
         //ZIp Archive and Save
         //http://php.net/manual/en/class.ziparchive.php
-        return new \OperationStatus(true,'successfully completed the build');
+        return new ProcessStatus(true,'successfully completed the build');
 
     }
 
@@ -147,19 +147,23 @@ class SVGConvert
 
     }
 
+    //
 
     public function create_destination_folders(){
 
+        $clean_string =function($string){
+            return str_replace(" ","_",strtolower($string));
+        };
         //Add Timestamp
         $save_to_path = downloadPath."/".implode("_",array_filter(
-                array($this->primary,$this->secondary,$this->tertiary)
+                array($clean_string($this->primary),$clean_string($this->secondary),$clean_string($this->tertiary))
             ));
 
         if($this->create_folder($save_to_path));
-        return new \OperationStatus(true,$save_to_path);
+        return new ProcessStatus(true,$save_to_path);
 
 
-        return new \OperationStatus(false,"failed to create destination folder");
+        return new ProcessStatus(false,"failed to create destination folder");
 
 
     }
@@ -207,7 +211,7 @@ class SVGConvert
 
         }
 
-        return $result!=""?new OperationStatus(false,$result):new OperationStatus(true);
+        return $result!=""?new ProcessStatus(false,$result):new ProcessStatus(true);
 
     }
 

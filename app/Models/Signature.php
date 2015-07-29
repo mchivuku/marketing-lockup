@@ -95,6 +95,7 @@ class Signature extends Model {
         $return = $svg_convert->build();
         return $return;
 
+
     }
 
 }

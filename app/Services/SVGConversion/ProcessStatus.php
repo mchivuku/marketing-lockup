@@ -2,11 +2,12 @@
 /**
  * Created by PhpStorm.
  * User: mchivuku
- * Date: 7/24/15
- * Time: 2:22 PM
+ * Date: 7/29/15
+ * Time: 1:22 PM
  */
 
-class OperationStatus{
+namespace App\Services\SVGConversion;
+class ProcessStatus{
 
     public $status;
     public $message;

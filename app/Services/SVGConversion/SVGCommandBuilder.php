@@ -9,7 +9,6 @@ namespace App\Services\SVGConversion;
 // SVG Command Builder contains three function
 require_once 'ConvertCommand.php';
 // One for each - EPSConverter, JPGConverter, PNGConverter
-
 class SVGCommandBuilder{
 
     protected $source;
@@ -33,7 +32,7 @@ class SVGCommandBuilder{
     private function __getSVGToFormatCommand($extension){
         $info = pathinfo($this->source);
 
-        $dest = $info['dirname'].$info['filename'].$extension;
+        $dest = $info['dirname']."/".$info['filename'].".".$extension;
         return (string)new ConvertCommand($this->source,$dest,$this->options);
     }
 

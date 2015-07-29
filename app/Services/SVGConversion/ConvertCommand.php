@@ -7,6 +7,7 @@
  */
 namespace App\Services\SVGConversion;
 
+
 /*** Class to build convert command */
 class ConvertCommand{
 
@@ -31,7 +32,8 @@ class ConvertCommand{
     {
         $name = pathinfo($this->src);
 
-        return sprintf("2>errorlog_%s",$name['filename']);
+        return trim("2>".$name['dirname']."/"."errorlog_".date('m-d-Y').".txt");
+
     }
 
 

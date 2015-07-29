@@ -224,6 +224,7 @@ class SignaturesController extends Controller {
 
         $user = $this->currentUser;
         if(isset($inputs['signatureid'])){
+
             $signature = Models\Signature::find(\Input::get('signatureid'));
 
             \DB::transaction(function()use($signature,$user,$inputs)
@@ -324,33 +325,42 @@ class SignaturesController extends Controller {
     public function approve(){
         $inputs =  \Input::all();
 
+
         $signature = Models\Signature::find($inputs['signatureid']);
-        $signature->build();
+
+        $return = $signature->build();
 
 
 
-        //$review_status = Models\ReviewStatus::where('action','like','approve%')->first();
+        if($return->status==true){
+            $signature->downloadPath = $return->message;
 
-        /** Transaction to implement all the changes in one go */
-        //$id = $this->saveSignatureReview($review_status,$signature,$inputs);
+            $review_status = Models\ReviewStatus::where('action','like','approve%')->first();
+
+            /** Transaction to implement all the changes in one go */
+            $id = $this->saveSignatureReview($review_status,$signature,$inputs);
 
 
-        //$data = $inputs['comment'];
-        //$d = array("data" => $data);
+            $data = $inputs['comment'];
+            $d = array("data" => $data);
 
-        //$obj  = $this->construct_ldap_object($signature->username);
-        //\Mail::send('emails.approve', $d, function($message)use($obj)
-        //{
-          //  $message->to($obj->email, $obj->name)->subject('Signature Approved!');
-        //});
+            $obj  = $this->construct_ldap_object($signature->username);
+            \Mail::send('emails.approve', $d, function($message)use($obj)
+            {
+                $message->to($obj->email, $obj->name)->subject('Signature Approved!');
+            });
 
-        //update that email has been sent;
-        //$review = Models\SignatureReview::find($id);
-        //$review->emailsent = 1;
-        //$review->save();
+            //update that email has been sent;
+            $review = Models\SignatureReview::find($id);
+            $review->emailsent = 1;
+            $review->save();
+            $signature->save();
 
-        //return 'success';
-        //return 'success';
+
+            return json_encode(array('status'=>true,'message'=>'successfully completed the build/approval process'));
+        }
+
+        return  json_encode(array('status'=>false,'message'=>$return->message));
 
     }
 
@@ -382,7 +392,7 @@ class SignaturesController extends Controller {
         $review->emailsent = 1;
         $review->save();
 
-        return 'success';
+        return json_encode(array('status'=>true,'message'=>'success'));
 
     }
 
@@ -438,5 +448,20 @@ class SignaturesController extends Controller {
 
 
 
+    function getDownload(){
+        $inputs = \Input::all();
+       //todo: checks for everything. - CAS download
+        $signature = Models\Signature::where('signatureid','=',$inputs['signatureid'])->first();
+        $downloadpath = $signature->downloadPath;
+
+        $headers = array(
+            'Content-Type: application/zip',
+            'Content-Length: '. filesize($downloadpath)
+        );
+
+        return \Response::download($downloadpath,basename($downloadpath) , $headers);
+
+
+    }
 
 }

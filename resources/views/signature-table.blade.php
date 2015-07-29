@@ -13,13 +13,20 @@ $table->header = array('Preview','Name','Status','Date','Review Comments','Actio
     $preview_link = "<a data-reveal-id=\"viewModal\" href='signatures/getPreview?id=".$item->signatureid."'
     class=\"modal\">Preview</a>";
 
+     if($item->downloadPath!=''){
+         $download_link = "<a href='signatures/download?signatureid=".$item->signatureid."'>Download</a>";
+     }else{
+         $download_link="&nbsp;";
+     }
+
+
      $table->data[] = array(
              $preview_link,$item->name,
             $item->reviewstatus->status,
             $format_date_time($item->updated_at),
             $item->comments,
             $item->nextAction,
-            '&nbsp;'
+             $download_link
 
     );
 

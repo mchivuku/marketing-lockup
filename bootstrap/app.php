@@ -53,6 +53,6 @@ $app->singleton(
 */
 
 
-//include app_path() . '/Providers/HtmlBuilderExtensions.php';
+include app_path() . '/Providers/HtmlBuilderExtensions.php';
 
 return $app;
