@@ -6,7 +6,10 @@ $(document).ready(function(){
 
     if (!$('aside').exists()){
       $('main').addClass('no-section-nav');
+    }else{
+         $('.alert-box').parents('section').addClass('section');
     }
+
 
     ModalWindow.init();
     AjaxTabs.init();
@@ -66,11 +69,7 @@ AjaxTabs = {
             var id = $(this).attr('href');
 
             //remove active
-            $('ul.tabs li').removeClass('active');
-            $('div#tabs-content').children('section.active').empty();
-            $(this).parent('li').addClass('active');
-
-
+            $('div#tabs-content').children('div.active').empty();
             AjaxTabs.loadTabContent(target,id);
 
         });
@@ -79,17 +78,17 @@ AjaxTabs = {
     loadTabContent: function(target,id) {
         $.get(target,null,function(data){
 
-            $('section'+id).html(data);
-            $('section'+id).addClass('active');
+            $('div'+id).html(data);
+            $('div'+id).addClass('active');
             $('a.modal').on('click',function(event){
                 event.preventDefault();
                 var link = $(this).attr('href');
                 $.get(link,null,function(data){
-                    console.log(data);
+
                     $('#viewModal').html(data);
                 });
             });
-            $(document).foundation('reveal', 'reflow');
+            $(document).foundation('reflow');
         });
 
 

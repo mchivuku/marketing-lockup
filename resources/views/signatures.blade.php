@@ -6,13 +6,7 @@
     { csrf_token() }}" />
 
 
-<section class="section page-title bg-none">
-    <div class="row"><div class="layout">
-            <h1>Signatures</h1>
-        </div>
-    </div>
-</section>
-<section class="extra-space bg-none section" id="content">
+<div class="extra-space bg-none section" id="content">
     <div class="row">
         <div class="layout">
            <div class="full-width">
@@ -44,19 +38,21 @@
                             @for($i = 0;$i<count($model->states);$i++)
 
                                     <?php if($i==0){?>
-                                        <section role="tabpanel" aria-hidden="false" class="content active" id="{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}">
+                                        <div id="{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}"
+                                             class="content active">
 
                                              {!! $model->content !!}
-                                        </section>
+                                        </div>
 
                                 <?php }else{?>
 
-                                <section role="tabpanel" aria-hidden="false" class="content"
-                                         id="{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}"></section>
+                                <div role="tabpanel" aria-hidden="false" class="content"
+                                         id="{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}"></div>
 
                                 <?php }?>
 
                             @endfor
+                            </div>
                         </div>
 
 

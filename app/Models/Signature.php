@@ -7,6 +7,7 @@
  */
 
 namespace App\Models;
+use App\Services\SVGConversion\SVGConvert;
 use Illuminate\Database\Eloquent\Model;
 
 class Signature extends Model {
@@ -84,6 +85,16 @@ class Signature extends Model {
 
 
         return $output;
+    }
+
+    public function build(){
+
+        $svg_convert = new SVGConvert($this->primaryText,$this->secondaryText,$this->tertiaryText,
+            ($this->named==0)?$this->getAllSchoolTags():$this->getNamedSchoolTags());
+
+        $return = $svg_convert->build();
+        return $return;
+
     }
 
 }

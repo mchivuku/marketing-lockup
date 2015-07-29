@@ -32,9 +32,9 @@ class SVGCommandBuilder{
 
     private function __getSVGToFormatCommand($extension){
         $info = pathinfo($this->source);
-        $name = $info['filename'];
 
-        return (string)new ConvertCommand($this->source,$name.".".$extension,$this->options);
+        $dest = $info['dirname'].$info['filename'].$extension;
+        return (string)new ConvertCommand($this->source,$dest,$this->options);
     }
 
     public function getSVGToEPSCommand()

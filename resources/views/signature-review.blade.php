@@ -3,19 +3,18 @@
 
 
 
-    <section class="section page-title bg-none">
-        <div class="row"><div class="layout">
-                <h1><span>Signature Review - </span> {{$model->signatureid}}</h1>
-            </div>
-        </div>
-    </section>
-
-
     <section class="extra-space bg-none section" id="content">
+
         <div class="row">
             <div class="layout">
+                <h2>Signature Review# {{$model->signatureid}}</h2>
                 <div class="full-width">
+                    <div id="example-images">
+                        {!! $model->signature->getSignaturePreview() !!}
+                    </div>
+
                     <form class="filter">
+
 
                         <div class="row">
                             <div class="small-3 columns">
@@ -32,9 +31,9 @@
                         <div class="row">
                             <div class="small-9 columns right">
                         <ul class="button-group radius">
-                            @foreach($model->statuses as $status)
-                                <?php $action_name = strtolower($status->action);?>
-                                <li><a href="{{url("/signatures/$action_name")}}" class="medium button">{{$status->action}}</a></li>
+                            @foreach($model->statuses as $item)
+                                <?php $action_name = strtolower($item->action);?>
+                                <li><a href="{{url("/signatures/$action_name")}}" class="medium button">{{$item->buttonText}}</a></li>
                             @endforeach
                             <li><a href="{{url("/signatures")}}" class="button">Cancel</a></li>
                         </ul>

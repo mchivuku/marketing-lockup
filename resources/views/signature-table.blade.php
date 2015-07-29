@@ -9,10 +9,12 @@ $table->header = array('Preview','Name','Status','Date','Review Comments','Actio
         return  date("F j, Y",strtotime($date));
     };
 
+
     $preview_link = "<a data-reveal-id=\"viewModal\" href='signatures/getPreview?id=".$item->signatureid."'
     class=\"modal\">Preview</a>";
 
-     $table->data[] = array($preview_link,$item->name,
+     $table->data[] = array(
+             $preview_link,$item->name,
             $item->reviewstatus->status,
             $format_date_time($item->updated_at),
             $item->comments,
@@ -29,10 +31,8 @@ $table->attributes = array('class'=>'table','id'=>'signatureTable');
 
 @if(count($model->signatures)==0)
         <p>No records were found!</p>
-
 @else
     @include('table',array('model'=>$table))
-   <div id="viewModal" class="reveal-modal" data-reveal></div>
-
+    <div id="viewModal" class="reveal-modal" data-reveal></div>
 @endif
 </div>

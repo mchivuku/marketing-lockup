@@ -1,33 +1,9 @@
 @extends('signatureslayout')
 
 @section('content')
-    <style>
-        svg {
-            width:350px;
 
-        }
 
-        svg:last-child {
-            margin-bottom: 20px;
-        }
 
-        div#example-images{
-            border: 5px solid #eee;
-            padding:10px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-    </style>
-
-    <section class="section page-title bg-none">
-        <div class="row">
-            <div  class="layout">
-                <h1>{{$title}}</h1></div>
-        </div>
-    </section>
     <section class="collapsed bg-none section">
         <div class="row">
             <div class="layout">
@@ -40,55 +16,58 @@
                         </div>
 
 
-                        <form id="svgform" action="{{url('/signatures/savesignature')}}" method="post">
-
+                        {!! Form::open(array('url' => '/signatures/savesignature','id'=>"svgform",'method'=>'post')) !!}
 
                             <div class="row">
                                 <div class="small-3 columns">
-                                    <label for="named">Named School</label></div>
+                                    {!!  Form::label('named', 'Named School') !!}
+                                </div>
                                 <div class="small-9 columns">
-                                    <input type="radio" name="named" value="1" id="named"><label
-                                            for="namedschool">Yes</label>
-                                    <input type="radio" name="named" checked value="0" id="allschool"><label
-                                            for="allschool">No</label>
+                                    {!!  Form::radio('named',1) !!}
+                                    {!!  Form::label('namedschool', 'Yes') !!}
+                                    {!!  Form::radio('named',0,array('checked'=>'checked')) !!}
+                                    {!!  Form::label('namedschool', 'No') !!}
                                 </div>
                             </div>
 
 
                             <div class="row">
                                 <div class="small-3 columns">
-                                    <label for="p">Primary</label></div>
+                                    {!!  Form::label('p', 'Primary') !!}
+                                 </div>
                                 <div class="small-9 columns">
-                                    <textarea rows="4" cols="40" name="p">{{$model->primaryText}}</textarea></div>
+                                    {!!  Form::textarea('p', $model->primaryText,array('rows'=>4,'cols'=>40,'name'=>'p')) !!}
+                               </div>
                             </div>
 
                             <div class="row">
                                 <div class="small-3 columns">
-                                    <label for="s">Secondary</label>
+                                    {!!  Form::label('s', 'Secondary') !!}
                                 </div>
                                 <div class="small-9 columns">
-                                    <textarea rows="4" cols="40" name="s">{{$model->secondaryText}}</textarea></div>
+                                    {!!  Form::textarea('s', $model->secondaryText,array('rows'=>4,'cols'=>40,'name'=>'s')) !!}
+                               </div>
                             </div>
 
                             <div class="row">
                                 <div class="small-3 columns">
-                                    <label for="t">Tertiary</label>
+                                    {!!  Form::label('t', 'Tertiary') !!}
+
                                 </div>
                                 <div class="small-9 columns">
-                                    <textarea rows="4" cols="40" name="t">{{$model->tertiaryText}}</textarea>
+                                    {!!  Form::textarea('t', $model->tertiaryText,array('rows'=>4,'cols'=>40,'name'=>'t')) !!}
                                 </div>
                             </div>
-
 
                             <div class="button-group right">
-                                 <input type="submit" id="saveSignature" name="saveSignature"
-                                       value="Save Changes" class="small button"/></li>
-                                <input type="reset" class="small button secondary"/></li>
+                                <input type="submit" id="saveSignature" name="saveSignature"
+                                       value="Save Changes" class="small button">
+                                <input type="reset" class="small button secondary" value="Clear">
 
                             </div>
 
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        </form>
+                                {!! Form::close() !!}
 
                     <!-- signature preview -->
                     <div id="signature-preview"></div>

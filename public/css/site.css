@@ -5,3 +5,22 @@ ul.tabs li.tab-title {
 table#signatureTable{
     width: auto;
 }
+
+ svg {
+     width:350px;
+
+ }
+
+svg:last-child {
+    margin-bottom: 20px;
+}
+
+div#example-images{
+    border: 5px solid #eee;
+    padding:10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+form {
+    margin-bottom: 20px;
+}

@@ -1,6 +1,3 @@
-
-
-
 <nav role="navigation" id="nav-main" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement"
 	 class="main hide-for-medium-down show-for-large-up dropdown">
 	<ul class="row pad">
@@ -8,17 +5,43 @@
 			<a href="{{ url('/') }}">Home</a>
 		</li>
 
-		@if($navigation['isAdmin'])
-			  <li class="first"><a  href="{{ url('/signatures') }}" itemprop="url" class="current">
-					<span itemprop="name">Manage Signatures</span></a>
+
+		<?php
+			$anchor_link = function($path,$text){
+				$current = Route::getCurrentRoute()->getPath();
+
+				$href = url($path);
+
+				if(stripos($current,$path)!==false){
+					return "<a class='current'  href=\"$href\" itemprop=\"url\"><span
+					itemprop=\"name\">$text</span></a>";
+				}
+				return "<a  href=\"$href\" itemprop=\"url\"><span itemprop=\"name\">$text</span></a>";
+
+			}
+		?>
+
+	@if($navigation['isAdmin'])
+			  <li class="first">
+				  {!!$anchor_link('signatures','Manage Signatures')  !!}
+				  <ul class="children">
+					  <li>{!!$anchor_link( 'signatures/create','Create Signature')!!}</li>
+				  </ul>
+
 			  </li>
-			<li><a href="{{ url('/admin') }}"><span itemprop="name">Manage Administrators</span></a></li>
+			<li>{!!$anchor_link('admin','Manage Administrators')!!}
+			</li>
 
 	    @else
-			<li class="last"><a  href="{{ url('/signatures') }}" itemprop="url" class="current">
-					<span itemprop="name">Manage Signatures</span></a></li>
-		@endif
+			<li class="first">
+				{!!$anchor_link('signatures','Manage Signatures')!!}
+			<ul class="children">
+  			  <li>{!!$anchor_link('signatures/create','Create Signature')!!}</li>
+			</ul>
+
+			</li>
+@endif
 
 
-		</ul>
-	</nav>
+</ul>
+</nav>

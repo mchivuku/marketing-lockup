@@ -5,7 +5,7 @@
 		<header>
 			<div class="row pad">
 
-				<h1><a href="{{url("/")}}">Marketing Lock-up tool</a></h1>
+				<h1><a href="{{url("/")}}">Marketing Lock-up</a></h1>
 
 			</div>
 		</header>
@@ -15,13 +15,26 @@
 		@include('navigation')
 
    		 <main  style="min-height: 84px;">
+
 			 @yield('left-navigation')
+
+
+			 <!-- Page Title -->
+			 <section class="section page-title bg-none">
+				 <div class="row">
+					 <div  class="layout">
+						 <h1>{{$title}}</h1>
+					 </div>
+				 </div>
+			 </section>
+
+
 			 @include('...includes.alerts')
 
-			@yield('content')
+             @yield('content')
 
 
-		    <!-- Footer -->
+           <!-- Footer -->
 			@include('...includes.footer')
 
 

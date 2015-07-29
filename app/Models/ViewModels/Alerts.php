@@ -15,6 +15,7 @@ class Alerts
     const ALERT = "alert";
     const INFORMATION = "info";
     const SECONDARY = "secondary";
+    const ERROR = "error";
 
     public static function all(){ return array(self::SUCCESS,self::INFORMATION,self::SECONDARY,self::WARNING,
 

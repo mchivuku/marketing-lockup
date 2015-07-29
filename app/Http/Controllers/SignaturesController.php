@@ -58,6 +58,10 @@ class SignaturesController extends Controller {
          $model->states = array_merge(array(array('id'=>0,'status'=>'All Signatures')),Models\ReviewStatus::all()
            ->toArray());
          $model->content = $this->getSignatures();
+
+         $inputs = \Input::all();
+         if(isset($inputs['message']))  $this->flash($inputs['message'],$inputs['type']);
+
          return $this->view('signatures')->model($model)->title('Manage Signatures');
 
     }
@@ -71,8 +75,9 @@ class SignaturesController extends Controller {
         // Admin
         if($this->isAdmin){
 
-            $signatures =isset($inputs['status'])? Models\Signature::with('signaturereviews','reviewstatus')->where
-                ('statusId','=',$inputs['status'])->get():
+            $signatures =isset($inputs['status'])?
+                Models\Signature::with('signaturereviews','reviewstatus')
+                ->where('statusId','=',$inputs['status'])->get():
                 Models\Signature::with('signaturereviews','reviewstatus')->get();
 
             $CI = $this;
@@ -117,38 +122,38 @@ class SignaturesController extends Controller {
         }
         else{
 
-            $signatures =isset($inputs['status'])? Models\Signature::with('signaturereviews','reviewstatus')->where
-            ('statusId','=',
-            $inputs['status'])
+            $signatures =isset($inputs['status'])? Models\Signature::with('signaturereviews','reviewstatus')
+                ->where
+            ('statusId','=', $inputs['status'])
                 ->where('username','=',$this->currentUser)->get():
-                Models\Signature::where('username','=',$this->currentUser);
+                Models\Signature::where('username',"=",$this->currentUser)->with('signaturereviews','reviewstatus')
+                    ->get();
 
-            foreach($signatures as &$signature){
-                $signature->preview = $signature->getSignatureThumbnail();
-                $obj =  $this->construct_ldap_object($signature->username);
+            $CI = $this;
+            foreach($signatures as $signature){
+                $signature->preview='';
+                $obj =  $CI->construct_ldap_object($signature->username);
                 $signature->name = sprintf("%s,%s",$obj->lastName,$obj->firstName);
 
                 /** Next state for the required action link */
                 if(stripos($signature->reviewstatus->status,'Pending')!==false){
-                    $next_action_link =\URL::to(action('SignaturesController@review') . '?signatureid='
-                        .$signature->signatureid );
 
-                    $signature->nextAction="";
-                    if($this->currentUser==$signature->username){
                         $edit_link =\URL::to(action('SignaturesController@edit') . '?signatureid='
                             .$signature->signatureid );
-                        $signature->nextAction.= "<a  href='$edit_link'>Edit</a> &nbsp;| &nbsp;";
-                    }
-
-                    $link_name = 'Approve/Deny';
-                    $signature->nextAction .="<a  href='$next_action_link'>$link_name</a>";
-
+                        $signature->nextAction.= "<a  href='$edit_link'>Edit</a> ";
                 }else{
 
-                    $signature->nextAction =$signature->reviewstatus->status;
+                    $signature->nextAction = $signature->reviewstatus->status;
+
                 }
 
+                $signature->signaturereviews->each(function($item)use($signature){
+                    if($signature->comments!="")
+                        $signature->comments.="; ";
+                    $signature->comments.= $item->comments;
+                });
             }
+
 
         }
 
@@ -156,7 +161,6 @@ class SignaturesController extends Controller {
 
         $model->currentUser = $this->currentUser;
         $model->isAdmin = $this->isAdmin;
-
 
 
         return view('signature-table',array('model'=>$model));
@@ -183,13 +187,16 @@ class SignaturesController extends Controller {
 
     }
 
-
+    /**
+     * Create new signature
+     * @return mixed
+     */
     public function create(){
+
         $signature = new Models\Signature();
         $signature->primaryText='Primary';
         $signature->secondaryText='Secondary';
         $signature->tertiaryText='Tertiary';
-        $signature->named=1;
 
         return $this->view('addEditSignature')->model($signature)->title('Create Signature');
     }
@@ -198,6 +205,7 @@ class SignaturesController extends Controller {
     public function edit(){
         $id = \Input::get('signatureid');
         $signature  = Models\Signature::find($id);
+
         return $this->view('addEditSignature')->model($signature)->title('Edit Signature');
 
     }
@@ -210,8 +218,9 @@ class SignaturesController extends Controller {
      * @return mixed
      */
     public function save(){
-        //signature id
+
         $inputs = \Input::all();
+        $message="";
 
         $user = $this->currentUser;
         if(isset($inputs['signatureid'])){
@@ -232,6 +241,8 @@ class SignaturesController extends Controller {
 
 
             });
+            $message = "Signature was update successfully";
+
         }
         else{
 
@@ -265,24 +276,42 @@ class SignaturesController extends Controller {
 
 
             });
+            $message = "Signature was created successfully";
         }
 
 
 
 
-        return \Redirect::route('signatures');
+        return \Redirect::action('SignaturesController@index',array('message'=>$message,
+            'type'=>Models\ViewModels\Alerts::SUCCESS));
 
 
 
     }
 
-
     public function review(){
+
         $signatureId = \Input::get('signatureid');
 
+
         $model = new \StdClass;
-        $model->statuses = Models\ReviewStatus::where('status','not like','pending%')->get();
+
+        Models\ReviewStatus::where('status','not like','pending%')->get()->each(
+         function
+        ($item)use($model){
+            if(stripos($item->status,'approve')!==false){
+                $item->buttonText = "Build & Approve";
+
+            }else{
+                $item->buttonText = $item->action;
+
+            }
+
+             $model->statuses[]=$item;
+        });
+
         $model->signatureid = $signatureId;
+        $model->signature  =  Models\Signature::where('signatureid','=',$signatureId)->first();
 
         return $this->view('signature-review')->model($model)->title('Review Signature');
 
@@ -296,28 +325,32 @@ class SignaturesController extends Controller {
         $inputs =  \Input::all();
 
         $signature = Models\Signature::find($inputs['signatureid']);
-        $review_status = Models\ReviewStatus::where('action','like','approve%')->first();
+        $signature->build();
+
+
+
+        //$review_status = Models\ReviewStatus::where('action','like','approve%')->first();
 
         /** Transaction to implement all the changes in one go */
-        $id = $this->saveSignatureReview($review_status,$signature,$inputs);
+        //$id = $this->saveSignatureReview($review_status,$signature,$inputs);
 
 
-        $data = $inputs['comment'];
-        $d = array("data" => $data);
+        //$data = $inputs['comment'];
+        //$d = array("data" => $data);
 
-        $obj  = $this->construct_ldap_object($signature->username);
-        \Mail::send('emails.approve', $d, function($message)use($obj)
-        {
-            $message->to($obj->email, $obj->name)->subject('Signature Approved!');
-        });
-
+        //$obj  = $this->construct_ldap_object($signature->username);
+        //\Mail::send('emails.approve', $d, function($message)use($obj)
+        //{
+          //  $message->to($obj->email, $obj->name)->subject('Signature Approved!');
+        //});
 
         //update that email has been sent;
-        $review = Models\SignatureReview::find($id);
-        $review->emailsent = 1;
-        $review->save();
+        //$review = Models\SignatureReview::find($id);
+        //$review->emailsent = 1;
+        //$review->save();
 
-        return 'success';
+        //return 'success';
+        //return 'success';
 
     }
 
@@ -348,7 +381,6 @@ class SignaturesController extends Controller {
         $review = Models\SignatureReview::find($id);
         $review->emailsent = 1;
         $review->save();
-
 
         return 'success';
 
@@ -403,5 +435,8 @@ class SignaturesController extends Controller {
 
         return $signatureReview->id;
     }
+
+
+
 
 }

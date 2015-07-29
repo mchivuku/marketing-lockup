@@ -40,8 +40,13 @@ class AdministratorsController extends Controller{
 
         $inputs = \Input::all();
 
-         if(isset($inputs['message']))
-            $this->error(\Input::get('message'));
+
+        if(isset($inputs['message'])) {
+            if($inputs['type']==ViewModels\Alerts::ALERT)
+              $this->error($inputs['message']);
+            else
+                $this->success($inputs['message']);
+        }
 
         //Connect to the database ;
         $result = [];
@@ -94,9 +99,8 @@ class AdministratorsController extends Controller{
         $user = Models\AppAdmin::where('username','=',$inputs['username'])->whereRaw('deleted_at is null')->first();
 
         if(isset($user)){
-            return \Redirect::action('AdministratorsController@index',array('message'=>'User cannot be added as user
-            already exists
-            '));
+            return \Redirect::action('AdministratorsController@index',array('message'=>'User couldn\'t be added as
+            the user already exists','type'=>ViewModels\Alerts::ALERT));
 
          }else{
             $user = new Models\AppAdmin();
@@ -105,7 +109,9 @@ class AdministratorsController extends Controller{
             $user->save();
         }
 
-        return \Redirect::action('AdministratorsController@index');
+
+        return \Redirect::action('AdministratorsController@index',array('message'=>'User was added successfully',
+            'type'=>ViewModels\Alerts::SUCCESS));
 
     }
 
@@ -118,7 +124,7 @@ class AdministratorsController extends Controller{
         $inputs = \Input::all();
         Models\AppAdmin::where("username","=",$inputs['username'])->delete();
 
-        return  \Redirect::action('AdministratorsController@index');
+        return  \Redirect::action('AdministratorsController@index',array('message'=>'User was deleted successfully','type'=>ViewModels\Alerts::SUCCESS));
     }
 
 

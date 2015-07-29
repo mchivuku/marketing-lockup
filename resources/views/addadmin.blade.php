@@ -6,41 +6,30 @@
             <div class="full-width">
                 <div class="text">
 
-<form action="{{url("/admin/searchResults")}}" method="post" id="usersearch">
+{!! Form::open(array('url' => '/admin/searchResults','id'=>"usersearch")) !!}
+  <div class="row">
+      {!!  Form::label('username', 'Username') !!}
+      {!!  Form::text('username') !!}
+  </div>
+    <div class="row">
+        {!!  Form::label('firstname', 'First Name') !!}
+        {!!  Form::text('firstName') !!}
+    </div>
 
+                    <div class="row">
+                        {!!  Form::label('lastName', 'Last Name') !!}
+                        {!!  Form::text('lastName') !!}
+                    </div>
 
- <!-- Username -->
-<div class="row">
-  <label for="username">Username</label>
-       <input type="text" name="username"/>
-
-</div>
-
-
-<!-- First Name -->
-     <div class="row">
-         <label for="firstname">First Name</label>
-         <input type="text" name="firstName"/>
-
-     </div>
-
-
-
-<!-- Last Name-->
-<div class="row">
-  <label for="lastname">Last Name</label>
-
-             <input type="text" name="lastName" />
-
-</div>
 
 
 <div class="row">
-        <button type="submit" class="round tiny">Search</button>
-        <button type="reset" class="round tiny">Clear</button>
+    {!! Form::button('Search',array('class'=>'round tiny','type'=>'submit')) !!}
+    {!! Form::button('Clear',array('class'=>'round tiny','type'=>'reset')) !!}
+
 
 </div>
-</form>
+                    {!! Form::close() !!}
 
 
 

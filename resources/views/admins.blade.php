@@ -1,10 +1,6 @@
 @extends('app')
 
 @section('content')
-    <section class="section page-title bg-none"><div class="row"><div
-                    class="layout">
-                <h1>Manage Administrators</h1></div></div>
-    </section>
 
     <section class="collapsed bg-none section" id="content">
         <div class="row">

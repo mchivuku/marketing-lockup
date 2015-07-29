@@ -146,11 +146,9 @@ return [
 		'App\Providers\ConfigServiceProvider',
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
-        'App\Providers\BladeServiceProvider'
-		//,
-
-		//'Laracasts\Flash\FlashServiceProvider'
-
+        'App\Providers\BladeServiceProvider',
+		 'Collective\Html\HtmlServiceProvider',
+		 'Laracasts\Flash\FlashServiceProvider',
 
 
 	],
@@ -200,9 +198,12 @@ return [
 		'URL'       => 'Illuminate\Support\Facades\URL',
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
-        'BootForm' => 'AdamWathan\BootForms\Facades\BootForm'
-		//,
-		//'Flash' => 'Laracasts\Flash\Flash'
+        //,
+		'Flash' => 'Laracasts\Flash\Flash',
+		'Form' => 'Collective\Html\FormFacade',
+		'Html' => 'Collective\Html\HtmlFacade',
+
+
 
 
 

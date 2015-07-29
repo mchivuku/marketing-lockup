@@ -105,14 +105,34 @@ abstract class Controller extends BaseController {
 
     }
 
+    public function flash($message,$type){
+      if(!isset($type))$type=Models\ViewModels\Alerts::INFORMATION;
+      switch($type){
+          case Models\ViewModels\Alerts::ALERT:
+               $this->error($message);
+                break;
+          case Models\ViewModels\Alerts::SUCCESS:
+                $this->success($message); break;
+          case Models\ViewModels\Alerts::WARNING:
+                $this->warning($message); break;
+          case Models\ViewModels\Alerts::SECONDARY:
+                $this->secondary($message); break;
+          case Models\ViewModels\Alerts::INFORMATION:
+                $this->information($message); break;
+
+          default: break;
+
+      }
+        return;
+    }
+
     /** Methods to insert flash messages */
     public function warning($message){
         $obj = new \StdClass;
         $obj->type = Models\ViewModels\Alerts::WARNING;
         $obj->message = $message;
 
-        \Session::put('flash-message',$obj);
-
+        \Session::flash('flash-message',$obj);
 
     }
 
@@ -121,7 +141,7 @@ abstract class Controller extends BaseController {
         $obj->type = Models\ViewModels\Alerts::ALERT;
         $obj->message = $message;
 
-        \Session::set('flash-message',$obj);
+        \Session::flash('flash-message',$obj);
     }
 
 
@@ -130,7 +150,7 @@ abstract class Controller extends BaseController {
         $obj->type = Models\ViewModels\Alerts::SUCCESS;
         $obj->message = $message;
 
-        \Session::put('flash-message',$obj);
+        \Session::flash('flash-message',$obj);
     }
 
 
@@ -139,7 +159,7 @@ abstract class Controller extends BaseController {
         $obj->type = Models\ViewModels\Alerts::INFORMATION;
         $obj->message = $message;
 
-        \Session::put('flash-message',$obj);
+        \Session::flash('flash-message',$obj);
     }
 
 
@@ -148,6 +168,6 @@ abstract class Controller extends BaseController {
         $obj->type = Models\ViewModels\Alerts::SECONDARY;
         $obj->message = $message;
 
-        \Session::put('flash-message',$obj);
+        \Session::flash('flash-message',$obj);
     }
 }
