@@ -40,15 +40,7 @@ class Signature extends Model {
 
         if($this->named=='1'){
             foreach($this->getNamedSchoolTags() as $tag){
-                $ch = curl_init();
-
-                curl_setopt($ch, CURLOPT_URL, 'https://iet.communications.iu.edu/mercerjd/svg/s.php?p=' . urlencode
-                    ($this-> primaryText) .'&s=' .urlencode($this -> secondaryText)  . '&t=' .
-                    urlencode($this ->tertiaryText) . '&v=' . $tag);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                $output .= curl_exec($ch);
-
-                curl_close($ch);
+                
             }
 
         }else{

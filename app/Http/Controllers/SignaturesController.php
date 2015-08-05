@@ -118,7 +118,6 @@ class SignaturesController extends Controller {
 
                 }
 
-
         }
         else{
 
