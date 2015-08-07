@@ -33,8 +33,8 @@ class IUSVG extends IUSVGBase {
         $this->secondary=$s;
         $this->tertiary=$t;
 
-        $this->line('0','10.2','1020','10.2');
-        $this->line('0','59.2','1020','59.2');
+      //  $this->line('0','10.2','1020','10.2');
+       // $this->line('0','59.2','1020','59.2');
 
         $methodName = $this->lookup[$v-1];
         call_user_func(array($this,$methodName));
@@ -50,7 +50,7 @@ class IUSVG extends IUSVGBase {
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
         $result = $svgFont->textToPaths($text, $font_size,$extents);
-        $result = "<svg xmlns=\"http://www.w3.org/2000/svg\"viewBox=\"-$x -$y 612 792\">$result</svg>";
+        $result = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\" viewBox=\"-$x -$y 800 600\">$result</svg>";
         $this->addXMLStr($this->xml, $result);
         return $extents;
     }
@@ -64,7 +64,7 @@ class IUSVG extends IUSVGBase {
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
         $result = $svgFont->textToPaths($text, $font_size,$extents);
-        $result = "<svg xmlns=\"http://www.w3.org/2000/svg\"viewBox=\"-$x -$y 612 792\">$result</svg>";
+        $result = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\" viewBox=\"-$x -$y 800 600\">$result</svg>";
         $this->addXMLStr($this->xml, $result);
         return $extents;
 
@@ -79,7 +79,8 @@ class IUSVG extends IUSVGBase {
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
         $result = $svgFont->textToPaths($text, $font_size,$extents);
-        $result = "<svg xmlns=\"http://www.w3.org/2000/svg\"viewBox=\"-$x -$y 612 792\">$result</svg>";
+        $result = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\" viewBox=\"-$x -$y 800 600\">$result</svg>";
+
         $this->addXMLStr($this->xml, $result);
         return $extents;
 
@@ -189,5 +190,3 @@ class IUSVG extends IUSVGBase {
 
 
 }
-
-echo new IUSVG('Primary','Secondary','Tertiary',1);

@@ -7,6 +7,7 @@
  */
 
 namespace App\Models;
+use App\Services\SVG\IUSVG;
 use App\Services\SVGConversion\SVGConvert;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,32 +28,28 @@ class Signature extends Model {
 
 
     /** Helper Functions  */
-
     public function getNamedSchoolTags(){return array(1,2,3,4);}
     public function getAllSchoolTags(){return array(1,2,3,4,5,6);}
-
 
 
     /** Get Preview for signatures  */
     public function getSignaturePreview(){
 
         $output="";
+        $previews = function($tags){
+            $output="";
+            foreach($tags as $tag){
+                $output.= new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,$tag);
+            }
+
+            return $output;
+        };
 
         if($this->named=='1'){
-            foreach($this->getNamedSchoolTags() as $tag){
-                
-            }
+            $output = $previews($this->getNamedSchoolTags());
 
         }else{
-            foreach($this->getAllSchoolTags() as $tag){
-                $ch = curl_init();
-                 curl_setopt($ch, CURLOPT_URL, 'https://iet.communications.iu.edu/mercerjd/svg/s.php?p=' . urlencode
-                    ($this-> primaryText) .'&s=' .urlencode($this -> secondaryText)  . '&t=' .
-                    urlencode($this ->tertiaryText) . '&v=' . $tag);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                $output .= curl_exec($ch);
-                 curl_close($ch);
-            }
+            $output = $previews($this->getAllSchoolTags());
 
         }
 
@@ -61,22 +58,7 @@ class Signature extends Model {
     }
 
     public function getSignatureThumbnail(){
-
-        $output="";
-
-
-        $ch = curl_init();
-        $output  .= '<div style="margin-right:10px; display:inline">';
-        curl_setopt($ch, CURLOPT_URL, 'https://iet.communications.iu.edu/mercerjd/svg/s.php?p=' . urlencode
-            ($this-> primaryText) .'&s=' .urlencode($this -> secondaryText)  . '&t=' .
-            urlencode($this ->tertiaryText) . '&v=' . 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $output .= curl_exec($ch);
-        $output .= "</div>";
-        curl_close($ch);
-
-
-        return $output;
+        return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,1);
     }
 
     public function build(){

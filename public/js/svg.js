@@ -86,9 +86,14 @@ AjaxTabs = {
                 $.get(link,null,function(data){
 
                     $('#viewModal').html(data);
+
+
                 });
             });
+
             $(document).foundation('reflow');
+            $('#signatureTable').dataTable({  "ordering": false,
+                "info":     false});
         });
 
 

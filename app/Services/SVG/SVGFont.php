@@ -52,14 +52,14 @@ class SVGFont {
      */
     public function load($filename) {
         $this->glyphs = array();
-        $z = new XMLReader;
+        $z = new \XMLReader;
         $z->open($filename);
 
         // move to the first <product /> node
         while ($z->read()) {
             $name = $z->name;
 
-            if ($z->nodeType == XMLReader::ELEMENT) {
+            if ($z->nodeType == \XMLReader::ELEMENT) {
                 if ($name == 'font') {
                     $this->id = $z->getAttribute('id');
                     $this->horizAdvX = $z->getAttribute('horiz-adv-x');
@@ -77,7 +77,7 @@ class SVGFont {
                     $unicode = $this->utf8ToUnicode($unicode);
                     $unicode = $unicode[0];
 
-                    $this->glyphs[$unicode] = new stdClass();
+                    $this->glyphs[$unicode] = new \stdClass();
                     $this->glyphs[$unicode]->horizAdvX = $z->getAttribute('horiz-adv-x');
                     if (empty($this->glyphs[$unicode]->horizAdvX)) {
                         $this->glyphs[$unicode]->horizAdvX = $this->horizAdvX;
@@ -114,7 +114,7 @@ class SVGFont {
             $horizAdvY += $this->ascent + $this->descent;
         }
 
-        $extents = array('w'=>$horizAdvX, 'h'=>$horizAdvY, l=>count($lines),'s'=>$size);
+        $extents = array('w'=>$horizAdvX, 'h'=>$horizAdvY, 'l'=>count($lines),'s'=>$size);
         return $result;
     }
 

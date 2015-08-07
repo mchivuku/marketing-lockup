@@ -14,15 +14,14 @@ class SVGBase {
 
 
     function __construct($width=612, $height=792, $fixed=false){
-        $this->xml = $xml = simplexml_load_string('<svg class="svg" version="1.1"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg"/>');
+        $this->xml = $xml = simplexml_load_string('<svg id="Layer_1" version="1.1"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg"/>');
 
         if($fixed) {
             $this->xml['width'] = $width;
             $this->xml['height'] = $height;
         }
 
-        $this->xml['viewBox'] = "0 0 $width $height";
-        $this->xml['preserveAspectRatio'] = "xMinYMin";
+        $this->xml['viewBox'] = "0, 0, $width $height";
         $this->xml['x']= "0px";
         $this->xml['y']= "0px";
         $this->xml['enable-background']="new 0 0 $width $height";
@@ -38,7 +37,7 @@ class SVGBase {
     }
 
     function prettyXML() {
-        $dom = new DomDocument();
+        $dom = new \DomDocument();
         $dom->formatOutput = true;
         $dom->loadXml($this->xml->saveXML());
         $xml = $dom->saveXML();

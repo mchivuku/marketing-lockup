@@ -77,8 +77,8 @@ class SignaturesController extends Controller {
 
             $signatures =isset($inputs['status'])?
                 Models\Signature::with('signaturereviews','reviewstatus')
-                ->where('statusId','=',$inputs['status'])->get():
-                Models\Signature::with('signaturereviews','reviewstatus')->get();
+                ->where('statusId','=',$inputs['status'])->orderBy('updated_at','desc')->get():
+                Models\Signature::with('signaturereviews','reviewstatus')->orderBy('updated_at','desc')->get();
 
             $CI = $this;
 
@@ -124,8 +124,8 @@ class SignaturesController extends Controller {
             $signatures =isset($inputs['status'])? Models\Signature::with('signaturereviews','reviewstatus')
                 ->where
             ('statusId','=', $inputs['status'])
-                ->where('username','=',$this->currentUser)->get():
-                Models\Signature::where('username',"=",$this->currentUser)->with('signaturereviews','reviewstatus')
+                ->where('username','=',$this->currentUser)->orderBy('updated_at','desc')->get():
+                Models\Signature::where('username',"=",$this->currentUser)->with('signaturereviews','reviewstatus')->orderBy('updated_at','desc')
                     ->get();
 
             $CI = $this;
@@ -176,6 +176,7 @@ class SignaturesController extends Controller {
         $id = $inputs['id'];
         $signature = Models\Signature::where('signatureid','=',$id)->first()->getSignaturePreview();
 
+
         $model = new Models\ViewModels\Modal();
 
         $model->content=   $signature ;
@@ -220,12 +221,9 @@ class SignaturesController extends Controller {
 
         $inputs = \Input::all();
         $message="";
-
         $user = $this->currentUser;
         if(isset($inputs['signatureid'])){
-
             $signature = Models\Signature::find(\Input::get('signatureid'));
-
             \DB::transaction(function()use($signature,$user,$inputs)
             {
                 $timestamp = $this->getcurrentTimestamp();
@@ -324,12 +322,8 @@ class SignaturesController extends Controller {
     public function approve(){
         $inputs =  \Input::all();
 
-
         $signature = Models\Signature::find($inputs['signatureid']);
-
         $return = $signature->build();
-
-
 
         if($return->status==true){
             $signature->downloadPath = $return->message;
@@ -338,7 +332,6 @@ class SignaturesController extends Controller {
 
             /** Transaction to implement all the changes in one go */
             $id = $this->saveSignatureReview($review_status,$signature,$inputs);
-
 
             $data = $inputs['comment'];
             $d = array("data" => $data);
@@ -374,7 +367,8 @@ class SignaturesController extends Controller {
         $review_status = Models\ReviewStatus::where('action','like','denied%')->first();
 
         /** Transaction to implement all the changes in one go */
-        $id = $this->saveSignatureReview($review_status,$signature,$inputs);
+        if(isset($signature))
+            $id = $this->saveSignatureReview($review_status,$signature,$inputs);
 
         $data = $inputs['comment'];
         $d = array("data" => $data);
@@ -449,6 +443,7 @@ class SignaturesController extends Controller {
 
     function getDownload(){
         $inputs = \Input::all();
+
        //todo: checks for everything. - CAS download
         $signature = Models\Signature::where('signatureid','=',$inputs['signatureid'])->first();
         $downloadpath = $signature->downloadPath;
@@ -457,9 +452,14 @@ class SignaturesController extends Controller {
             'Content-Type: application/zip',
             'Content-Length: '. filesize($downloadpath)
         );
+        $filename = basename($downloadpath);
 
-        return \Response::download($downloadpath,basename($downloadpath) , $headers);
+        header("Content-Type: application/zip");
+        header("Content-Disposition: attachment; filename=$filename");
+        header("Content-Length: " .filesize($downloadpath));
 
+        readfile($downloadpath);
+        exit;
 
     }
 

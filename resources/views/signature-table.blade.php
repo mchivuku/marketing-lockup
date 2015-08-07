@@ -10,8 +10,10 @@ $table->header = array('Preview','Name','Status','Date','Review Comments','Actio
     };
 
 
+    // $preview = $item->getSignatureThumbnail();
+     $preview = 'Preview';
     $preview_link = "<a data-reveal-id=\"viewModal\" href='signatures/getPreview?id=".$item->signatureid."'
-    class=\"modal\">Preview</a>";
+    class=\"modal\">$preview</a>";
 
      if($item->downloadPath!=''){
          $download_link = "<a href='signatures/download?signatureid=".$item->signatureid."'>Download</a>";
@@ -43,3 +45,17 @@ $table->attributes = array('class'=>'table','id'=>'signatureTable');
     <div id="viewModal" class="reveal-modal" data-reveal></div>
 @endif
 </div>
+
+@section('scripts')
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#signatureTable').dataTable({  "ordering": false,
+                "info":     false});
+        });
+
+
+    </script>
+
+@endsection
