@@ -1,7 +1,12 @@
 /* Foundation - Init */
+
+
 $(document).foundation('reveal', 'reflow');
 
 $(document).ready(function(){
+
+    IUComm && IUComm.init( {debug:true} );
+
     jQuery.fn.exists = function(){return this.length>0;}
 
     if (!$('aside').exists()){
@@ -68,32 +73,30 @@ AjaxTabs = {
             var target = $(this).attr('data-target');
             var id = $(this).attr('href');
 
+            $('li.tab-title').removeClass('active');
+
+            $(this).parents('li').addClass('active');
             //remove active
-            $('div#tabs-content').children('div.active').empty();
-            AjaxTabs.loadTabContent(target,id);
+            AjaxTabs.loadTabContent(target);
 
         });
     },
 
-    loadTabContent: function(target,id) {
+    loadTabContent: function(target) {
         $.get(target,null,function(data){
 
-            $('div'+id).html(data);
-            $('div'+id).addClass('active');
-            $('a.modal').on('click',function(event){
+            $('div.active').empty().html(data);
+             $('a.modal').on('click',function(event){
                 event.preventDefault();
                 var link = $(this).attr('href');
                 $.get(link,null,function(data){
-
                     $('#viewModal').html(data);
-
 
                 });
             });
 
             $(document).foundation('reflow');
-            $('#signatureTable').dataTable({  "ordering": false,
-                "info":     false});
+
         });
 
 

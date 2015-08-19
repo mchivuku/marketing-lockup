@@ -35,5 +35,7 @@
     <link href="{{asset("css/site.css")}}" rel="stylesheet" type="text/css">
 
     <!-- Include Javascript -->
-    <script src="https://assets.iu.edu/web/1.5/libs/modernizr.min.js" type="text/javascript"></script>
+    <script src="https://assets.iu.edu/web/1.5/libs/modernizr.min.js" type="text/javascript">
+
+    </script>
 </head>

@@ -12,8 +12,8 @@
     </div>
 
 <div id="toggles">
-        <div class="row pad">
-            <a href="#" class="button right-off-canvas-toggle hide-for-large-up">Menu</a>
+    <div class="row pad">
+        <a href="#" class="button right-off-canvas-toggle hide-for-large-up">Menu</a>
 
-        </div>
     </div>
+</div>

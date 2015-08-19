@@ -29,7 +29,7 @@ class Signature extends Model {
 
     /** Helper Functions  */
     public function getNamedSchoolTags(){return array(1,2,3,4);}
-    public function getAllSchoolTags(){return array(1,2,3,4,5,6);}
+    public function getAllSchoolTags(){return array(1,2,3,4,5,6,7);}
 
 
     /** Get Preview for signatures  */
@@ -39,7 +39,9 @@ class Signature extends Model {
         $previews = function($tags){
             $output="";
             foreach($tags as $tag){
-                $output.= new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,$tag);
+                $output.= "<div id='svg-preview'>".new IUSVG($this->primaryText,$this->secondaryText,
+                        $this->tertiaryText,
+                    $tag)."</div>";
             }
 
             return $output;
@@ -62,6 +64,7 @@ class Signature extends Model {
     }
 
     public function build(){
+
 
         $svg_convert = new SVGConvert($this->primaryText,$this->secondaryText,$this->tertiaryText,
             ($this->named==0)?$this->getAllSchoolTags():$this->getNamedSchoolTags());

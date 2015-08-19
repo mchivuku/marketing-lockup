@@ -75,18 +75,24 @@
                 event.preventDefault();
                 var href = $(this).attr('href');
                 $.get(href,$(this).parents('form').serialize(),function(data){
-                    var result= data;
-                    console.log(data);
-                    if(result.status=='true'){
-                        window.location.replace("{{url("/signatures?message=successfully completed the process")}}");
-                    }else
+                    var result= JSON.parse(data);
+
+                    if(result.status){
+                        window.location.replace("{{url("/signatures?message=Successfully completed the process")}}");
+                        return;
+                    }
+                    else
                     {
                         $('section.page-title').append('{!! \HTML::flash("Error occurred during the process",
                         \App\Models\ViewModels\Alerts::ALERT) !!}');
                         return;
                     }
 
+
                 });
+
+                // close alert box -
+                $('.alert-box > a.close').click(function() { $(this).closest('[data-alert]').fadeOut(); });
 
             });
         })

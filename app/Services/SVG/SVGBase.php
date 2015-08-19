@@ -12,24 +12,45 @@ class SVGBase {
         'BentonSansCond-Regular' => 'benton-sans-cond-regular.ttf',
         'BentonSansCond-Bold' => 'benton-sans-cond-bold.ttf');
 
+    protected $default_width = 600 ;
+    protected $default_height = 719;
 
-    function __construct($width=612, $height=792, $fixed=false){
-        $this->xml = $xml = simplexml_load_string('<svg id="Layer_1" version="1.1"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg"/>');
 
-        if($fixed) {
-            $this->xml['width'] = $width;
-            $this->xml['height'] = $height;
+    function __construct($width=null, $height=null, $fixed=false){
+        $this->xml  = simplexml_load_string('<svg class="svg" version="1.1"  xml:space="preserve"
+        xmlns="http://www.w3.org/2000/svg"/>');
+
+        if(isset($width)){
+            $w = $width;
+        }else{
+            $w = $this->default_width;
         }
 
-        $this->xml['viewBox'] = "0, 0, $width $height";
+        if(isset($height)){
+            $h = $height;
+        }else{
+            $h = $this->default_height;
+        }
+
+
+        if($fixed) {
+            $this->xml['width'] = $w;
+            $this->xml['height'] = $h;
+        }
+
+        $this->xml['viewBox'] = "0 0 $w $h";
+        $this->xml['preserveAspectRatio'] = "xMinYMin";
         $this->xml['x']= "0px";
         $this->xml['y']= "0px";
-        $this->xml['enable-background']="new 0 0 $width $height";
+        $this->xml['enable-background']="new 0 0 $w $height";
 
     }
 
     function addXMLStr($parent, $childStr) {
+
+
         $parentDom = dom_import_simplexml($parent);
+
         $childDom = dom_import_simplexml(simplexml_load_string($childStr));
         $childDom = $parentDom->ownerDocument->importNode($childDom, true);
         $parentDom->appendChild($childDom);
@@ -51,8 +72,8 @@ class SVGBase {
 
     function line($x1, $y1, $x2, $y2) {
 
-        $stoke_color = "#FF0000";
-        $stroke_width = "2.500000e-02";
+        $stoke_color = "'#FF0000'";
+        $stroke_width = "'2.500000e-02'";
 
         $e = "<line fill='none' x1='$x1' y1='$y1' x2='$x2'
               y2='$y2'stroke='$stoke_color' stroke-width='$stroke_width'/>";

@@ -35,25 +35,15 @@
 
                         <div id="tabs-content">
 
-                            @for($i = 0;$i<count($model->states);$i++)
-
-                                    <?php if($i==0){?>
-                                        <div id="{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}"
-                                             class="content active">
+                                        <div class="content active">
 
                                              {!! $model->content !!}
                                         </div>
 
-                                <?php }else{?>
 
-                                <div role="tabpanel" aria-hidden="false" class="content"
-                                         id="{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}"></div>
 
-                                <?php }?>
-
-                            @endfor
                             </div>
-                        </div>
+
 
                     </div>
 

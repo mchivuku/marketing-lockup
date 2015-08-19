@@ -6,7 +6,6 @@
  */
 
 namespace App\Services\SVG;
-
 class SVGFont {
 
     protected $id = '';
@@ -95,10 +94,13 @@ class SVGFont {
      * @param int $asize size of requested text
      * @return string xml for text converted into SVG paths
      */
-    public function textToPaths($text, $asize, &$extents) {
+    public function textToPaths($text, $asize,&$extents) {
         $lines = explode("\n", $text);
         $result = "";
-        $horizAdvY = $this->ascent + $this->descent;
+        $horizAdvY = 0;
+
+        //$horizAdvY = $this->ascent + $this->descent;
+
 
         foreach($lines as $text) {
             $text = $this->utf8ToUnicode($text);
@@ -117,6 +119,7 @@ class SVGFont {
         $extents = array('w'=>$horizAdvX, 'h'=>$horizAdvY, 'l'=>count($lines),'s'=>$size);
         return $result;
     }
+
 
 
 }

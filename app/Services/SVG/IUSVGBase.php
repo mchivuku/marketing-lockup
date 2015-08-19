@@ -8,19 +8,17 @@
 namespace App\Services\SVG;
 class IUSVGBase extends SVGBase {
 
+    protected $tabHeight = 68;
+    protected $tabWidth = 58;
+
     function __construct() {
         parent::__construct();
-        $this->init();
+
     }
 
-    function init() {
-        $this->addTab();
-        $this->addLogo();
-    }
-
-    function addTab($h=68) {
+    function addTab($h) {
         $r = $this->xml->addChild('rect');
-        $r['width'] = 58;
+        $r['width'] = $this->tabWidth;
         $r['height'] = $h;
         $r['fill'] = '#951B1E';
     }

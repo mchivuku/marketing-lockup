@@ -10,6 +10,10 @@
 namespace App\Http\Controllers;
 
 use App\Models as Models;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
+
+use Validator;
 
 class SignaturesController extends Controller {
 
@@ -60,7 +64,8 @@ class SignaturesController extends Controller {
          $model->content = $this->getSignatures();
 
          $inputs = \Input::all();
-         if(isset($inputs['message']))  $this->flash($inputs['message'],$inputs['type']);
+         if(isset($inputs['message']))  $this->flash($inputs['message'],(isset($inputs['type'])
+             ?$inputs['type']:Models\ViewModels\Alerts::SUCCESS));
 
          return $this->view('signatures')->model($model)->title('Manage Signatures');
 
@@ -153,7 +158,6 @@ class SignaturesController extends Controller {
                 });
             }
 
-
         }
 
         $model->signatures =  $signatures;
@@ -173,17 +177,33 @@ class SignaturesController extends Controller {
     public function getPreview(){
         $inputs = \Input::all();
 
-        $id = $inputs['id'];
-        $signature = Models\Signature::where('signatureid','=',$id)->first()->getSignaturePreview();
+
+        if(isset($inputs['id'])){
+            $signature = Models\Signature::where('signatureid','=',$inputs['id'])->first()->getSignaturePreview();
+            $model = new Models\ViewModels\Modal();
+
+            $model->content=   $signature ;
+            $model->title= 'Signature Preview';
+            $model->setAttribute('id','viewModel');
+
+            return view('modal',array('model'=>$model));
+        }
 
 
-        $model = new Models\ViewModels\Modal();
+        $p = $inputs['p'];
+        $s = $inputs['s'];
+        $t = $inputs['t'];
+        $named = $inputs['named'];
 
-        $model->content=   $signature ;
-        $model->title= 'Signature Preview';
-        $model->setAttribute('id','viewModel');
 
-        return view('modal',array('model'=>$model));
+        $signature = new Models\Signature();
+        $signature->primaryText= $p;
+        $signature->secondaryText=$s;
+        $signature->tertiaryText=$t;
+        $signature->named = $named;
+
+
+        return $signature->getSignaturePreview();
 
     }
 
@@ -194,9 +214,6 @@ class SignaturesController extends Controller {
     public function create(){
 
         $signature = new Models\Signature();
-        $signature->primaryText='Primary';
-        $signature->secondaryText='Secondary';
-        $signature->tertiaryText='Tertiary';
 
         return $this->view('addEditSignature')->model($signature)->title('Create Signature');
     }
@@ -217,11 +234,26 @@ class SignaturesController extends Controller {
      *
      * @return mixed
      */
-    public function save(){
+    public function save(Request $request){
 
         $inputs = \Input::all();
         $message="";
         $user = $this->currentUser;
+        $validator = Validator::make($request->all(), [
+            'primaryText' => 'max:24',
+            'secondaryText' => 'max:24',
+            'tertiaryText' => 'max:24'
+        ]);
+
+
+        if ($validator->fails()){
+             return redirect()->to('signatures/create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+
+
         if(isset($inputs['signatureid'])){
             $signature = Models\Signature::find(\Input::get('signatureid'));
             \DB::transaction(function()use($signature,$user,$inputs)
@@ -291,7 +323,6 @@ class SignaturesController extends Controller {
 
         $signatureId = \Input::get('signatureid');
 
-
         $model = new \StdClass;
 
         Models\ReviewStatus::where('status','not like','pending%')->get()->each(
@@ -323,17 +354,25 @@ class SignaturesController extends Controller {
         $inputs =  \Input::all();
 
         $signature = Models\Signature::find($inputs['signatureid']);
+
+        //check if the signature is approved.
+        $approved_id = Models\ReviewStatus::where('status','like','approve%')->first()->id;
+        if($signature->statusId == $approved_id){
+            return json_encode(array('status'=>false,'message'=>'signature is already approved'));
+        }
+
         $return = $signature->build();
 
-        if($return->status==true){
-            $signature->downloadPath = $return->message;
+        if(isset($return)){
+
+            $signature->downloadPath = $return;
 
             $review_status = Models\ReviewStatus::where('action','like','approve%')->first();
 
             /** Transaction to implement all the changes in one go */
             $id = $this->saveSignatureReview($review_status,$signature,$inputs);
 
-            $data = $inputs['comment'];
+            $data =  isset($inputs['comment'])?$inputs['comment']:'';
             $d = array("data" => $data);
 
             $obj  = $this->construct_ldap_object($signature->username);
@@ -366,11 +405,17 @@ class SignaturesController extends Controller {
         $signature = Models\Signature::find($inputs['signatureid']);
         $review_status = Models\ReviewStatus::where('action','like','denied%')->first();
 
+
+        if($signature->statusId == $review_status->id){
+            return json_encode(array('status'=>false,'message'=>'signature is already denied'));
+        }
+
+
         /** Transaction to implement all the changes in one go */
         if(isset($signature))
             $id = $this->saveSignatureReview($review_status,$signature,$inputs);
 
-        $data = $inputs['comment'];
+        $data = isset($inputs['comment'])?$inputs['comment']:'';
         $d = array("data" => $data);
 
         $obj  = $this->construct_ldap_object($signature->username);

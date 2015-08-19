@@ -1,18 +1,27 @@
 @include('...includes.header')
-<body>
+<body id="home" class="">
+<div class="off-canvas-wrap" data-offcanvas="">
+
+	<div id="skipnav">
+		<ul>
+			<li><a href="#content">Skip to Content</a></li>
+			<li><a href="#nav-main">Skip to Main Navigation</a></li>
+			<li><a href="#search">Skip to Search</a></li>
+		</ul>
+	</div>
+
 @include('...includes.branding-bar')
+
 	<div class="inner-wrap">
 		<header>
 			<div class="row pad">
-
 				<h1><a href="{{url("/")}}">Marketing Lock-up</a></h1>
-
 			</div>
 		</header>
 
-
 		<!-- Navigation -->
 		@include('navigation')
+
 
    		 <main  style="min-height: 84px;">
 
@@ -44,9 +53,12 @@
 
 	<div class="right-off-canvas-menu show-for-medium-down">
 		<nav class="mobile off-canvas-list">
-				@include('navigation',array('navigation'=>$navigation))
- 		</nav>
+			<ul>
+				@include('navigation-items')
+			</ul>
+		</nav>
 	</div>
+
 
 
 
@@ -60,14 +72,16 @@
 	<script type="text/javascript" language="javascript" src="{{ asset('/js/dataTables.foundation.js') }}"></script>
 	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.js")}}"></script>
 	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.reveal.js")}}"></script>
-    <script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.alert.js")
- }}"></script>
+    <script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.alert.js")}}"></script>
+	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.offcanvas.js")}}"></script>
 
-<script src="{{asset("js/svg.js")}}" type="text/javascript"></script>
+	<script type="text/javascript" src="{{asset("bower_components/jquery-validation/dist/jquery.validate.min.js")}}"></script>
+
+	<script src="{{asset("js/svg.js")}}" type="text/javascript"></script>
 
 @yield('scripts')
 
-
+</div>
 </body>
 </html>
 

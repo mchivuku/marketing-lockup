@@ -11,7 +11,7 @@ namespace App\Services\SVGConversion;
 //Download Path
 use App\Services\SVG\IUSVG;
 
-define('downloadPath',app_path()."/public/".'downloads');
+define('downloadPath',"/ip/iubrand/wwws/admin/public/downloads");
 /***
  * Class SVGConvert
  * Class the builds the imagick convert command
@@ -78,13 +78,14 @@ class SVGConvert
             //remove directory -
             $this->delete_destination_folders($status->message);
 
+
             //remove the dir
-            return new ProcessStatus(true,$outputZipPath);
+            return $outputZipPath;
 
         }
 
 
-        return $status->message;
+        return null;
     }
 
 
@@ -107,8 +108,6 @@ class SVGConvert
         foreach($this->tags as $tag){
             $name = $file_curl_get_put_contents($this->primary,$this->secondary,$this->tertiary,$tag,$path);
             $status = $this->convert($name);
-
-            exit;
             if($status->status==false){
                 return $status->message;
             }
@@ -169,7 +168,7 @@ class SVGConvert
 
         // Removes non-empty directory
         $command = "rm -rf $name/";
-        exec($command);
+       exec($command);
 
     }
 

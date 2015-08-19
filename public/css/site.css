@@ -6,21 +6,29 @@ table#signatureTable{
     width: auto;
 }
 
-svg {
-     width:200px;
-
- }
-
-svg:last-child {
-    margin-bottom: 20px;
+#svg-preview{
+    margin-bottom: 40px;
+    height: 200px;
 }
 
 div#example-images{
     border: 5px solid #eee;
     padding:10px;
-    margin-top: 10px;
+    margin-top: 100px;
     margin-bottom: 10px;
 }
 form {
     margin-bottom: 20px;
+}
+
+div.dataTables_info {
+    font-size: 0.675em;
+
+}
+
+.boxBorder {
+    background-color: #fff;
+    border: 1px solid #e1e1e8;
+    margin-bottom: 14px;
+    padding: 9px 14px;
 }

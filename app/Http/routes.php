@@ -61,3 +61,11 @@ Route::group(array('prefix' => 'admin'), function () {
     Route::post('/searchResults', 'AdministratorsController@searchResults');
 
 });
+
+Route::group(array('prefix' => 'emaillockup'), function () {
+
+    Route::get('/', array('as'=>'emaillockup',
+        'uses'=>'EmailLockUpController@index'));
+
+
+});

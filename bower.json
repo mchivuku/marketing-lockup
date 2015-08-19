@@ -1,0 +1,19 @@
+{
+  "name": "signatures",
+  "version": "0.0.1",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "~1.4.0",
+    "angular-resource": "~1.4.0",
+    "cloudinary_js": "~1.0.22",
+    "angular-route": "~1.4.0",
+    "jquery": "~2.1.4",
+    "animate.css": "~3.3.0",
+    "ng-file-upload": "~5.0.5",
+    "filesize": "~3.1.2",
+    "swiper": "~3.0.8"
+  },
+  "devDependencies": {
+    "jquery-validation": "~1.14.0"
+  }
+}

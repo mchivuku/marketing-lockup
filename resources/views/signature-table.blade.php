@@ -10,10 +10,10 @@ $table->header = array('Preview','Name','Status','Date','Review Comments','Actio
     };
 
 
-    // $preview = $item->getSignatureThumbnail();
-     $preview = 'Preview';
+   $preview = $item->getSignatureThumbnail();
+   //  $preview = 'Preview';
     $preview_link = "<a data-reveal-id=\"viewModal\" href='signatures/getPreview?id=".$item->signatureid."'
-    class=\"modal\">$preview</a>";
+    class=\"modal\">Preview</a>";
 
      if($item->downloadPath!=''){
          $download_link = "<a href='signatures/download?signatureid=".$item->signatureid."'>Download</a>";

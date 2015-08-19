@@ -10,15 +10,28 @@
 
                 <div class="full-width">
 
-                       <div id="example-images">
-
-                            {!!  $model->getSignaturePreview() !!}
-                        </div>
-
 
                         {!! Form::open(array('url' => '/signatures/savesignature','id'=>"svgform",'method'=>'post')) !!}
 
-                            <div class="row">
+                            <div class="form_errors">
+
+
+                            </div>
+
+                        @if (count($errors) > 0)
+                                  <div data-alert class="alert-box alert radius">
+
+                                        @foreach ($errors->all() as $error)
+                                             {{ $error }} <br/>
+                                        @endforeach
+
+                                    <a href="#" class="close">&times;</a>
+                                </div>
+
+                             @endif
+
+
+                    <div class="row">
                                 <div class="small-3 columns">
                                     {!!  Form::label('named', 'Named School') !!}
                                 </div>
@@ -36,7 +49,8 @@
                                     {!!  Form::label('p', 'Primary') !!}
                                  </div>
                                 <div class="small-9 columns">
-                                    {!!  Form::textarea('p', $model->primaryText,array('rows'=>4,'cols'=>40,'name'=>'p')) !!}
+                                    {!!  Form::text('p',$model->primaryText,array('placeholder'=>'PRIMARY','maxlength'=>24)) !!}
+
                                </div>
                             </div>
 
@@ -45,7 +59,8 @@
                                     {!!  Form::label('s', 'Secondary') !!}
                                 </div>
                                 <div class="small-9 columns">
-                                    {!!  Form::textarea('s', $model->secondaryText,array('rows'=>4,'cols'=>40,'name'=>'s')) !!}
+                                    {!!  Form::text('s',$model->secondaryText,array('placeholder'=>'SECONDARY','maxlength'=>24)) !!}
+
                                </div>
                             </div>
 
@@ -55,7 +70,7 @@
 
                                 </div>
                                 <div class="small-9 columns">
-                                    {!!  Form::textarea('t', $model->tertiaryText,array('rows'=>4,'cols'=>40,'name'=>'t')) !!}
+                                    {!!  Form::text('t',$model->tertiaryText,array('placeholder'=>'TERTIARY','maxlength'=>24)) !!}
                                 </div>
                             </div>
 
@@ -69,8 +84,16 @@
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 {!! Form::close() !!}
 
+
+
                     <!-- signature preview -->
-                    <div id="signature-preview"></div>
+                    <div id="signature-preview">
+
+
+
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -84,28 +107,75 @@
     <script type="text/javascript">
 
         $(document).ready(function(){
+            $('.form_errors').hide();
 
-            $('#svgform textarea,form input:radio').on('change', function (e) {
+               formvalidate();
+              $('#svgform input[type=text]').on('keyup', function (e) {
+
+
+                    updatePreview(getTags());
+                return;
+            });
+
+            $('#svgform input:radio').on('change', function (e) {
                 updatePreview(getTags());
                 return;
             });
 
         });
 
+       function formvalidate(){
+           $("#svgform").validate({
+
+               rules: {
+                   primaryText: {
+                       maxlength: 24
+                   },
+                   secondaryText: {
+
+                       maxlength: 24
+                   },
+                   tertiaryText: {
+                       maxlength: 24
+                   }
+               },
+                   messages: {
+
+                       primaryText: {
+
+                           maxlength: "Please enter primary text maximum length of 24 characters"
+                       },
+                       secondaryText: {
+                           maxlength: "Please enter secondary text maximum length of 24 characters"
+                       },
+                       tertiaryText: {
+                           maxlength: "Please enter tertiary text maximum length of 24 characters"
+                       }
+                   },
+               errorPlacement: function(error, element) {
+
+                   element.closest(".form_errors").append("<div data-alert class=\"alert-box alert " +
+                           "radius\">"+error+"</div>");
+                     $('.form_errors').show();
+               },
+               debug:true
+
+               });
+       }
+
         function updatePreview(tags){
 
-            $('div#example-images').empty();
+            //validate
+            //formvalidate();
 
-            for(i=0;i<tags.length;i++){
+            var form = $('#svgform');
 
-                 var qstr = $('#svgform').serialize() + '&v=' + tags[i];
-                   var src = 'https://iet.communications.iu.edu/mercerjd/svg/s.php?'+qstr;
-                   $.get(src, function(data) {
-
-                    $('div#example-images').append(data)
+            if(form.valid()){
+                $.get('getPreview',form.serialize(),function(data){
+                    $('div#signature-preview').empty().append("<div id='example-images'>"+data+'</div>');
                 });
-
             }
+
         }
 
         function getTags(){
