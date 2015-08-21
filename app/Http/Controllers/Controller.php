@@ -99,7 +99,7 @@ abstract class Controller extends BaseController {
         $p->firstName = $this->ldapService->getFirstName($username);
         $p->lastName = $this->ldapService->getLastName($username);
         $p->email = $this->ldapService->getEmail($username);
-        $p->name = sprintf("%s, %s",$p->lastName,$p->firstName);
+        $p->name = sprintf("%s %s",$p->firstName,$p->lastName);
 
         return $p;
 

@@ -33,29 +33,31 @@ $table->header = array('Preview','Name','Status','Date','Review Comments','Actio
     );
 
 });
-
-$table->attributes = array('class'=>'table','id'=>'signatureTable');
+$table->attributes = array('class'=>'tablesaw table','id'=>'signatureTable','data-tablesaw-mode'
+=>"stack");
 ?>
 <div class="panel">
 
 @if(count($model->signatures)==0)
         <p>No records were found!</p>
 @else
-    @include('table',array('model'=>$table))
-    <div id="viewModal" class="reveal-modal" data-reveal></div>
+
+         @include('table',array('model'=>$table))
+        <div id="viewModal" class="reveal-modal" data-reveal></div>
 @endif
 </div>
 
-@section('scripts')
+@section("scripts")
 
     <script type="text/javascript">
 
         $(document).ready(function() {
-            $('#signatureTable').dataTable({  "ordering": false,
-                "info":     false});
+            $('#signatureTable').dataTable({  "ordering": false,"info": false});
+
+
         });
 
 
     </script>
-
 @endsection
+

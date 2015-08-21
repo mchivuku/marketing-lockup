@@ -8,8 +8,13 @@
 namespace App\Services\SVGConversion;
 
 
+
 //Download Path
-use App\Services\SVG\IUSVG;
+use App\Services\SVG;
+
+require_once __DIR__."/../SVG/IUSVG.php";
+require_once __DIR__."/../SVG/IUSVG_PRINT.php";
+
 
 define('downloadPath',"/ip/iubrand/wwws/admin/public/downloads");
 /***
@@ -51,7 +56,7 @@ class SVGConvert
             $path = $status->message;
             $source_save_convert_status= $this->save_source_svgs_and_convert($path);
 
-            //TODO check the return path
+
             $z = new \ZipArchive();
             $parts =pathinfo($path);
 
@@ -62,7 +67,11 @@ class SVGConvert
             if($handle= opendir($path)){
 
                 while(false!==($entry=readdir($handle))){
-                     if($entry!="." && $entry!=".."){
+
+                    if($entry!="." && $entry!=".." && $entry!='errorlog.txt' &&
+                        !preg_match("/^(svg_print_([0-9]+).svg)$/i",$entry)
+                    ){
+
                         $file = $path."/".$entry;
                         $new_filename = substr($file,strrpos($file,'/') + 1);
                         $z->addFile($file,$new_filename);
@@ -93,29 +102,33 @@ class SVGConvert
         return date('m-d-Y');
     }
 
+    /** Function to save svgs and convert */
     function save_source_svgs_and_convert($path){
 
-        $file_curl_get_put_contents = function($p,$s,$t,$attr,$path){
-
-            $info = pathinfo($path);
-            $name = $path."/".$info['filename']."_".$attr."_".$this->getDateFormat().".svg";
-            file_put_contents($name,new IUSVG($p,$s,$t,$attr));
+        $CI = $this;
+        // create svg fi le and run convert command
+        $file_get_save = function($path,$classname,$filename,$tag)use($CI){
+            $contents = (new $classname($CI->primary,$CI->secondary,$CI->tertiary,$tag));
+            $name = $path."/".$filename.".svg";
+            file_put_contents($name,$contents);
             return $name;
-
         };
 
-
         foreach($this->tags as $tag){
-            $name = $file_curl_get_put_contents($this->primary,$this->secondary,$this->tertiary,$tag,$path);
-            $status = $this->convert($name);
+            //1.svg version -> web, 2. svg version for print;
+            $name = $file_get_save($path,'App\Services\SVG\IUSVG','svg_'.$tag,$tag);
+            $status = $this->convert_webversion($name);
+
             if($status->status==false){
-                return $status->message;
+                return $status->messsage;
             }
+
+            $name = $file_get_save($path,'App\Services\SVG\IUSVG_PRINT','svg_print_'.$tag,$tag);
+            $status = $this->convert_printversion($name);
+            if($status->status==false)return $status->message;
         }
 
-        //ZIp Archive and Save
-        //http://php.net/manual/en/class.ziparchive.php
-        return new ProcessStatus(true,'successfully completed the build');
+        return new ProcessStatus(true,'Successfully completed the build');
 
     }
 
@@ -173,18 +186,20 @@ class SVGConvert
     }
 
 
-    public function convert($src){
+    /**
+     *  Convert webversion -> jpg - low resolution, jpg - high resolution
+     */
+    public function convert_webversion($name){
+
         $result = "";
         $shell = new Exec();
 
-        $info = pathinfo($src);
-        $error_file_name = trim($info['dirname']."/"."errorlog_".$this->getDateFormat().".txt");
 
+        $info = pathinfo($name);
+        $error_file_name = trim($info['dirname']."/"."errorlog".".txt");
 
-        $command = new SVGCommandBuilder($src);
-
-        //run commands
-        $shell->run($command->getSVGToEPSCommand());
+        $command = new SVGCommandBuilder($name);
+        $shell->run($command->getSVGToJPGHighResolutionCommand());
 
         //failed
         if($shell->getReturnValue()!=0){
@@ -195,24 +210,36 @@ class SVGConvert
         }
 
         $shell_jpg = new Exec();
-
-        $shell_jpg->run($command->getSVGToJPGCommand());
+        $shell_jpg->run($command->getSVGToJPGLowResolutionCommand());
 
         if($shell_jpg->getReturnValue()!=0){
             $result.=file_get_contents($error_file_name);
-
-
         }
 
+        return $result!=""?new ProcessStatus(false,$result):new ProcessStatus(true);
 
-        //run commands
-        $shell_png = new Exec();
-
-        $shell_png->run($command->getSVGToPNGCommand());
-        if($shell_png->getReturnValue()!=0){
-            $result.=file_get_contents($error_file_name);
+    }
 
 
+    /***
+     * Convert print version -> png
+     * @param $name
+     */
+    public function convert_printversion($name){
+        $result = "";
+        $shell = new Exec();
+
+
+        $info = pathinfo($name);
+        $error_file_name = trim($info['dirname']."/"."errorlog".".txt");
+
+        $command = new SVGCommandBuilder($name);
+        $shell->run($command->getSVGToPNGCommand());
+
+
+        if($shell->getReturnValue()!=0){
+            if(file_exists($error_file_name))
+                $result .= (file_get_contents($error_file_name));
         }
 
         return $result!=""?new ProcessStatus(false,$result):new ProcessStatus(true);

@@ -6,6 +6,7 @@
  */
 
 namespace App\Services\SVG;
+
 class SVGFont {
 
     protected $id = '';
@@ -99,8 +100,7 @@ class SVGFont {
         $result = "";
         $horizAdvY = 0;
 
-        //$horizAdvY = $this->ascent + $this->descent;
-
+        // $horizAdvY = $this->ascent + $this->descent;
 
         foreach($lines as $text) {
             $text = $this->utf8ToUnicode($text);
@@ -116,7 +116,10 @@ class SVGFont {
             $horizAdvY += $this->ascent + $this->descent;
         }
 
-        $extents = array('w'=>$horizAdvX, 'h'=>$horizAdvY, 'l'=>count($lines),'s'=>$size);
+
+        $extents = array('w'=>$horizAdvX, 'h'=>$horizAdvY, 'l'=>count($lines),'s'=>$size,
+            'u'=>$this->unitsPerEm,'ascent'=>$this->ascent,'descent'=>$this->descent);
+
         return $result;
     }
 

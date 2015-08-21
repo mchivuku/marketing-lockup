@@ -9,47 +9,72 @@ namespace App\Services\SVGConversion;
 // SVG Command Builder contains three function
 require_once 'ConvertCommand.php';
 // One for each - EPSConverter, JPGConverter, PNGConverter
+
 class SVGCommandBuilder{
 
     protected $source;
     protected $commandEPS;
     protected $commandPNG;
     protected $commandJPG;
-    protected $options=array();
-
 
     public function __construct($source)
     {
         $this->source = $source;
-    }
 
-    public function addOption($option){
-        $this->options[(string)$option]=$option;
-        return $this;
     }
 
 
-    private function __getSVGToFormatCommand($extension){
+    private function __getSVGToFormatCommand($extension,$options,$filename=""){
         $info = pathinfo($this->source);
 
-        $dest = $info['dirname']."/".$info['filename'].".".$extension;
-        return (string)new ConvertCommand($this->source,$dest,$this->options);
+        if($filename!=""){
+            $dest = $filename;
+        }else{
+            $dest = $info['dirname']."/".$info['filename'].".".$extension;
+
+        }
+
+        return (string)new ConvertCommand($this->source,$dest,$options);
     }
 
-    public function getSVGToEPSCommand()
-    {
-        return  $this->__getSVGToFormatCommand("eps");
 
-    }
+    /** PNG Command to have transparent background */
     public function getSVGToPNGCommand()
     {
-        return  $this->__getSVGToFormatCommand("png");
+
+        // 1. PRINT WEB - with transparent background
+        // 2. convert -background none svg.svg svg_version2.png,convert -identify -resize 200%
+        return  $this->__getSVGToFormatCommand("png",array('-background none','-resize 200%'));
 
     }
 
-    public function getSVGToJPGCommand()
+    public function getSVGToJPGLowResolutionCommand()
     {
-        return  $this->__getSVGToFormatCommand("jpg");
+        $options = array();
+
+        //1. resolution
+        $options[] = "-density 72";   //dpi - 72
+        $options[] = "-resize 200%";  //size 200%;
+        $options[] = "-quality 6";    //quality 6
+
+        $info = pathinfo($this->source);
+        $dest = $info['dirname']."/".$info['filename']."_72dpi.jpg";
+
+
+        return  $this->__getSVGToFormatCommand("jpg",$options,$dest);
+
+    }
+
+    public function getSVGToJPGHighResolutionCommand()
+    {
+        $options = array();
+        $options[] = "-density 300";  //dpi - 72
+        $options[] = "-resize 200%";  //size 200%;
+        $options[] = "-quality 12";   // quality 12
+
+        $info = pathinfo($this->source);
+        $dest = $info['dirname']."/".$info['filename']."_300dpi.jpg";
+        return  $this->__getSVGToFormatCommand("jpg",$options,$dest);
 
     }
 

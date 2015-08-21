@@ -8,12 +8,10 @@
 
     $html = '<section class="collapsed bg-none"><div class="row"><div class="layout"><div class= "full-width"><divclass="text">';
 
-
                     $html .= "<div data-alert class=\"alert-box $type radius\">";
                     $html .= $message;
                     $html .= "<a href=\"#\" class=\"close\">&times;</a>";
                     $html .= "</div></div></div></div></div></section>";
-
     return $html;
 
     });
@@ -26,11 +24,13 @@
             <div class="layout">
                 <h2>Signature Review# {{$model->signatureid}}</h2>
                 <div class="full-width">
-                    <div id="example-images">
-                        {!! $model->signature->getSignaturePreview() !!}
+                    <div id='loadingmessage'>
+
                     </div>
 
+
                     <form class="filter">
+
 
 
                         <div class="row">
@@ -62,6 +62,9 @@
 
                    </form>
 
+                    <div id="example-images">
+                        {!! $model->signature->getSignaturePreview() !!}
+                    </div>
 
                 </div>
         </div></div>
@@ -73,21 +76,25 @@
         $(document).ready(function () {
             $('form .button').on('click',function(event){
                 event.preventDefault();
+                    $('html,body').animate({
+                        scrollTop: 128
+                    }, 1000);
+
                 var href = $(this).attr('href');
+                $('#loadingmessage').addClass('loading');
                 $.get(href,$(this).parents('form').serialize(),function(data){
                     var result= JSON.parse(data);
-
+                    $('#loadingmessage').removeClass('loading');
                     if(result.status){
                         window.location.replace("{{url("/signatures?message=Successfully completed the process")}}");
                         return;
                     }
                     else
                     {
-                        $('section.page-title').append('{!! \HTML::flash("Error occurred during the process",
+                        $('.filter').prepend('{!! \HTML::flash("Error occurred during the process",
                         \App\Models\ViewModels\Alerts::ALERT) !!}');
                         return;
                     }
-
 
                 });
 

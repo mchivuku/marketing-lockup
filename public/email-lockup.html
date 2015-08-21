@@ -35,277 +35,252 @@
         </div>
     </section>
 
-    <section class="bg-none section">
+    <form id="signatureForm" ng-app="">
         <div class="row">
-            <div class="layout">
-                <div class="full-width">
-                    <div class="text">
-                        <form id="signatureForm" ng-app="">
-                            <h3 id="previewText">Email Lock-Up Preview</h3>
-                            <div class="boxBorder" id="signatureOutput">
-                                <div id="logoDiv" style="margin-bottom: 10px;"><img alt="indiana-university-logo" src="https://brand.iu.edu/img/signatures/logos/iu.png" style="margin-bottom: -12px; margin-left: -6px;" width="400px"/></div>
-                                <div id="signatureWithoutImg">
-                                    <h5 style="font-size: 1.2em; margin: 0; font-family: Arial, Helvetica, sans-serif;">{{signature.firstName + " " + signature.lastName}}</h5>
-                                    <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;">{{signature.title1}}</p>
-                                    <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;">{{signature.title2}}</p>
-                                    <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;">{{signature.primaryunit + " " + signature.department}}</p>
-                                    <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;">{{signature.address.roomandbuilding }}<span ng-show="signature.address.roomandbuilding &amp;&amp; signature.address.address">,</span> {{signature.address.address}}</p>
-                                    <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;"><span ng-show="signature.address.city"></span> {{signature.address.city }}<span ng-show="signature.address.city">,</span> {{ signature.address.state + " " + signature.address.zipcode}}</p>
-                                    <p style="margin-top: 14px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;">{{signature.phone.primary}} <span ng-show="signature.phone.mobile">/</span> {{ signature.phone.mobile}}</p>
-                                    <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;"><a email="" href="{{" signature="" web="">{{signature.web.email}}</a> <span>{{" "}}</span></p>
-<p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;"><a href="{{signature.web.site%20}}">{{signature.web.site}}</a> <span>{{" "}}</span></p>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-                                <div id="previewDiv">
-                                    <h4 class="previewHeading">Signature with Logo</h4>
-                                    <div class="boxBorder" id="signatureOutputWithImage"></div>
-                                    <h4 class="previewHeading">Signature without Logo</h4>
-                                    <div class="boxBorder" id="signatureOutputWithoutImage"></div>
-                                    <a href="#" id="lnkEditFields" class="button">Edit Signature</a>
-                                </div>
-
-                            </div>
-
-
-                            <div id="mainForm">
-                                <div class="boxBorder">
-                                    <fieldset id="logosFieldset">
-                                        <legend>Signature Logo</legend>
-                                        <input checked="checked" name="logos" type="radio" value="iu"/> <label for-radio="iub">IU</label>
-                                        <img alt="indiana-university-logo" for-radio="iu" src="https://brand.iu.edu/img/signatures/logos/iu.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
-                                        <input name="logos" type="radio" value="iub"/>
-                                        <label for-radio="iub">IU Bloomington</label>
-                                        <img alt="indiana-university-logo" for-radio="iub" src="https://brand.iu.edu/img/signatures/logos/iu-bloomington.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
-                                        <input name="logos" type="radio" value="iupui"/> <label for-radio="iupui">IUPUI</label> <img alt="iupui-logo" for-radio="iupui" src="https://brand.iu.edu/img/signatures/logos/iupui.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
-                                        <input name="logos" type="radio" value="iu-east"/> <label for-radio="iu-east">IU East</label> <img alt="indiana-university-logo" for-radio="iu-east" src="https://brand.iu.edu/img/signatures/logos/iu-east.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
-                                        <input name="logos" type="radio" value="iu-kokomo"/> <label for-radio="iu-kokomo">IU Kokomo</label> <img alt="indiana-university-logo" for-radio="iu-kokomo" src="https://brand.iu.edu/img/signatures/logos/iu-kokomo.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
-                                        <input name="logos" type="radio" value="iu-northwest"/> <label for-radio="iu-northwest">IU Northwest</label> <img alt="indiana-university-logo" for-radio="iu-northwest" src="https://brand.iu.edu/img/signatures/logos/iu-nothwest.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
-                                        <input name="logos" type="radio" value="iu-south-bend"/> <label for-radio="iu-south-bend">IU South Bend</label> <img alt="indiana-university-logo" for-radio="iu-south-bend" src="https://brand.iu.edu/img/signatures/logos/iu-south-bend.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
-                                        <input name="logos" type="radio" value="iupuc"/> <label for-radio="iupuc">IUPUC</label> <img alt="indiana-university-logo" for-radio="iupuc" src="https://brand.iu.edu/img/signatures/logos/iupuc.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/></fieldset>
-                                </div>
-                            </div>
-
-                            <fieldset class="boxBorder">
-                                <legend>Personal Information</legend>
-
-                                <div class="form-item">
-                                    <div class="form-item-label">
-                                        <label for="FirstName">First Name</label>
-
-                                    </div>
-                                    <div class="form-item-input">
-                                        <input type="text" required="" placeholder="Mary" ng-model="signature.firstName"
-                                               name="signaturename" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" aria-required="true">
-                                    </div>
-
-                                </div>
-
-
-                                <div class="form-item">
-                                    <div class="form-item-label">
-                                    <label for="signaturelastname">Last Name</label>
-                                        </div>
-                                    <div class="form-item-input">
-                                        <input type="text" required="" placeholder="Hoosier" ng-model="signature.lastName" name="signaturelastname"
-                                               class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" aria-required="true">
-                                    </div>
-
-                                </div>
-
-                                <div class="form-item"><div class="form-item-label">
-                                    <label for="title1">Title  1</label>
-                                </div>
-                                    <div class="form-item-input">
-                                    <input type="text" placeholder="PhD" ng-model="signature.title1" name="title1"
-                                           class="form-control ng-pristine ng-untouched ng-valid"></div>
-                                </div>
-
-                                <div class="form-item"><div class="form-item-label">
-                                    <label for="title2">Title 2</label>
-                                </div>
-                                    <div class="form-item-input">
-                                        <input type="text" placeholder="" ng-model="signature.title2" name="title2" class="form-control ng-pristine ng-untouched ng-valid"></div>
-                                </div>
-
-                                <div class="form-item"><div class="form-item-label">
-                                    <label for="primaryunit">Primary Unit</label>
-                                </div>
-                                    <div class="form-item-input">
-                                        <input type="text" placeholder="College of Arts and Sciences" ng-model="signature.primaryunit"
-                                               name="primaryunit" class="form-control ng-pristine ng-untouched ng-valid">
-                                    </div>
-                                </div>
-
-                                <div class="form-item"><div class="form-item-label">
-                                    <label for="department">Sub Unit</label>
-                                </div>
-                                    <div class="form-item-input">
-                                        <input type="text" placeholder="" ng-model="signature.department" name="department"
-                                               class="form-control ng-pristine ng-untouched ng-valid">
-                                    </div>
-                                </div>
-
-                            </fieldset>
-
-
-                            <!-- Address -->
-                            <fieldset class="boxBorder"><legend>Address</legend>
-                                <div class="form-item"><div class="form-item-label">
-                                    <label for="ad-roomandbuilding">Room and Building</label></div>
-                                    <div class="form-item-input">
-                                    <input type="text" placeholder="315 Bryan Hall"
-                                           ng-model="signature.address.roomandbuilding"
-                                           name="ad-roomandbuilding"
-                                           class="form-control ng-pristine ng-untouched ng-valid">
-                                    </div>
-                                    </div>
-
-                                    <div class="form-item"><div class="form-item-label">
-                                        <label for="ad-address">Address</label></div>
-                                        <div class="form-item-input">
-                                            <input type="text" placeholder="107 S Indiana Ave" ng-model="signature.address.address"
-                                                   name="ad-address" class="form-control ng-pristine ng-untouched ng-valid">
-                                        </div>
-                                    </div>
-
-                                        <div class="form-item"><div class="form-item-label">
-                                            <label for="ad-city">City</label></div>
-                                            <div class="form-item-input">
-                                                <input type="text" placeholder="" ng-model="signature.address.city" name="ad-city"
-                                                       class="form-control ng-pristine ng-untouched ng-valid">
-                                            </div>
-                                        </div>
-
-                                      </div>
-
-                                        <div class="form-item"><div class="form-item-label">
-                                            <label for="ad-state">State</label></div>
-                                            <div class="form-item-input">
-                                                <select ng-model="signature.address.state" name="state"
-                                                        class="form-control ng-pristine ng-untouched ng-valid"><option value="? undefined:undefined ?"></option>
-                                                    <option value="AL">AL</option>
-                                                    <option value="AK">AK</option>
-                                                    <option value="AZ">AZ</option>
-                                                    <option value="AR">AR</option>
-                                                    <option value="CA">CA</option>
-                                                    <option value="CO">CO</option>
-                                                    <option value="CT">CT</option>
-                                                    <option value="DE">DE</option>
-                                                    <option value="DC">DC</option>
-                                                    <option value="FL">FL</option>
-                                                    <option value="GA">GA</option>
-                                                    <option value="HI">HI</option>
-                                                    <option value="ID">ID</option>
-                                                    <option value="IL">IL</option>
-                                                    <option value="IN">IN</option>
-                                                    <option value="IA">IA</option>
-                                                    <option value="KS">KS</option>
-                                                    <option value="KY">KY</option>
-                                                    <option value="LA">LA</option>
-                                                    <option value="ME">ME</option>
-                                                    <option value="MD">MD</option>
-                                                    <option value="MA">MA</option>
-                                                    <option value="MI">MI</option>
-                                                    <option value="MN">MN</option>
-                                                    <option value="MS">MS</option>
-                                                    <option value="MO">MO</option>
-                                                    <option value="MT">MT</option>
-                                                    <option value="NE">NE</option>
-                                                    <option value="NV">NV</option>
-                                                    <option value="NH">NH</option>
-                                                    <option value="NJ">NJ</option>
-                                                    <option value="NM">NM</option>
-                                                    <option value="NY">NY</option>
-                                                    <option value="NC">NC</option>
-                                                    <option value="ND">ND</option>
-                                                    <option value="OH">OH</option>
-                                                    <option value="OK">OK</option>
-                                                    <option value="OR">OR</option>
-                                                    <option value="PA">PA</option>
-                                                    <option value="RI">RI</option>
-                                                    <option value="SC">SC</option>
-                                                    <option value="SD">SD</option>
-                                                    <option value="TN">TN</option>
-                                                    <option value="TX">TX</option>
-                                                    <option value="UT">UT</option>
-                                                    <option value="VT">VT</option>
-                                                    <option value="VA">VA</option>
-                                                    <option value="WA">WA</option>
-                                                    <option value="WV">WV</option>
-                                                    <option value="WI">WI</option>
-                                                    <option value="WY">WY</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-
-
-
-                                        <div class="form-item">
-                                            <div class="form-item-label">
-                                            <label for="ad-zipcode">Zip Code</label></div>
-                                            <div class="form-item-input">
-
-                                          <input type="text" placeholder="" ng-model="signature.address.zipcode"
-                                           name="ad-zipcode" class="form-control ng-pristine ng-untouched ng-valid">
-                                            </div>
-                                            </div>
-                            </fieldset>
-
-
-                            <!-- Phone Number -->
-                    <fieldset class="boxBorder">
-                        <legend>Phone Numbers</legend>
-                        <div class="form-item">
-                            <div class="form-item-label"><label for="phone-primary">Office</label> </div>
-                            <div class="form-item-input">
-                            <input  type="phone-primary" placeholder="" ng-model="signature.phone.primary" name="phone-primary"
-                                    class="form-control ng-pristine ng-untouched ng-valid"></div>
-                            </div>
-
-                        <div class="form-item">
-                            <div class="form-item-label">
-                                <label for="phone-mobile">Cell</label></div>
-                            <div class="form-item-input">
-
-                                <input type="phone-mobile" placeholder=""
-                                       ng-model="signature.phone.mobile" name="phone-primary"
-                                       class="form-control ng-pristine ng-untouched ng-valid">
-                            </div>
-                            </div>
-                    </fieldset>
-
-                    <fieldset class="boxBorder"><legend>Email &amp; Website</legend>
-                        <div class="form-item">
-                            <div class="form-item-label"><label for="web-email">Email Address</label> </div>
-                            <div class="form-item-input">
-                            <input
-                                    type="web-email" placeholder="" ng-model="signature.web.email"
-                                    name="phone-primary" class="form-control ng-pristine ng-untouched ng-valid"></div>
-                            </div>
-
-                        <div class="form-item">
-                            <div class="form-item-label">
-                                <label for="web-site">Website</label>
-                                </div>
-                            <div class="form-item-input">
-                                <input type="web-site" placeholder=""
-                                       ng-model="signature.web.site" name="phone-primary"
-                                       class="form-control ng-pristine ng-untouched ng-valid"></div>
-                            </div>
-                    </fieldset>
-                    <button id="generateSignature" class="btn btn-default" type="submit">Generate Signature</button>
-                    <input id="signatureWithoutLogoHidden" type="hidden" value="" name="signatureWithoutLogoHidden">
-                    <input id="signatureWithLogoHidden" type="hidden" value="" name="signatureWithLogoHidden">
-                    <span></span>
-                        </form>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-lg-push-6 col-md-push-6 col-sm-push-6 col-xs-12">
+                <div class="row">
+                    <div>
+                        <h3 id="previewText">Marketing Lock-Up Preview</h3>
                     </div>
+                    <div class="boxBorder" id="signatureOutput">
+                        <div id="logoDiv" style="margin-bottom: 10px;"><img alt="indiana-university-logo" src="https://brand.iu.edu/img/signatures/logos/iu.png" style="margin-bottom: -12px; margin-left: -6px;" width="400px"/></div>
+                        <div id="signatureWithoutImg">
+                            <h5 style="font-size: 13.2px; margin: 0; font-family: Arial, Helvetica, sans-serif;">{{signature.firstName + " " + signature.lastName}}</h5>
+                            <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial,
+                            Helvetica, sans-serif;font-size: 11px; ">{{signature.title1}}</p>
+                            <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.title2}}</p>
+                            <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.primaryunit + " " + signature.department}}</p>
+                            <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.address.roomandbuilding }}<span ng-show="signature.address.roomandbuilding &amp;&amp; signature.address.address">,</span> {{signature.address.address}}</p>
+                            <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;"><span ng-show="signature.address.city"></span> {{signature.address.city }}<span ng-show="signature.address.city">,</span> {{ signature.address.state + " " + signature.address.zipcode}}</p>
+                            <p style="margin-top: 14px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.phone.primary}} <span ng-show="signature.phone.mobile">/</span> {{ signature.phone.mobile}}</p>
+                            <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;><a email="" href="{{" signature="" web="">{{signature.web.email}}</a> <span>{{" "}}</span></p>
+                            <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;"><a href="{{signature.web.site%20}}">{{signature.web.site}}</a> <span>{{" "}}</span></p>
+                        </div>
+                    </div>
+                    <div id="previewDiv">
+                        <h4 class="previewHeading" style="font-size: 14.9333px; margin: 0; font-family: Arial, Helvetica, sans-serif;">Signature with Logo</h4>
+                        <div class="boxBorder" id="signatureOutputWithImage" style="font-size: 11px; margin: 0;
+                        font-family: Arial, Helvetica, sans-serif;"></div>
+                        <h4 class="previewHeading" style="font-size: 14.9333px; margin: 0; font-family: Arial,
+                        Helvetica, sans-serif;">Signature without Logo</h4>
+                        <div class="boxBorder" id="signatureOutputWithoutImage" style="font-size: 11px; margin: 0;
+                        font-family: Arial, Helvetica, sans-serif;"></div>
+                        <a href="#" id="lnkEditFields">Edit Signature</a></div>
                 </div>
             </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-lg-pull-6 col-md-pull-6 col-sm-pull-6 col-xs-12" id="mainForm">
+                <div class="boxBorder">
+                    <fieldset id="logosFieldset"><legend>Signature Logo</legend> <input checked="checked" name="logos" type="radio" value="iu"/> <label for-radio="iub">IU</label> <img alt="indiana-university-logo" for-radio="iu" src="https://brand.iu.edu/img/signatures/logos/iu.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
+                        <input name="logos" type="radio" value="iub"/> <label for-radio="iub">IU Bloomington</label> <img alt="indiana-university-logo" for-radio="iub" src="https://brand.iu.edu/img/signatures/logos/iu-bloomington.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
+                        <input name="logos" type="radio" value="iupui"/> <label for-radio="iupui">IUPUI</label> <img alt="iupui-logo" for-radio="iupui" src="https://brand.iu.edu/img/signatures/logos/iupui.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
+                        <input name="logos" type="radio" value="iu-east"/> <label for-radio="iu-east">IU East</label> <img alt="indiana-university-logo" for-radio="iu-east" src="https://brand.iu.edu/img/signatures/logos/iu-east.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
+                        <input name="logos" type="radio" value="iu-kokomo"/> <label for-radio="iu-kokomo">IU Kokomo</label> <img alt="indiana-university-logo" for-radio="iu-kokomo" src="https://brand.iu.edu/img/signatures/logos/iu-kokomo.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
+                        <input name="logos" type="radio" value="iu-northwest"/> <label for-radio="iu-northwest">IU Northwest</label> <img alt="indiana-university-logo" for-radio="iu-northwest" src="https://brand.iu.edu/img/signatures/logos/iu-nothwest.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
+                        <input name="logos" type="radio" value="iu-south-bend"/> <label for-radio="iu-south-bend">IU South Bend</label> <img alt="indiana-university-logo" for-radio="iu-south-bend" src="https://brand.iu.edu/img/signatures/logos/iu-south-bend.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/><br/>
+                        <input name="logos" type="radio" value="iupuc"/> <label for-radio="iupuc">IUPUC</label> <img alt="indiana-university-logo" for-radio="iupuc" src="https://brand.iu.edu/img/signatures/logos/iupuc.png" style="display: none; margin-bottom: -12px; margin-left: -6px;" width="400px"/></fieldset>
+                </div>
+                <div>
+                    <fieldset class="boxBorder"><legend>Personal Information</legend>
+                        <div class="form-group">
+
+                            <label for="signaturename">First Name</label>
+                            <input ng-model="signature.firstName"   placeholder="Mary" type="text" id="signaturename"  name="signaturename" type="text" required>
+
+                        </div>
+                        <div class="form-group"><label for="signaturelastname">Last Name</label>
+                            <input class="form-control" name="signaturelastname" ng-model="signature.lastName"placeholder="Hoosier" type="text" id="signaturelastname" required></div>
+                        <div class="form-group"><label for="title1">Title 1</label> <input class="form-control" id="title1"
+                                                                                           name="title1" ng-model="signature.title1" placeholder="PhD" type="text"></div>
+                        <div class="form-group"><label for="title2">Title 2</label> <input class="form-control"
+                                                                                           name="title2"
+                                                                                           id="title2"
+                                                                                           ng-model="signature.title2" placeholder="" type="text"></div>
+                        <div class="form-group"><label for="primaryunit">Primary Unit</label> <input
+                                class="form-control" id="primaryunit" name="primaryunit"
+                                ng-model="signature.primaryunit"
+                                placeholder="College of Arts and Sciences" type="text"/></div>
+                        <div class="form-group"><label for="department">Sub Unit</label> <input id="department" class="form-control"
+                                                                                                 name="department" ng-model="signature.department" placeholder="" type="text"></div>
+                    </fieldset>
+                    <fieldset class="boxBorder"><legend>Address</legend>
+                        <div class="form-group"><label for="ad-roomandbuilding">Room and Building</label> <input id="ad-roomandbuilding"
+                                class="form-control" name="ad-roomandbuilding" ng-model="signature.address.roomandbuilding" placeholder="315 Bryan Hall" type="text"></div>
+                        <div class="form-group"><label for="ad-address">Address</label> <input class="form-control"
+                                                                                               id="ad-address"
+                                                                                               name="ad-address"
+                                                                                               ng-model="signature.address.address" placeholder="107 S Indiana Ave" type="text"/></div>
+                        <div class="form-group"><label for="ad-city">City</label> <input id="ad-city" class="form-control"
+                                                                                          name="ad-city" ng-model="signature.address.city" placeholder="" type="text"/></div>
+                        <div class="form-group"><label for="ad-state">State</label><select id="ad-state" class="form-control"
+                                                                                            name="state" ng-model="signature.address.state">
+                            <option value="AL">AL</option>
+                            <option value="AK">AK</option>
+                            <option value="AZ">AZ</option>
+                            <option value="AR">AR</option>
+                            <option value="CA">CA</option>
+                            <option value="CO">CO</option>
+                            <option value="CT">CT</option>
+                            <option value="DE">DE</option>
+                            <option value="DC">DC</option>
+                            <option value="FL">FL</option>
+                            <option value="GA">GA</option>
+                            <option value="HI">HI</option>
+                            <option value="ID">ID</option>
+                            <option value="IL">IL</option>
+                            <option value="IN">IN</option>
+                            <option value="IA">IA</option>
+                            <option value="KS">KS</option>
+                            <option value="KY">KY</option>
+                            <option value="LA">LA</option>
+                            <option value="ME">ME</option>
+                            <option value="MD">MD</option>
+                            <option value="MA">MA</option>
+                            <option value="MI">MI</option>
+                            <option value="MN">MN</option>
+                            <option value="MS">MS</option>
+                            <option value="MO">MO</option>
+                            <option value="MT">MT</option>
+                            <option value="NE">NE</option>
+                            <option value="NV">NV</option>
+                            <option value="NH">NH</option>
+                            <option value="NJ">NJ</option>
+                            <option value="NM">NM</option>
+                            <option value="NY">NY</option>
+                            <option value="NC">NC</option>
+                            <option value="ND">ND</option>
+                            <option value="OH">OH</option>
+                            <option value="OK">OK</option>
+                            <option value="OR">OR</option>
+                            <option value="PA">PA</option>
+                            <option value="RI">RI</option>
+                            <option value="SC">SC</option>
+                            <option value="SD">SD</option>
+                            <option value="TN">TN</option>
+                            <option value="TX">TX</option>
+                            <option value="UT">UT</option>
+                            <option value="VT">VT</option>
+                            <option value="VA">VA</option>
+                            <option value="WA">WA</option>
+                            <option value="WV">WV</option>
+                            <option value="WI">WI</option>
+                            <option value="WY">WY</option>
+                        </select></div>
+                        <div class="form-group"><label for="ad-zipcode">Zip Code</label> <input id='ad-zipcode'
+                                                                                                class="form-control"
+                                                                                                name="ad-zipcode" ng-model="signature.address.zipcode" placeholder="" type="text"/></div>
+                    </fieldset>
+                    <fieldset class="boxBorder"><legend>Phone Numbers</legend>
+                        <div class="form-group"><label for="phone-primary">Office</label> <input id="phone-primary"
+                                class="form-control" name="phone-primary" ng-model="signature.phone.primary" placeholder="" type="phone-primary"/></div>
+                        <div class="form-group"><label for="phone-mobile">Cell</label> <input id="phone-mobile"
+                                                                                              class="form-control"
+                                                                                               name="phone-primary" ng-model="signature.phone.mobile" placeholder="" type="phone-mobile"/></div>
+                    </fieldset>
+                    <fieldset class="boxBorder"><legend>Email &amp; Website</legend>
+                        <div class="form-group"><label for="web-email">Email Address</label> <input id="web-email"
+                                class="form-control" name="phone-primary" ng-model="signature.web.email" placeholder="" type="email"/></div>
+                        <div class="form-group"><label for="web-site">Website</label> <input  id="web-site"
+                                                                                              class="form-control" name="phone-primary" ng-model="signature.web.site" placeholder="" type="site"/></div>
+                    </fieldset>
+                    <button class="btn btn-default" id="generateSignature" type="submit">Generate Signature</button> <input id="signatureWithoutLogoHidden" name="signatureWithoutLogoHidden" type="hidden" value=""/> <input id="signatureWithLogoHidden" name="signatureWithLogoHidden" type="hidden" value=""/> <span></span></div>
+            </div>
         </div>
+    </form>
 
-    </section>
+    <style type="text/css">
 
+        /****************************************
+ * Content
+ ****************************************/
+
+        #signatureForm {
+            overflow: hidden;
+            padding: 0 22px 15px 22px;
+        }
+        #signatureForm h1, #signatureForm h2, #signatureForm h3, #signatureForm h4, #signatureForm h5 {
+            color: #000;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0 0 18px 0;
+        }
+        #signatureForm h1, #signatureForm h2 {
+            font-size: 1.643em; /* 23px (23/14) */
+            line-height: 1.130em; /* 26px (26/23) */
+        }
+        #signatureForm h3 {
+            font-size: 1.571em; /* 22px (22/14) */
+            font-weight: bold;
+            line-height: 1.136em; /* 25px (25/22) */
+        }
+        #signatureForm h4 {
+            font-size: 1.357em; /* 19px (19/14) */
+            line-height: 1.211em; /* 23px (23/19) */
+        }
+        #signatureForm h5 {
+            font-size: 1.071em; /* 15px (15/14) */
+            font-weight: bold;
+            letter-spacing: 0.03em;
+            line-height: 1.133em; /* 17px (17/15) */
+        }
+        #signatureForm h6 {
+            color: #000;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 1em; /* 14px (14/14) */
+            font-weight: bold;
+            letter-spacing: 0.02em;
+            line-height: 1.143em; /* 16px (16/14) */
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+        }
+
+        /*** Paragraphs ***/
+
+        #signatureForm p {
+            margin: 0 0 18px 0;
+        }
+
+        /*** Rules ***/
+
+        #signatureForm hr {
+            border-top: 1px dotted #000;
+            margin: 0 0 18px 0;
+        }
+
+        /*** Lists ***/
+
+        #signatureForm ul, #signatureForm ol {
+            margin: 0 0 18px 0;
+        }
+        #signatureForm ul {
+            list-style: none;
+            padding: 0 0 0 16px;
+        }
+
+        /*** Forms ***/
+
+        #signatureForm form {
+            background: #eae8db;
+            color: #000;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0.786em; /* 11px (11/14) */
+            line-height: 1.273em; /* 14px (14/11) */
+            margin: 0 0 23px 0;
+            overflow: hidden;
+            padding: 20px 20px 10px 20px;
+            zoom: 1; /* IE has layout */
+        }
+        #signatureForm form legend {
+            font-size: 1.071em; /* 15px (15/14) */
+            line-height: 1.133em; /* 17px (17/15) */
+            padding: 0 0 10px 0;
+        }
+        #signatureForm form input, #signatureForm form textarea, #signatureForm form select {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px; /* 11px (11/11) */
+            line-height: 1em; /* 11px (11/11) */
+            padding: 3px;
+        }
+        #signatureForm form input[type='text'],
+        #signatureForm form textarea {
+            width: 97%;
+        }
+    </style>

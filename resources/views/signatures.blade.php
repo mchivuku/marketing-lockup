@@ -2,15 +2,12 @@
 
 @section('content')
 
-<meta name="_token" content="{
-    { csrf_token() }}" />
-
 
 <div class="extra-space bg-none section" id="content">
     <div class="row">
         <div class="layout">
            <div class="full-width">
-                <div class="text">
+
 
                     <ul class="tabs" data-tab role="tablist">
                         @for($i = 0;$i<count($model->states);$i++)
@@ -18,7 +15,6 @@
                          <?php if($i==0){?>
                              <li class="tab-title active" role="presentation">
                                 <a href="#{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}" role="tab" tabindex="{{$model->states[$i]['id']}}" aria-selected="true"
-                                   aria-controls="all-signatures"
                                    data-target="signatures/getSignatures">{{$model->states[$i]['status']}}</a>
                             </li>
 
@@ -26,7 +22,7 @@
                              <li class="tab-title" role="presentation">
                                 <a href="#{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}" role="tab"
                                 tabindex="{{$model->states[$i]['id']}}" aria-selected="true"
-                                   data-target="signatures/getSignatures?status={{$model->states[$i]['id']}}".aria-controls="all-signatures">{{$model->states[$i]['status']}}</a>
+                                   data-target="signatures/getSignatures?status={{$model->states[$i]['id']}}">{{$model->states[$i]['status']}}</a>
                         </li>
                         <?php }?>
                         @endfor
@@ -47,10 +43,11 @@
 
                     </div>
 
-                 </div>
-               </div>
+
+</div>
            </div>
-    </section>
+
+    </div>
 
 @endsection
 

@@ -77,11 +77,12 @@
 
 	<script type="text/javascript" src="{{asset("bower_components/jquery-validation/dist/jquery.validate.min.js")}}"></script>
 
+	<script type="text/javascript" src="{{asset("js/tablesaw.stackonly.js")}}"></script>
+
 	<script src="{{asset("js/svg.js")}}" type="text/javascript"></script>
 
-@yield('scripts')
-
 </div>
+@yield('scripts')
 </body>
 </html>
 

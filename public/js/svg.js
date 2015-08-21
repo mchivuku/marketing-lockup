@@ -7,6 +7,7 @@ $(document).ready(function(){
 
     IUComm && IUComm.init( {debug:true} );
 
+
     jQuery.fn.exists = function(){return this.length>0;}
 
     if (!$('aside').exists()){
@@ -21,6 +22,8 @@ $(document).ready(function(){
 
     // close alert box -
     $('.alert-box > a.close').click(function() { $(this).closest('[data-alert]').fadeOut(); });
+
+
 
 });
 
@@ -79,6 +82,8 @@ AjaxTabs = {
             //remove active
             AjaxTabs.loadTabContent(target);
 
+
+
         });
     },
 
@@ -95,6 +100,10 @@ AjaxTabs = {
                 });
             });
 
+            // initialize datatable
+            $('#signatureTable').dataTable({  "ordering": false,"info":false});
+            $('#signatureTable').table().data( "table" ).refresh();
+
             $(document).foundation('reflow');
 
         });
@@ -102,4 +111,4 @@ AjaxTabs = {
 
     }
 
-}
+};

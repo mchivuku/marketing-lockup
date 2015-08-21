@@ -23,7 +23,7 @@
      <div class="row">
          <div class="layout">
              <div class="full-width">
-                <div class="text">
+
                     <?php
                         $table = new StdClass;
                         $table->header = array('First Name','Last Name','Email Address','&nbsp;');
@@ -40,9 +40,8 @@
 
                     ?>
 
-            @include('table',array('model'=>$table))
+                    @include('table',array('model'=>$table))
 
-                </div>
              </div>
         </div>
          </div>
@@ -54,11 +53,11 @@
 @section('scripts')
 
 <script type="text/javascript">
-
         $(document).ready(function() {
-            $('#usersTable').dataTable();
-        });
+            $('#usersTable').dataTable({  "ordering": false,"info": false});
+            $('#usersTable').table().data( "table" ).refresh();
 
+        });
 
 </script>
 

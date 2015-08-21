@@ -91,7 +91,7 @@ class SignaturesController extends Controller {
                  //   $signature->preview = $signature->getSignatureThumbnail();
                     $signature->preview='';
                     $obj =  $CI->construct_ldap_object($signature->username);
-                    $signature->name = sprintf("%s,%s",$obj->lastName,$obj->firstName);
+                    $signature->name = sprintf("%s %s",$obj->firstName,$obj->lastName);
 
                     /** Next state for the required action link */
                     if(stripos($signature->reviewstatus->status,'Pending')!==false){
@@ -214,7 +214,7 @@ class SignaturesController extends Controller {
     public function create(){
 
         $signature = new Models\Signature();
-
+        \View::share('editmode',false);
         return $this->view('addEditSignature')->model($signature)->title('Create Signature');
     }
 
@@ -222,6 +222,7 @@ class SignaturesController extends Controller {
     public function edit(){
         $id = \Input::get('signatureid');
         $signature  = Models\Signature::find($id);
+        \View::share('editmode',true);
 
         return $this->view('addEditSignature')->model($signature)->title('Edit Signature');
 
@@ -234,23 +235,24 @@ class SignaturesController extends Controller {
      *
      * @return mixed
      */
-    public function save(Request $request){
+    public function save(){
 
         $inputs = \Input::all();
         $message="";
         $user = $this->currentUser;
-        $validator = Validator::make($request->all(), [
-            'primaryText' => 'max:24',
-            'secondaryText' => 'max:24',
-            'tertiaryText' => 'max:24'
-        ]);
+        /** @var no validation here $validator */
+        //$validator = Validator::make($request->all(), [
+          //  'primaryText' => 'max:24',
+            //'secondaryText' => 'max:24',
+           // 'tertiaryText' => 'max:24'
+        //]);
 
 
-        if ($validator->fails()){
-             return redirect()->to('signatures/create')
-                ->withErrors($validator)
-                ->withInput();
-        }
+       // if ($validator->fails()){
+         //    return redirect()->to('signatures/create')
+           //     ->withErrors($validator)
+             //   ->withInput();
+        //}
 
 
 

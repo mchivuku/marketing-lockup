@@ -8,7 +8,7 @@
 
 namespace App\Models\ViewModels;
 
-class BootstrapSettings
+class ViewSettings
 {
   public static  $ulNavigationClass = "nav nav-tabs nav-stacked affix-top";
   public static  $primaryButtonClass =  "btn btn-small btn-primary";

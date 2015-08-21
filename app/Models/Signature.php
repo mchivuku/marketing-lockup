@@ -28,8 +28,8 @@ class Signature extends Model {
 
 
     /** Helper Functions  */
-    public function getNamedSchoolTags(){return array(1,2,3,4);}
-    public function getAllSchoolTags(){return array(1,2,3,4,5,6,7);}
+    public function getNamedSchoolTags(){return array(2,5,7,9);}
+    public function getAllSchoolTags(){return array(1,2,3,4,5,6,7,8,9);}
 
 
     /** Get Preview for signatures  */

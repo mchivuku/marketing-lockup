@@ -32,9 +32,10 @@ class ConvertCommand{
     {
         $name = pathinfo($this->src);
 
-        return trim("2>".$name['dirname']."/"."errorlog_".date('m-d-Y').".txt");
+        return trim("2>".$name['dirname']."/"."errorlog".".txt");
 
     }
+
 
 
     public function __toString()

@@ -12,37 +12,30 @@ class SVGBase {
         'BentonSansCond-Regular' => 'benton-sans-cond-regular.ttf',
         'BentonSansCond-Bold' => 'benton-sans-cond-bold.ttf');
 
-    protected $default_width = 600 ;
-    protected $default_height = 719;
+    protected $xml,$tagXML;
 
+    function __construct(){
 
-    function __construct($width=null, $height=null, $fixed=false){
         $this->xml  = simplexml_load_string('<svg class="svg" version="1.1"  xml:space="preserve"
         xmlns="http://www.w3.org/2000/svg"/>');
+    }
 
-        if(isset($width)){
-            $w = $width;
-        }else{
-            $w = $this->default_width;
-        }
+    function init($width, $height){
 
-        if(isset($height)){
-            $h = $height;
-        }else{
-            $h = $this->default_height;
-        }
+        $w = $width."px";
+        $h = $height."px";
 
-
-        if($fixed) {
-            $this->xml['width'] = $w;
-            $this->xml['height'] = $h;
-        }
-
-        $this->xml['viewBox'] = "0 0 $w $h";
-        $this->xml['preserveAspectRatio'] = "xMinYMin";
+        $this->xml['enable-background']="new 0 0 $width $height";
         $this->xml['x']= "0px";
         $this->xml['y']= "0px";
-        $this->xml['enable-background']="new 0 0 $w $height";
+
+        $this->xml['preserveAspectRatio'] = "xMinYMin";
+
+        $this->xml['viewBox']="0 0 $width $height";
+        $this->xml['width']=$width."px";
+        $this->xml['height']=$height."px";
+
+
 
     }
 
@@ -66,27 +59,19 @@ class SVGBase {
         return $xml;
     }
 
-    function __toString() {
+    public function __toString() {
         return $this->prettyXML();
     }
 
-    function line($x1, $y1, $x2, $y2) {
-
-        $stoke_color = "'#FF0000'";
-        $stroke_width = "'2.500000e-02'";
-
-        $e = "<line fill='none' x1='$x1' y1='$y1' x2='$x2'
-              y2='$y2'stroke='$stoke_color' stroke-width='$stroke_width'/>";
-        $line = $this->addXMLStr($this->xml, $e);
-    }
-
-    function grid() {
-        for($y=0; $y<1000; $y+=10) $this->line(0, $y, 1000, $y);
-        for($x=0; $x<1000; $x+=10) $this->line($x, 0, $x, 1000);
-    }
-
     function metrics($text='Hello world!', $font='bentonSansCond-Regular', $size=32, $maxWidth=400) {
-        $f = "/ip/fonts/wwws/fonts/{$this->fonts[$font]}";
+
+        $fonts = array(
+            'BentonSansCond-Regular' => 'benton-sans-cond-regular.ttf',
+            'BentonSansCond-Bold' => 'benton-sans-cond-bold.ttf'
+        );
+
+        $f = "/ip/fonts/wwws/fonts/{$fonts['BentonSansCond-Bold']}";
+
         $a = imagettfbbox($size, 0.0, $f, $text);
         $o = new stdClass;
         $o->ascent = abs($a[7]);
@@ -95,4 +80,13 @@ class SVGBase {
         $o->width  = abs($a[0])+abs($a[2]);
         return $o;
     }
+
+    function funitsToPx($units,$pointsize,$units_per_em){
+        //http://search.cpan.org/dist/Font-TTFMetrics/lib/Font/TTFMetrics.pm
+        //fIUnits * pointsize * resolution /(72 * units_per_em);
+        return $units*$pointsize*72/(72*$units_per_em);
+
+    }
+
+
 }
