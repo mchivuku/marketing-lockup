@@ -9,7 +9,7 @@ $anchor_link = function($path,$text,$children=false){
 
     $href = url($path);
 
-    if(stripos($current,$path)!==false && $children==false){
+    if($current===$path && $children==false){
         return "<a class='current'  href=\"$href\" itemprop=\"url\"><span
 					itemprop=\"name\">$text</span></a>";
     }
@@ -18,23 +18,12 @@ $anchor_link = function($path,$text,$children=false){
 }
 ?>
 
-<li class="first">
-    {!!$anchor_link('signatures','Manage Signatures')!!}
-    <ul class="children">
-        <li>{!!$anchor_link('signatures/create','Create Signature',true)!!}</li>
-    </ul>
-
-</li>
-
-<li>
-    {!!$anchor_link('emaillockup','Email Lockup')!!}
-
-
-</li>
-
+<li class="first">{!!$anchor_link('signatures/create','Create Lock-up')!!}</li>
+<li>{!!$anchor_link('emaillockup','Email Lock-up')!!}</li>
+<li>{!!$anchor_link('signatures','Manage Lock-ups')!!}</li>
 @if($navigation['isAdmin'])
 
-    <li>{!!$anchor_link('admin','Manage Administrators')!!}
+    <li class="last">{!!$anchor_link('admin','Manage Administrators')!!}
     </li>
 
 @endif

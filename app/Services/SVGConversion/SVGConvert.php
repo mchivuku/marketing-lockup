@@ -29,14 +29,18 @@ class SVGConvert
     protected $primary;
     protected $secondary;
     protected $tertiary;
+    protected $htags,$vtags;
 
 
-    public function __construct($p,$s,$t,$tags){
+    public function __construct($p,$s,$t,$htags,$vtags){
 
         $this->primary=$p;
         $this->secondary=$s;
         $this->tertiary=$t;
-        $this->tags = $tags;
+        $this->htags = $htags;
+        $this->vtags = $vtags;
+
+
 
     }
 
@@ -54,8 +58,7 @@ class SVGConvert
 
             // save the source to the path
             $path = $status->message;
-            $source_save_convert_status= $this->save_source_svgs_and_convert($path);
-
+            $this->save_source_svgs_and_convert($path);
 
             $z = new \ZipArchive();
             $parts =pathinfo($path);
@@ -68,8 +71,9 @@ class SVGConvert
 
                 while(false!==($entry=readdir($handle))){
 
-                    if($entry!="." && $entry!=".." && $entry!='errorlog.txt' &&
-                        !preg_match("/^(svg_print_([0-9]+).svg)$/i",$entry)
+                    if($entry!="." && $entry!=".." && $entry!='errorlog.txt'
+                        //&&
+                       // !preg_match("/^(svg_print_([0-9]+).svg)$/i",$entry)
                     ){
 
                         $file = $path."/".$entry;
@@ -85,7 +89,7 @@ class SVGConvert
             $z->close();
 
             //remove directory -
-            $this->delete_destination_folders($status->message);
+             $this->delete_destination_folders($status->message);
 
 
             //remove the dir
@@ -110,22 +114,44 @@ class SVGConvert
         $file_get_save = function($path,$classname,$filename,$tag)use($CI){
             $contents = (new $classname($CI->primary,$CI->secondary,$CI->tertiary,$tag));
             $name = $path."/".$filename.".svg";
-            file_put_contents($name,$contents);
-            return $name;
+            if($contents!="")
+            {
+                file_put_contents($name,$contents);
+                return $name;
+            }
+
+            //Empty SVG
+            return "";
         };
 
-        foreach($this->tags as $tag){
+        // Horizontal
+        foreach($this->htags as $tag){
             //1.svg version -> web, 2. svg version for print;
             $name = $file_get_save($path,'App\Services\SVG\IUSVG','svg_'.$tag,$tag);
-            $status = $this->convert_webversion($name);
+            $status =  ($name!="")?$this->convert_webversion($name):new ProcessStatus(true);
 
-            if($status->status==false){
-                return $status->messsage;
+            if($status->status===false){
+                return 'Failed to convert';
             }
 
             $name = $file_get_save($path,'App\Services\SVG\IUSVG_PRINT','svg_print_'.$tag,$tag);
-            $status = $this->convert_printversion($name);
-            if($status->status==false)return $status->message;
+            $status =  ($name!="")?$this->convert_printversion($name):new ProcessStatus(true);
+
+        }
+
+        foreach($this->vtags as $tag){
+
+            //1.svg version -> web, 2. svg version for print;
+            $name = $file_get_save($path,'App\Services\SVG\IUSVG_V','svg_v_'.$tag,$tag);
+            $status =  ($name!="")?$this->convert_webversion($name):new ProcessStatus(true);
+
+
+            if($status->status===false){
+                return 'Failed to convert';
+            }
+
+            $name = $file_get_save($path,'App\Services\SVG\IUSVG_V_PRINT','svg_v_print_'.$tag,$tag);
+            $status =  ($name!="")?$this->convert_printversion($name):new ProcessStatus(true);
         }
 
         return new ProcessStatus(true,'Successfully completed the build');

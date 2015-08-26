@@ -2,22 +2,16 @@
 
 @section('content')
 
-
-    <section class="collapsed bg-none section" id="content">
-        <div class="row">
-            <div class="layout">
-                <div class="full-width">
+    <section id="content" class="collapsed bg-none section"><div class="row"><div class="layout">
+                <h2>Build your custom lock-up</h2><div class="full-width">
                     <div class="text">
- <div class="panel">
-
-
-                     <p> Welcome to Signature Builder Admin Area. Please use the menu to create,
-                      view / approve signatures.</p>
-
-        </div>
-
-</div></div></div></div></section>
-
+                        <p>Marketing lock-ups help schools, departments, and other units stay consistent to the Indiana University brand.</p>
+                        <p>While traditional IU signatures are used for letterheads, envelopes, business cards, and internal documents, lock-ups are used for digital marketing, websites, brochures—and virtually everything else.</p>
+                        <p>This generator takes the guesswork out of building your unit’s marketing lock-up. You can
+                            <a  href={{url('signatures/create')}} itemprop="url">design your lock-up</a> using primary, secondary, and
+                            tertiary naming systems. You also can <a  href={{url('emaillockup')}} itemprop="url">design a custom email lock-up</a> that reproduces beautifully in the digital space.</p>
+                        <p>The lock-up generator uses variations in font weights to best display your unit’s name, based on the information you determine is primary, secondary, and tertiary. It also protects the space around the trident, and it produces a graphic that is optimized for both print and digital communications.</p>
+                      </div></div></div></div></section>
 
 
 @endsection

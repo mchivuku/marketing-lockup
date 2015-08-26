@@ -44,7 +44,7 @@ class SignaturesController extends Controller {
 
     public function leftnavigation(){
         $navigation = array(array('route_name'=>'signatures.create',
-            'text'=>'Create Signature',
+            'text'=>'Create Lock-up',
             'url'=>\URL::to(action('SignaturesController@create'))));
 
         \View::share('leftnavigation',$navigation);
@@ -59,7 +59,7 @@ class SignaturesController extends Controller {
     {
          $model =new \StdClass;
 
-         $model->states = array_merge(array(array('id'=>0,'status'=>'All Signatures')),Models\ReviewStatus::all()
+         $model->states = array_merge(array(array('id'=>0,'status'=>'All Lock-ups')),Models\ReviewStatus::all()
            ->toArray());
          $model->content = $this->getSignatures();
 
@@ -67,7 +67,7 @@ class SignaturesController extends Controller {
          if(isset($inputs['message']))  $this->flash($inputs['message'],(isset($inputs['type'])
              ?$inputs['type']:Models\ViewModels\Alerts::SUCCESS));
 
-         return $this->view('signatures')->model($model)->title('Manage Signatures');
+         return $this->view('signatures')->model($model)->title('Manage Lock-ups');
 
     }
 
@@ -194,6 +194,7 @@ class SignaturesController extends Controller {
         $s = $inputs['s'];
         $t = $inputs['t'];
         $named = $inputs['named'];
+        $type = $inputs['type'];
 
 
         $signature = new Models\Signature();
@@ -203,7 +204,7 @@ class SignaturesController extends Controller {
         $signature->named = $named;
 
 
-        return $signature->getSignaturePreview();
+        return $signature->getSignaturePreview($type);
 
     }
 
@@ -215,7 +216,7 @@ class SignaturesController extends Controller {
 
         $signature = new Models\Signature();
         \View::share('editmode',false);
-        return $this->view('addEditSignature')->model($signature)->title('Create Signature');
+        return $this->view('addEditSignature')->model($signature)->title('Create Lock-up');
     }
 
 
@@ -224,7 +225,7 @@ class SignaturesController extends Controller {
         $signature  = Models\Signature::find($id);
         \View::share('editmode',true);
 
-        return $this->view('addEditSignature')->model($signature)->title('Edit Signature');
+        return $this->view('addEditSignature')->model($signature)->title('Edit Lock-up');
 
     }
 
@@ -240,21 +241,6 @@ class SignaturesController extends Controller {
         $inputs = \Input::all();
         $message="";
         $user = $this->currentUser;
-        /** @var no validation here $validator */
-        //$validator = Validator::make($request->all(), [
-          //  'primaryText' => 'max:24',
-            //'secondaryText' => 'max:24',
-           // 'tertiaryText' => 'max:24'
-        //]);
-
-
-       // if ($validator->fails()){
-         //    return redirect()->to('signatures/create')
-           //     ->withErrors($validator)
-             //   ->withInput();
-        //}
-
-
 
         if(isset($inputs['signatureid'])){
             $signature = Models\Signature::find(\Input::get('signatureid'));
@@ -273,7 +259,7 @@ class SignaturesController extends Controller {
 
 
             });
-            $message = "Signature was update successfully";
+            $message = "Lock-up was updated successfully";
 
         }
         else{
@@ -308,7 +294,7 @@ class SignaturesController extends Controller {
 
 
             });
-            $message = "Signature was created successfully";
+            $message = "Lock-up was created successfully";
         }
 
 
@@ -344,7 +330,7 @@ class SignaturesController extends Controller {
         $model->signatureid = $signatureId;
         $model->signature  =  Models\Signature::where('signatureid','=',$signatureId)->first();
 
-        return $this->view('signature-review')->model($model)->title('Review Signature');
+        return $this->view('signature-review')->model($model)->title('Review Lock-up');
 
     }
 
@@ -360,7 +346,7 @@ class SignaturesController extends Controller {
         //check if the signature is approved.
         $approved_id = Models\ReviewStatus::where('status','like','approve%')->first()->id;
         if($signature->statusId == $approved_id){
-            return json_encode(array('status'=>false,'message'=>'signature is already approved'));
+            return json_encode(array('status'=>false,'message'=>'Lock-up is already approved'));
         }
 
         $return = $signature->build();
@@ -390,7 +376,7 @@ class SignaturesController extends Controller {
             $signature->save();
 
 
-            return json_encode(array('status'=>true,'message'=>'successfully completed the build/approval process'));
+            return json_encode(array('status'=>true,'message'=>'Successfully completed the build/approval process'));
         }
 
         return  json_encode(array('status'=>false,'message'=>$return->message));
@@ -409,7 +395,7 @@ class SignaturesController extends Controller {
 
 
         if($signature->statusId == $review_status->id){
-            return json_encode(array('status'=>false,'message'=>'signature is already denied'));
+            return json_encode(array('status'=>false,'message'=>'Lock-up is already denied'));
         }
 
 
@@ -423,7 +409,7 @@ class SignaturesController extends Controller {
         $obj  = $this->construct_ldap_object($signature->username);
         \Mail::send('emails.denied', $d, function($message)use($obj)
         {
-            $message->to($obj->email, $obj->name)->subject('Signature Request Denied!');
+            $message->to($obj->email, $obj->name)->subject('Lock-up Request Denied!');
         });
 
 

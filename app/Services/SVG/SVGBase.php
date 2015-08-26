@@ -41,7 +41,6 @@ class SVGBase {
 
     function addXMLStr($parent, $childStr) {
 
-
         $parentDom = dom_import_simplexml($parent);
 
         $childDom = dom_import_simplexml(simplexml_load_string($childStr));
@@ -60,7 +59,9 @@ class SVGBase {
     }
 
     public function __toString() {
-        return $this->prettyXML();
+        if($this->xml->children()->saveXML()!="")
+         return $this->prettyXML();
+        return "";
     }
 
     function metrics($text='Hello world!', $font='bentonSansCond-Regular', $size=32, $maxWidth=400) {

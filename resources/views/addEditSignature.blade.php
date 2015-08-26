@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <section class="collapsed bg-none section">
+    <section class="collapsed bg-none section" id="content">
         <div class="row">
             <div class="layout">
 
@@ -24,11 +24,12 @@
 
                     <div class="row">
                         <div class="small-3 columns">
-                            <label for="primary">Primary (required)</label>
+                            <label for="primary">Primary (required) <br/><span class="help-text" id="replace-primary">(ex. Medicine,
+                                    Psychology)</span></label>
                         </div>
                         <div class="small-9 columns">
-                            <input id="primary" name="p" placeholder='PRIMARY'  maxlength="25"  type="text" required
-                                   maxLen="24"    value="{{$model->primaryText}}">
+                            <input id="primary" name="p" placeholder='PRIMARY'  maxlength="51"  type="text" required
+                                   maxLen="50"    value="{{$model->primaryText}}">
 
                         </div>
                     </div>
@@ -36,7 +37,7 @@
 
                             <div class="row">
                                 <div class="small-3 columns">
-                                    <label for="secondary">Secondary</label>
+                                    <label for="secondary">Secondary<br/><span class="help-text"id="replace-secondary">(ex. School of,Department of)</span></label>
                                 </div>
                                 <div class="small-9 columns">
                                     <input id="secondary" name="s" maxlength="25"  type="text" placeholder='SECONDARY'
@@ -51,9 +52,26 @@
                                 </div>
                                 <div class="small-9 columns">
                                     <input id="tertiary" name="t"  maxlength="25" type="text" placeholder='Tertiary'
-                                           value="{{$model->tertiaryText}}"   maxLen="24">
+                                           value="{{$model->tertiaryText}}"  maxLen="24">
                                 </div>
                             </div>
+
+
+                          <div class="row">
+                               <div class="small-3 columns">
+                                   {!!  Form::label('type', 'SVG Types') !!}
+                             </div>
+                             <div class="small-9 columns">
+                                 <div class="small-9 columns">
+                                     {!!  Form::radio('type','',array('checked'=>'checked')) !!}
+                                     {!!  Form::label('svgType ', 'All') !!}
+                                     {!!  Form::radio('type','h') !!}
+                                     {!!  Form::label('svgType ', 'Horizontal') !!}
+                                     {!!  Form::radio('type','v') !!}
+                                     {!!  Form::label('svgType ', 'Vertical') !!}
+                                 </div>
+                          </div>
+                           </div>
 
                             <div class="button-group right">
                                 <input type="submit" id="saveSignature" name="saveSignature"
@@ -98,20 +116,19 @@
             }, "You have reached the maximum number of characters allowed for this field.");
 
 
-
             $('#svgform input[type=text]').on('keyup', function (e) {
-                updatePreview(getTags());
+                updatePreview();
                 return;
             });
 
             $('#svgform input:radio').on('change', function (e) {
-                updatePreview(getTags());
+                updatePreview();
                 return;
             });
 
         });
 
-        function updatePreview(tags){
+        function updatePreview(){
             var form = $('#svgform');
             if(form.valid()){
                 $.get('getPreview',form.serialize(),function(data){
@@ -121,12 +138,16 @@
 
         }
 
-        function getTags(){
-            // radio button to show example images
-            var val= $('form input:radio:checked').val();
-            if(val==0)
-                return {{(json_encode($model->getAllSchoolTags()))}};
-            return {{json_encode($model->getNamedSchoolTags())}};
+
+        function update_label_on_toggle(toggle){
+            if(toggle==0){
+                $('#replace-primary').html('(ex. Medicine,Psychology)');
+                $('#replace-secondary').html('(ex. School of,Department of)');
+            }else{
+                $('#replace-primary').html('(ex. Kelley, McKinney)');
+                $('#replace-secondary').html('(ex. School of Business, School of Law)');
+
+            }
 
         }
     </script>

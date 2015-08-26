@@ -1,21 +1,24 @@
 @include('...includes.header')
 <body id="home" class="">
+<div id="skipnav">
+	<ul>
+		<li><a href="#content">Skip to Content</a></li>
+		<li><a href="#nav-main">Skip to Main Navigation</a></li>
+	</ul>
+ 	<hr>
+</div>
+
+
 <div class="off-canvas-wrap" data-offcanvas="">
 
-	<div id="skipnav">
-		<ul>
-			<li><a href="#content">Skip to Content</a></li>
-			<li><a href="#nav-main">Skip to Main Navigation</a></li>
-			<li><a href="#search">Skip to Search</a></li>
-		</ul>
-	</div>
+
 
 @include('...includes.branding-bar')
 
 	<div class="inner-wrap">
 		<header>
 			<div class="row pad">
-				<h1><a href="{{url("/")}}">Marketing Lock-up</a></h1>
+				<h1><a href="{{url("/")}}">Marketing <span>Lock-up</span></a></h1>
 			</div>
 		</header>
 
@@ -23,20 +26,14 @@
 		@include('navigation')
 
 
-   		 <main  style="min-height: 84px;">
+   		 <main>
 
+			 <!-- Left navigation -->
 			 @yield('left-navigation')
 
 
 			 <!-- Page Title -->
-			 <section class="section page-title bg-none">
-				 <div class="row">
-					 <div  class="layout">
-						 <h1>{{$title}}</h1>
-					 </div>
-				 </div>
-			 </section>
-
+			 <section class="section page-title bg-none"><div class="row"><div class="layout"> <h1>{{$title}}</h1></div></div></section>
 
 			 @include('...includes.alerts')
 

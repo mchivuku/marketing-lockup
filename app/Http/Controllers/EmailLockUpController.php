@@ -34,7 +34,7 @@ class EmailLockUpController extends Controller{
 
     public function index(){
 
-        return $this->view('create-email-lockup')->title('Logos & Signatures');
+        return $this->view('create-email-lockup')->title('Email Lock-up');
 
     }
 

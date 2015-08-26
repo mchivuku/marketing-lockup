@@ -6,12 +6,13 @@
  * Time: 11:09 AM
  */
 namespace App\Services\SVG;
+
+
 class IUSVG extends IUSVGBase {
 
     protected $text_xml="";
-    protected $primary,$secondary,$tertiary;
-    protected $lookup = array('signatureOne',
-        'signatureTwo',
+    protected $primary,$secondary,$tertiary,$subprimary;
+    protected $lookup = array('signatureOne','signatureTwo',
         'signatureThree',
         'signatureFour',
         'signatureFive',
@@ -40,22 +41,43 @@ class IUSVG extends IUSVGBase {
     function __construct($p,$s,$t,$v) {
 
         parent::__construct();
+        $this->tabColor='#951B1E';
 
-        $this->primary = strtoupper($p);
+        if(strlen($p)>24){
+            //get words
+            $string=  wordwrap($p, 24, "@");
+            $strings = explode("@",$string);
+
+            $this->primary=strtoupper($strings[0]);
+            $this->subprimary=strtoupper($strings[1]);
+
+        }else{
+
+            $this->primary = strtoupper($p);
+
+        }
+
         $this->secondary=strtoupper($s);
         $this->tertiary=$t;
-        $func = $this->lookup[$v-1];
+        $key =$v-1;
+        $func = $this->lookup[$key];
 
-        $this->xref = ($this->tabWidth-2)+$this->refPts;
 
-        call_user_func(array($this,$func));
+        $this->xref = ($this->tabWidth-2)+$this->refPts+$this->refPts/2;
+
+
+       call_user_func(array($this,$func));
 
     }
+
+
 
     /**
      * Signature One - contains one element - Primary
      */
     public function signatureOne(){
+
+        if(!$this->required_if_allofThese(array($this->primary)))return "";
 
         $font = self::$primary_font['svgfile'];
         $text = $this->primary;
@@ -65,7 +87,7 @@ class IUSVG extends IUSVGBase {
 
         $result = $svgFont->textToPaths($text, self::PRIMARY_FONT_SIZE,$extents);
         $total_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']) + $this->refPts  +
-            $this->tabWidth;
+            $this->tabWidth+$this->refPts/2;
 
         $this->init($total_width,$this->tabHeight);
 
@@ -82,6 +104,9 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
      * Function to generate signature two format that has one line - primary and secondary.
      */
     public function signatureTwo(){
+        //rules
+        if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
+
 
         $svgFont = new SVGFont();
 
@@ -130,6 +155,10 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
      * Function to generate signature three that has two lines - SEcondary Primary, Tertiary in second line
      */
     public function signatureThree(){
+
+        //rules
+        if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
+
 
         $svgFont = new SVGFont();
 
@@ -194,6 +223,10 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
      */
     public function signatureFour(){
 
+        //rules
+        if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
+
+
         $svgFont = new SVGFont();
 
         $font = self::$primary_font['svgfile'];
@@ -238,6 +271,9 @@ width=\"$total_width\"  height=\"$view_port_height\"
      */
     public function signatureFive(){
 
+        //rules
+        if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
+
         $svgFont = new SVGFont();
 
         /**  SECONDARY  */
@@ -275,6 +311,8 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
     public function signatureSix()
     {
+        //rules
+        if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
 
         $svgFont = new SVGFont();
 
@@ -306,7 +344,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
         $view_port_height = $this->tabHeight+$this->refPts/2
             + $this->funitsToPx($extents['h'],self::TERTIARY_FONT_SIZE,
-                $extents['u']);
+                $extents['u'])-2;
 
 
         $t_width = $this->funitsToPx($extents['w'],self::TERTIARY_FONT_SIZE,$extents['u']);
@@ -314,9 +352,9 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
         $total_width = (($p_width>$s_width?$p_width:$s_width)>$t_width?($p_width>$s_width?$p_width:$s_width):$t_width)
             + $this->tabWidth + $this->refPts + $this->refPts ;
 
-        $this->init($total_width,$view_port_height+$this->refPts/2,$view_port_height);
+        $this->init($total_width,$view_port_height+abs($this->refPts/2),$view_port_height);
 
-        $th =$view_port_height+5;
+        $th = $view_port_height + 4;
 
         $this->addXMLStr($this->xml, "<svg xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio='xMinYMin'
             width=\"$total_width\"  height=\"$view_port_height\"
@@ -333,6 +371,10 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
     }
 
     public function signatureSeven(){
+
+        //rules
+        if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
+
 
         $svgFont = new SVGFont();
 
@@ -361,7 +403,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
         $view_port_height = $this->tabHeight
             + $this->funitsToPx($extents['h'],self::TERTIARY_FONT_SIZE,
-                $extents['u'])+$this->refPts/2;
+                $extents['u'])+$this->refPts/2 -2;
 
         $t_width = $this->funitsToPx($extents['w'],self::TERTIARY_FONT_SIZE,$extents['u']);
 
@@ -394,6 +436,13 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
     public function signatureEight(){
 
+       //rules
+        if(!$this->required_if_allofThese(array($this->primary,$this->subprimary,$this->secondary,$this->tertiary)))
+            return "";
+
+
+
+
         $svgFont = new SVGFont();
 
         /**  SECONDARY  */
@@ -416,7 +465,14 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
         $font=self::$primary_font['svgfile'];
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
-        $pXML2 = $svgFont->textToPaths($this->primary, self::PRIMARY_FONT_SIZE,$extents);
+        $subprimary='';
+        if($this->subprimary!=''){
+            $subprimary = $this->subprimary;
+        }else{
+            $subprimary=$this->primary;
+
+        }
+        $pXML2 = $svgFont->textToPaths($subprimary, self::PRIMARY_FONT_SIZE,$extents);
         $p2_width =$this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
 
         $p_width = $p1_width>$p2_width?$p1_width:$p2_width;
@@ -466,6 +522,10 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
     /** Signature Nine is to give - primary, secondary and tertiary in the second line */
     public function signatureNine(){
+
+        //rules
+        if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary,$this->subprimary)))return "";
+
 
         $svgFont = new SVGFont();
 

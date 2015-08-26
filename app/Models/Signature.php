@@ -26,32 +26,75 @@ class Signature extends Model {
     }
 
 
+    private $classname  = array('h'=>'App\Services\SVG\IUSVG','v'=>'App\Services\SVG\IUSVG_V');
 
     /** Helper Functions  */
-    public function getNamedSchoolTags(){return array(2,5,7,9);}
-    public function getAllSchoolTags(){return array(1,2,3,4,5,6,7,8,9);}
+    public function getNamedSchoolTags(){return array('h'=>array(2,4,6,9),'v'=>array(1,2,3));}
+    public function getAllSchoolTags(){return array('h'=> array(1,2,3,4,5,6,7,8,9),'v'=>array(1,2,3,4,5));}
 
+
+    private function getHorizontalAllSchoolTags(){
+        $tags = $this->getAllSchoolTags();
+        return $tags['h'];
+    }
+
+    private function getVerticalAllSchoolTags(){
+        $tags = $this->getAllSchoolTags();
+        return $tags['v'];
+    }
+
+    private function getHorizontalNamedSchoolTags(){
+        $tags = $this->getNamedSchoolTags();
+        return $tags['h'];
+    }
+
+
+    private function getVerticalNamedSchoolTags(){
+        $tags = $this->getNamedSchoolTags();
+        return $tags['v'];
+    }
 
     /** Get Preview for signatures  */
-    public function getSignaturePreview(){
+    public function getSignaturePreview($type=''){
 
         $output="";
-        $previews = function($tags){
+        $previews = function($tags,$classname){
             $output="";
             foreach($tags as $tag){
-                $output.= "<div id='svg-preview'>".new IUSVG($this->primaryText,$this->secondaryText,
-                        $this->tertiaryText,
-                    $tag)."</div>";
+
+                $svg = new $classname($this->primaryText,$this->secondaryText,
+                    $this->tertiaryText,$tag);
+
+                if($svg!="")
+                 $output.= "<div id='svg-preview'>".$svg."</div>";
             }
+
 
             return $output;
         };
 
         if($this->named=='1'){
-            $output = $previews($this->getNamedSchoolTags());
+            // include = vertical and horizontal
+            $alltags = $this->getNamedSchoolTags();
+            if($type!=''){
+                $output = $previews($alltags[$type],$this->classname[$type]);
+            }else{
+                $output = $previews($alltags['h'],'App\Services\SVG\IUSVG');
+                $output .= $previews($alltags['v'],'App\Services\SVG\IUSVG_V');
+            }
+
 
         }else{
-            $output = $previews($this->getAllSchoolTags());
+            $alltags =$this->getAllSchoolTags();
+            if($type!=''){
+                $output = $previews($alltags[$type],$this->classname[$type]);
+            }else{
+                $output = $previews($alltags['h'],'App\Services\SVG\IUSVG');
+                $output .= $previews($alltags['v'],'App\Services\SVG\IUSVG_V');
+            }
+
+
+
 
         }
 
@@ -65,9 +108,13 @@ class Signature extends Model {
 
     public function build(){
 
-
-        $svg_convert = new SVGConvert($this->primaryText,$this->secondaryText,$this->tertiaryText,
-            ($this->named==0)?$this->getAllSchoolTags():$this->getNamedSchoolTags());
+        $svg_convert = new SVGConvert(
+            $this->primaryText,
+            $this->secondaryText,
+            $this->tertiaryText,
+            ($this->named==0)?$this->getHorizontalAllSchoolTags():$this->getHorizontalNamedSchoolTags(),
+            ($this->named==0)?$this->getVerticalAllSchoolTags():$this->getVerticalNamedSchoolTags()
+            );
 
         $return = $svg_convert->build();
         return $return;
