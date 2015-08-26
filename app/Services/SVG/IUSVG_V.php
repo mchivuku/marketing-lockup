@@ -40,32 +40,22 @@ class IUSVG_V extends IUSVGBase {
 
         parent::__construct();
 
-        if(strlen($p)>24){
-            $this->primary=strtoupper(substr($p,0,24));
-            $this->subprimary=strtoupper(substr($p,24,40));
 
-        }else{
-
-            $this->primary = strtoupper($p);
-
-        }
+        $this->primary = strtoupper($p);
 
         $this->secondary=strtoupper($s);
         $this->tertiary=$t;
         $key =$v-1;
         $func = $this->lookup[$key];
 
-        $this->xref = 15;
+        $this->xref = 8;
 
-        if($key===7){
-            if($this->subprimary!="")
-                call_user_func(array($this,$func));
-        }else{
-            call_user_func(array($this,$func));
-        }
-
+        call_user_func(array($this,$func));
     }
 
+    private function isLongPrimary(){
+        return strlen($this->primary)>24?true:false;
+    }
 
 
     /**
@@ -75,6 +65,7 @@ class IUSVG_V extends IUSVGBase {
 
         if(!$this->required_if_allofThese(array($this->primary)))return "";
 
+        if($this->isLongPrimary())return "";
 
         $font = self::$primary_font['svgfile'];
         $text = $this->primary;
@@ -83,12 +74,10 @@ class IUSVG_V extends IUSVGBase {
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
         $result = $svgFont->textToPaths($text, self::PRIMARY_FONT_SIZE,$extents);
-        $total_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']) +$this->refPts +
-            $this->refPts/2 ;
+        $total_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
 
         $text_y =  $this->tabHeight+2*($this->refPts+$this->refPts/2)+$this->refPts/2;
         $trident_y =  $this->refPts+$this->refPts/2;
-
 
         $trident_x = $total_width/2 - $this->tabWidth/2;
 
@@ -100,7 +89,7 @@ class IUSVG_V extends IUSVGBase {
 
       $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
      height=\"$total_text_height\"
-     viewBox='-$this->xref -$total_text_height  $total_width $total_text_height'>$result</svg>");
+     viewBox='0 -$total_text_height  $total_width $total_text_height'>$result</svg>");
 
     }
 
@@ -111,6 +100,8 @@ class IUSVG_V extends IUSVGBase {
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
+
+        if($this->isLongPrimary())return "";
 
         $svgFont = new SVGFont();
 
@@ -149,10 +140,8 @@ class IUSVG_V extends IUSVGBase {
             $p_height+($this->refPts + $this->refPts/2)+$s_height+($this->refPts + $this->refPts/2);
 
 
-
         $p_y = $total_height - ($this->refPts + $this->refPts/2) - $s_height - $p_height + $this->refPts - 1 ;
-        $s_y =    $total_height-$this->refPts/2;
-
+        $s_y = $p_y+$p_height + $this->refPts - 4; // -4 parallax  - primary parallax
 
         $this->init($total_width+$this->refPts+5,$total_height,$this->tabHeight,
             $trident_x,
@@ -178,6 +167,7 @@ class IUSVG_V extends IUSVGBase {
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
+        if($this->isLongPrimary())return "";
 
         $svgFont = new SVGFont();
 
@@ -200,7 +190,6 @@ class IUSVG_V extends IUSVGBase {
         $sXML = $svgFont->textToPaths($text, self::TERTIARY_FONT_SIZE,$extents);
         $s_width = $this->funitsToPx($extents['w'],self::TERTIARY_FONT_SIZE,$extents['u']);
         $s_height =  $this->funitsToPx($extents['h'],self::TERTIARY_FONT_SIZE,$extents['u']);
-
 
 
         //tertiary
@@ -234,10 +223,10 @@ class IUSVG_V extends IUSVGBase {
             $p_height+($this->refPts + $this->refPts/2)+$s_height+($this->refPts + $this->refPts/2)+$t_height+ ($this->refPts + $this->refPts/2);
 
 
-        $p_y = $total_height - 2*($this->refPts + $this->refPts/2) - $s_height - $p_height - $t_height + $this->refPts
-        - 1 ;
-        $s_y = $total_height- $p_height - $t_height - $this->refPts/2;
-        $t_y = $total_height - $this->refPts;
+        $p_y = $total_height - 2*($this->refPts + $this->refPts/2) - $s_height - $p_height - $t_height + $this->refPts - 1 ;
+        $s_y = $p_y+$p_height + $this->refPts - 4; // -4 parallax  - primary parallax
+
+        $t_y = $s_y+$s_height +$this->refPts +2; // -2 secondary parallax
 
 
         $this->init($total_width+$this->refPts+5,$total_height,$this->tabHeight,
@@ -266,7 +255,7 @@ class IUSVG_V extends IUSVGBase {
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
-
+        if($this->isLongPrimary())return "";
         $svgFont = new SVGFont();
 
         $font = self::$primary_font['svgfile'];
@@ -321,16 +310,16 @@ class IUSVG_V extends IUSVGBase {
             $p_height+($this->refPts + $this->refPts/2)+$s_height+($this->refPts + $this->refPts/2)+$t_height+ ($this->refPts + $this->refPts/2);
 
 
-        $s_y = $total_height - 2*($this->refPts + $this->refPts/2) - $s_height - $p_height - $t_height -2;
 
-        $p_y = $total_height- $p_height - $t_height - $this->refPts/2;
-        $t_y = $total_height-5;
+        $s_y = $total_height - 2*($this->refPts + $this->refPts/2) - $s_height - $p_height - $t_height - 2;
+        $p_y = $s_y+$s_height +$p_height + $this->refPts - 1 ; // -2 parallax  - secondary parallax
+
+        $t_y = $p_y+$p_height +$this->refPts - 4; // -4 secondary parallax
 
 
         $this->init($total_width+$this->refPts+5,$total_height,$this->tabHeight,
             $trident_x,
             $trident_y);
-
 
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
@@ -355,7 +344,7 @@ class IUSVG_V extends IUSVGBase {
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
-
+        if($this->isLongPrimary())return "";
         $svgFont = new SVGFont();
 
         $font = self::$primary_font['svgfile'];
@@ -384,18 +373,12 @@ class IUSVG_V extends IUSVGBase {
         $text = $this->tertiary;
 
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
-        $tXML = $svgFont->textToPaths($text, self::TERTIARY_FONT_SIZE,$extents);
-        $t_width = $this->funitsToPx($extents['w'],self::TERTIARY_FONT_SIZE,$extents['u']);
-        $t_height =  $this->funitsToPx($extents['h'],self::TERTIARY_FONT_SIZE,$extents['u']);
 
 
         if($p_width>$s_width)
             $total_width = $p_width;
         else
             $total_width=$s_width;
-
-        if($total_width<$t_width)
-            $total_width=$t_width;
 
 
         $p_x = $total_width/2 - $p_width/2;
@@ -406,17 +389,15 @@ class IUSVG_V extends IUSVGBase {
         $trident_y = 15;
 
         $total_height  = ($this->refPts + $this->refPts/2) + $this->tabHeight + ($this->refPts + $this->refPts/2) +
-            $p_height+($this->refPts + $this->refPts/2)+$s_height+($this->refPts + $this->refPts/2)+$t_height+ ($this->refPts + $this->refPts/2);
+            $p_height+($this->refPts + $this->refPts/2)+$s_height+($this->refPts + $this->refPts/2)+ ($this->refPts + $this->refPts/2);
 
+        $s_y = $total_height - 2*($this->refPts + $this->refPts/2) - $s_height - $p_height  -2;
+        $p_y = $s_y+$s_height+$this->refPts+$this->refPts + $this->refPts/2;
 
-        $s_y = $total_height - 2*($this->refPts + $this->refPts/2) - $s_height - $p_height - $t_height -2;
-
-        $p_y = $total_height- $p_height - $t_height - $this->refPts/2;
 
         $this->init($total_width+$this->refPts+5,$total_height,$this->tabHeight,
             $trident_x,
             $trident_y);
-
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
      height=\"$total_height\"

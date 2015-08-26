@@ -11,10 +11,10 @@
                         {!! Form::open(array('url' => '/signatures/savesignature','id'=>"svgform",'method'=>'post')) !!}
 
                           <div class="row">
-                                <div class="small-3 columns">
+                                <div class="small-4 columns">
                                     {!!  Form::label('named', 'Named School') !!}
                                 </div>
-                                <div class="small-9 columns">
+                                <div class="small-8 columns">
                                     {!!  Form::radio('named',1) !!}
                                     {!!  Form::label('namedschool', 'Yes') !!}
                                     {!!  Form::radio('named',0,array('checked'=>'checked')) !!}
@@ -23,11 +23,11 @@
                             </div>
 
                     <div class="row">
-                        <div class="small-3 columns">
+                        <div class="small-4 columns">
                             <label for="primary">Primary (required) <br/><span class="help-text" id="replace-primary">(ex. Medicine,
                                     Psychology)</span></label>
                         </div>
-                        <div class="small-9 columns">
+                        <div class="small-8 columns">
                             <input id="primary" name="p" placeholder='PRIMARY'  maxlength="51"  type="text" required
                                    maxLen="50"    value="{{$model->primaryText}}">
 
@@ -36,10 +36,10 @@
 
 
                             <div class="row">
-                                <div class="small-3 columns">
+                                <div class="small-4 columns">
                                     <label for="secondary">Secondary<br/><span class="help-text"id="replace-secondary">(ex. School of,Department of)</span></label>
                                 </div>
-                                <div class="small-9 columns">
+                                <div class="small-8 columns">
                                     <input id="secondary" name="s" maxlength="25"  type="text" placeholder='SECONDARY'
                                            value="{{$model->secondaryText}}"   maxLen="24">
 
@@ -47,10 +47,10 @@
                             </div>
 
                             <div class="row">
-                                <div class="small-3 columns">
+                                <div class="small-4 columns">
                                     <label for="tertiary">Tertiary</label>
                                 </div>
-                                <div class="small-9 columns">
+                                <div class="small-8 columns">
                                     <input id="tertiary" name="t"  maxlength="25" type="text" placeholder='Tertiary'
                                            value="{{$model->tertiaryText}}"  maxLen="24">
                                 </div>
@@ -58,18 +58,18 @@
 
 
                           <div class="row">
-                               <div class="small-3 columns">
-                                   {!!  Form::label('type', 'SVG Types') !!}
+                               <div class="small-4 columns">
+                                   {!!  Form::label('type', 'Lock-up Orientation') !!}
                              </div>
-                             <div class="small-9 columns">
-                                 <div class="small-9 columns">
+                             <div class="small-8 columns">
+
                                      {!!  Form::radio('type','',array('checked'=>'checked')) !!}
                                      {!!  Form::label('svgType ', 'All') !!}
                                      {!!  Form::radio('type','h') !!}
                                      {!!  Form::label('svgType ', 'Horizontal') !!}
                                      {!!  Form::radio('type','v') !!}
                                      {!!  Form::label('svgType ', 'Vertical') !!}
-                                 </div>
+
                           </div>
                            </div>
 
@@ -108,7 +108,7 @@
 
             jQuery.validator.addMethod("maxLen", function (value, element, param) {
                 //console.log('element= ' + $(element).attr('name') + ' param= ' + param )
-                if ($(element).val().length > param) {
+                if($(element).val().length > param) {
                     return false;
                 } else {
                     return true;
@@ -122,6 +122,7 @@
             });
 
             $('#svgform input:radio').on('change', function (e) {
+                update_label_on_toggle($(this).val());
                 updatePreview();
                 return;
             });

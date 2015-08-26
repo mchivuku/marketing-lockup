@@ -42,14 +42,25 @@ class IUSVG extends IUSVGBase {
 
         parent::__construct();
         $this->tabColor='#951B1E';
+        $this->subprimary="";
 
         if(strlen($p)>24){
             //get words
             $string=  wordwrap($p, 24, "@");
-            $strings = explode("@",$string);
 
-            $this->primary=strtoupper($strings[0]);
-            $this->subprimary=strtoupper($strings[1]);
+            if(strpos($string,'@')!==false){
+                $strings = explode("@",$string);
+                $this->primary=strtoupper($strings[0]);
+
+                if(isset($strings[1]))
+                    $this->subprimary=strtoupper($strings[1]);
+            }else{
+
+                $this->primary = substr($p,0,24);
+                $this->subprimary=substr($p,24,strlen($p));
+
+            }
+
 
         }else{
 
@@ -76,8 +87,9 @@ class IUSVG extends IUSVGBase {
      * Signature One - contains one element - Primary
      */
     public function signatureOne(){
+        if((!$this->required_if_allofThese(array($this->primary))))return "";
 
-        if(!$this->required_if_allofThese(array($this->primary)))return "";
+        if($this->subprimary!="")return "";
 
         $font = self::$primary_font['svgfile'];
         $text = $this->primary;
@@ -89,7 +101,8 @@ class IUSVG extends IUSVGBase {
         $total_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']) + $this->refPts  +
             $this->tabWidth+$this->refPts/2;
 
-        $this->init($total_width,$this->tabHeight);
+        // just a tad bit to cover the text.
+        $this->init($total_width+$this->refPts/2,$this->tabHeight);
 
         $textXML =
             "<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"  height=\"$this->tabHeight\"
@@ -106,6 +119,7 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
     public function signatureTwo(){
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
+        if($this->subprimary!="")return "";
 
 
         $svgFont = new SVGFont();
@@ -138,7 +152,8 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
         //10px between the words
         $s_ref =  $this->xref+$p_width+($this->refPts-2);
 
-        $this->init($total_width,$this->tabHeight);
+        //Tad bit to cover the word
+        $this->init($total_width+$this->refPts/2,$this->tabHeight);
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"
                  width=\"$total_width\"  height=\"$this->tabHeight\"
@@ -158,6 +173,7 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
+        if($this->subprimary!="")return "";
 
 
         $svgFont = new SVGFont();
@@ -200,7 +216,7 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
 
         $view_port_height = $this->tabHeight ;
         $view_port_width = $this->tabWidth+$this->refPts+$p_width+$s_width+$this->refPts;
-        $this->init($view_port_width,$view_port_height);
+        $this->init($view_port_width+$this->refPts/2,$view_port_height);
 
         $this->addXMLStr($this->xml, "<svg xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio='xMinYMin'
                width=\"$view_port_width\"  height=\"$this->tabHeight\"
@@ -225,6 +241,7 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
+        if($this->subprimary!="")return "";
 
 
         $svgFont = new SVGFont();
@@ -250,7 +267,7 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
 
 
         $total_width = ($p_width>$s_width?$p_width:$s_width) + $this->tabWidth+$this->refPts + $this->refPts;
-        $this->init($total_width,
+        $this->init($total_width+$this->refPts/2,
             $view_port_height);
 
         $this->addXMLStr($this->xml, "<svg xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio='xMinYMin'
@@ -273,6 +290,8 @@ width=\"$total_width\"  height=\"$view_port_height\"
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
+        if($this->subprimary!="")return "";
+
 
         $svgFont = new SVGFont();
 
@@ -295,7 +314,7 @@ width=\"$total_width\"  height=\"$view_port_height\"
         $view_port_height = $this->tabHeight;
         $view_port_width= ($p_width>$s_width?$p_width:$s_width)+$this->tabWidth+$this->refPts+$this->refPts;
 
-        $this->init($view_port_width,$view_port_height);
+        $this->init($view_port_width+$this->refPts/2,$view_port_height);
 
         $this->addXMLStr($this->xml, "<svg xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio='xMinYMin'
 width=\"$view_port_width\"  height=\"$view_port_height\"
@@ -313,6 +332,8 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
     {
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
+        if($this->subprimary!="")return "";
+
 
         $svgFont = new SVGFont();
 
@@ -352,7 +373,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
         $total_width = (($p_width>$s_width?$p_width:$s_width)>$t_width?($p_width>$s_width?$p_width:$s_width):$t_width)
             + $this->tabWidth + $this->refPts + $this->refPts ;
 
-        $this->init($total_width,$view_port_height+abs($this->refPts/2),$view_port_height);
+        $this->init($total_width+$this->refPts/2,$view_port_height+abs($this->refPts/2),$view_port_height);
 
         $th = $view_port_height + 4;
 
@@ -374,6 +395,8 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
+        if($this->subprimary!="")return "";
+
 
 
         $svgFont = new SVGFont();
@@ -412,7 +435,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
             + $this->tabWidth + $this->refPts + $this->refPts;
 
 
-        $this->init($total_width,$view_port_height+$this->refPts/2,$view_port_height);
+        $this->init($total_width+$this->refPts/2,$view_port_height+$this->refPts/2,$view_port_height);
 
         $th =$view_port_height+5;
 
@@ -437,10 +460,10 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
     public function signatureEight(){
 
        //rules
-        if(!$this->required_if_allofThese(array($this->primary,$this->subprimary,$this->secondary,$this->tertiary)))
+        if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))
             return "";
 
-
+        if($this->subprimary=="")return"";
 
 
         $svgFont = new SVGFont();
@@ -495,7 +518,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
             + $this->tabWidth + $this->refPts;
 
 
-        $this->init($total_width,$view_port_height+$this->refPts/2,$view_port_height);
+        $this->init($total_width+$this->refPts/2,$view_port_height+$this->refPts/2,$view_port_height);
 
         $th = $view_port_height+5;
 
@@ -524,7 +547,8 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
     public function signatureNine(){
 
         //rules
-        if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary,$this->subprimary)))return "";
+        if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
+        if($this->subprimary!="")return "";
 
 
         $svgFont = new SVGFont();
@@ -559,7 +583,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
 
 
-        $this->init($total_width,$this->tabHeight);
+        $this->init($total_width+$this->refPts/2,$this->tabHeight);
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"
                  width=\"$total_width\"  height=\"$this->tabHeight\"

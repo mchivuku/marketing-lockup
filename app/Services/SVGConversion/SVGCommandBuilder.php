@@ -44,11 +44,12 @@ class SVGCommandBuilder{
 
         // 1. PRINT WEB - with transparent background
         // 2. convert -background none svg.svg svg_version2.png,convert -identify -resize 200%
-        return  $this->__getSVGToFormatCommand("png",array('-background none','-resize 200%'));
+        return  $this->__getSVGToFormatCommand("png",array('-background none','-resize 200%','-quality 95',
+           '-density 300'));
 
     }
 
-    public function getSVGToJPGLowResolutionCommand()
+   /* public function getSVGToJPGLowResolutionCommand()
     {
         $options = array();
 
@@ -63,12 +64,12 @@ class SVGCommandBuilder{
 
         return  $this->__getSVGToFormatCommand("jpg",$options,$dest);
 
-    }
+    }*/
 
     public function getSVGToJPGHighResolutionCommand()
     {
         $options = array();
-        $options[] = "-density 300";  //dpi - 72
+        $options[] = "-density 300";
         $options[] = "-resize 200%";  //size 200%;
         $options[] = "-quality 12";   // quality 12
 

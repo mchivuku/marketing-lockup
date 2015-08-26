@@ -7,6 +7,10 @@
                     <div class="text">
                         <p>Marketing lock-ups help schools, departments, and other units stay consistent to the Indiana University brand.</p>
                         <p>While traditional IU signatures are used for letterheads, envelopes, business cards, and internal documents, lock-ups are used for digital marketing, websites, brochures—and virtually everything else.</p>
+                        <figure itemtype="http://schema.org/ImageObject" itemscope="itemscope" class="media image">
+                            <img src="{{asset("/img/AADSLockup.png")}}" itemprop="contentUrl"
+                                 alt="2:3 aspect ratio placeholder photo "></figure>
+
                         <p>This generator takes the guesswork out of building your unit’s marketing lock-up. You can
                             <a  href={{url('signatures/create')}} itemprop="url">design your lock-up</a> using primary, secondary, and
                             tertiary naming systems. You also can <a  href={{url('emaillockup')}} itemprop="url">design a custom email lock-up</a> that reproduces beautifully in the digital space.</p>

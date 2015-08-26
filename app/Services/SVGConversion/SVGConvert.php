@@ -135,7 +135,8 @@ class SVGConvert
             }
 
             $name = $file_get_save($path,'App\Services\SVG\IUSVG_PRINT','svg_print_'.$tag,$tag);
-            $status =  ($name!="")?$this->convert_printversion($name):new ProcessStatus(true);
+            // no need to generate print versions
+            //$status =  ($name!="")?$this->convert_printversion($name):new ProcessStatus(true);
 
         }
 
@@ -151,7 +152,7 @@ class SVGConvert
             }
 
             $name = $file_get_save($path,'App\Services\SVG\IUSVG_V_PRINT','svg_v_print_'.$tag,$tag);
-            $status =  ($name!="")?$this->convert_printversion($name):new ProcessStatus(true);
+           // $status =  ($name!="")?$this->convert_printversion($name):new ProcessStatus(true);
         }
 
         return new ProcessStatus(true,'Successfully completed the build');
@@ -224,22 +225,32 @@ class SVGConvert
         $info = pathinfo($name);
         $error_file_name = trim($info['dirname']."/"."errorlog".".txt");
 
+
         $command = new SVGCommandBuilder($name);
         $shell->run($command->getSVGToJPGHighResolutionCommand());
 
         //failed
         if($shell->getReturnValue()!=0){
-
             if(file_exists($error_file_name))
                 $result .= (file_get_contents($error_file_name));
 
         }
 
-        $shell_jpg = new Exec();
-        $shell_jpg->run($command->getSVGToJPGLowResolutionCommand());
+        // No Resolution - JPG - remove
+       // $shell_jpg = new Exec();
+      //  $shell_jpg->run($command->getSVGToJPGLowResolutionCommand());
 
-        if($shell_jpg->getReturnValue()!=0){
-            $result.=file_get_contents($error_file_name);
+     //   if($shell_jpg->getReturnValue()!=0){
+      //      $result.=file_get_contents($error_file_name);
+      //  }
+
+        $shell_png = new Exec();
+        $shell_png->run($command->getSVGToPNGCommand());
+
+
+        if($shell_png->getReturnValue()!=0){
+            if(file_exists($error_file_name))
+                $result .= (file_get_contents($error_file_name));
         }
 
         return $result!=""?new ProcessStatus(false,$result):new ProcessStatus(true);

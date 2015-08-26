@@ -22,7 +22,7 @@
 
         <div class="row">
             <div class="layout">
-                <h2>Signature Review# {{$model->signatureid}}</h2>
+                <h2>Review# {{$model->signatureid}}</h2>
                 <div class="full-width">
                     <div id='loadingmessage'>
 

@@ -28,7 +28,7 @@ abstract class Controller extends BaseController {
 
         $this->middleware('cas');
 
-        $this->currentUser =$_SERVER["HTTP_CAS_USER"];
+        $this->currentUser = $_SERVER["HTTP_CAS_USER"];
 
         $user = Models\AppAdmin::where('username','=',$this->currentUser)->first();
         $this->isAdmin = isset($user)?true:false;
@@ -44,7 +44,6 @@ abstract class Controller extends BaseController {
 
 
     }
-
 
 
     private  function renderNavigation(){
