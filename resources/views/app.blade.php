@@ -1,5 +1,5 @@
 @include('...includes.header')
-<body id="home" class="">
+<body id="home" class="mahogany">
 <div id="skipnav">
 	<ul>
 		<li><a href="#content">Skip to Content</a></li>
@@ -24,7 +24,7 @@
 
 		<!-- Navigation -->
 		@include('navigation')
-
+		@yield('banner')
 
    		 <main>
 
@@ -33,7 +33,10 @@
 
 
 			 <!-- Page Title -->
-			 <section class="section page-title bg-none"><div class="row"><div class="layout"> <h1>{{$title}}</h1></div></div></section>
+			 @if(isset($pageTitle))
+				 <section class="section page-title bg-none"><div class="row"><div class="layout">
+				 <h1>{{$pageTitle}}</h1></div></div></section>
+			 @endif
 
 			 @include('...includes.alerts')
 

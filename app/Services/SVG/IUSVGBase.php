@@ -33,7 +33,7 @@ class IUSVGBase extends SVGBase {
         $r = $this->xml->addChild('rect');
         $r['width'] = $this->tabWidth;
         $r['height'] = $h;
-        $r['fill'] = $this->tabColor;
+        $r['fill'] = '#951B1E';;
         $r['x']="$x";
         $r['y']="$y";
 

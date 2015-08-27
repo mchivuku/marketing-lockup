@@ -1,4 +1,4 @@
-<p>SignatureApproved</p>
+<p>Lock-up Approved</p>
 <p>
     <?php
     if ( !empty($data)){

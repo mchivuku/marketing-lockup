@@ -41,7 +41,7 @@ class IUSVG extends IUSVGBase {
     function __construct($p,$s,$t,$v) {
 
         parent::__construct();
-        $this->tabColor='#951B1E';
+
         $this->subprimary="";
 
         if(strlen($p)>24){

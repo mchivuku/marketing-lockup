@@ -36,7 +36,7 @@ class IUSVG_V extends IUSVGBase {
 
     function __construct($p,$s,$t,$v) {
 
-        $this->tabColor='#951B1E';
+        //$this->tabColor='#951B1E';
 
         parent::__construct();
 

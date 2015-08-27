@@ -366,7 +366,7 @@ class SignaturesController extends Controller {
             $obj  = $this->construct_ldap_object($signature->username);
             \Mail::send('emails.approve', $d, function($message)use($obj)
             {
-                $message->to($obj->email, $obj->name)->subject('Signature Approved!');
+                $message->to($obj->email, $obj->name)->subject('Lock-up Approved!');
             });
 
             //update that email has been sent;

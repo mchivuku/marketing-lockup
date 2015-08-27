@@ -66,6 +66,7 @@ abstract class Controller extends BaseController {
     protected function title($title)
     {
         \View::share(array('title' => $title));
+        \View::share(array('pageTitle' => $title));
         return $this->render();
     }
 
