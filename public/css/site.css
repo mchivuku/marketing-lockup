@@ -20,7 +20,9 @@ span.help-text {
    font-size: .75rem;
 }
 
-
+#homepage-feature{
+    margin-top:20px;
+}
 
 .boxBorder {
     background-color: #fff;

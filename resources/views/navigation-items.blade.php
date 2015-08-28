@@ -18,8 +18,8 @@ $anchor_link = function($path,$text,$children=false){
 }
 ?>
 
-<li class="first">{!!$anchor_link('signatures/create','Create Lock-up')!!}</li>
-<li>{!!$anchor_link('emaillockup','Email Lock-up')!!}</li>
+<li  class="first">{!!$anchor_link('emaillockup','Email Lock-up')!!}</li>
+<li>{!!$anchor_link('signatures/create','Create Lock-up')!!}</li>
 <li>{!!$anchor_link('signatures','Manage Lock-ups')!!}</li>
 @if($navigation['isAdmin'])
 
