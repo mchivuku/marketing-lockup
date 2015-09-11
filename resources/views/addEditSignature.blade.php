@@ -24,12 +24,11 @@
 
                     <div class="row">
                         <div class="small-4 columns">
-                            <label for="primary">Primary (required) <br/><span class="help-text" id="replace-primary">(ex. Medicine,
-                                    Psychology)</span></label>
+                            <label for="primary">Primary (required) <br/><span class="help-text"id="replace-primary">(ex. Medicine, Psychology)</span></label>
                         </div>
                         <div class="small-8 columns">
-                            <input id="primary" name="p" placeholder='PRIMARY'  maxlength="51"  type="text" required
-                                   maxLen="50"    value="{{$model->primaryText}}">
+                            <input id="primary" name="p" placeholder='PRIMARY'  type="text" required  maxlength="51"   maxLen="50"
+                                   value="{{$model->primaryText}}">
 
                         </div>
                     </div>
@@ -37,22 +36,23 @@
 
                             <div class="row">
                                 <div class="small-4 columns">
-                                    <label for="secondary">Secondary<br/><span class="help-text"id="replace-secondary">(ex. School of,Department of)</span></label>
+                                    <label for="secondary">Secondary<br/><span
+                                                class="help-text"id="replace-secondary">(ex. School of, Department of)</span></label>
                                 </div>
                                 <div class="small-8 columns">
-                                    <input id="secondary" name="s" maxlength="25"  type="text" placeholder='SECONDARY'
-                                           value="{{$model->secondaryText}}"   maxLen="24">
+                                    <input id="secondary" name="s"   type="text" placeholder='SECONDARY'  maxlength="51"   maxLen="50"
+                                           value="{{$model->secondaryText}}" >
 
                                </div>
                             </div>
 
                             <div class="row">
                                 <div class="small-4 columns">
-                                    <label for="tertiary">Tertiary</label>
+            <label for="tertiary">Tertiary<br/><span class="help-text">(ex. Bloomington, Indianapolis)</span></label>
                                 </div>
                                 <div class="small-8 columns">
-                                    <input id="tertiary" name="t"  maxlength="25" type="text" placeholder='Tertiary'
-                                           value="{{$model->tertiaryText}}"  maxLen="24">
+                                    <input id="tertiary" name="t"  type="text" placeholder='Tertiary'  maxlength="51"   maxLen="50"
+                                           value="{{$model->tertiaryText}}">
                                 </div>
                             </div>
 
@@ -75,13 +75,14 @@
 
                             <div class="button-group right">
                                 <input type="submit" id="saveSignature" name="saveSignature"
-                                       value="Save Changes" class="small button">
-                                <input type="reset" class="small button secondary" value="Clear">
+                                       value="Submit for Approval" class="small button">
+
+                                <input type="reset"  class="small button secondary clear-button" value="Clear">
 
                             </div>
 
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                {!! Form::close() !!}
+
 
                     <!-- signature preview -->
                     <div id="signature-preview">
@@ -92,6 +93,17 @@
                         @endif
 
                     </div>
+
+                    <div class="button-group right" id="duplicateButtons" style="display:none;">
+                        <input type="submit" id="saveSignature" name="saveSignature"
+                               value="Submit for Approval" class="small button">
+
+                        <input type="reset" class="small button secondary clear-button" value="Clear">
+
+                    </div>
+
+                    {!! Form::close() !!}
+
 
 
                 </div>
@@ -107,7 +119,7 @@
             $('#svgform').validate();
 
             jQuery.validator.addMethod("maxLen", function (value, element, param) {
-                //console.log('element= ' + $(element).attr('name') + ' param= ' + param )
+
                 if($(element).val().length > param) {
                     return false;
                 } else {
@@ -127,23 +139,35 @@
                 return;
             });
 
+            $('.clear-button').click(function(event){
+                event.preventDefault();
+                $('#svgform input[type=text]').val('');
+                $('#signature-preview').empty('');
+                $('#duplicateButtons').hide();
+
+            });
         });
 
         function updatePreview(){
             var form = $('#svgform');
+            $('#duplicateButtons').hide();
             if(form.valid()){
                 $.get('getPreview',form.serialize(),function(data){
                     $('div#signature-preview').empty().append("<div id='example-images'>"+data+'</div>');
+                    console.log(data.length);
+                    if(data.length>0){
+                        $('#duplicateButtons').show();
+                    }
+
                 });
             }
 
         }
 
-
         function update_label_on_toggle(toggle){
             if(toggle==0){
-                $('#replace-primary').html('(ex. Medicine,Psychology)');
-                $('#replace-secondary').html('(ex. School of,Department of)');
+                $('#replace-primary').html('(ex. Medicine, Psychology)');
+                $('#replace-secondary').html('(ex. School of, Department of)');
             }else{
                 $('#replace-primary').html('(ex. Kelley, McKinney)');
                 $('#replace-secondary').html('(ex. School of Business, School of Law)');

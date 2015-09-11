@@ -8,7 +8,7 @@
                 <div class="full-width">
                     <div class="text">
 
-                        <p>  Table with a list of users will be shown here. </p>
+                        <p>  Table with a list of administrators will be shown here. </p>
                             <a data-reveal-id='viewModal' href="{{url("/admin/search")}}"class="button modal right">
                                 Add New Administrator
                             </a>

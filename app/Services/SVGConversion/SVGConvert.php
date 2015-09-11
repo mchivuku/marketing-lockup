@@ -195,6 +195,9 @@ class SVGConvert
                 array($clean_string($this->primary),$clean_string($this->secondary),$clean_string($this->tertiary))
             ));
 
+        //$save_to_path.=date('m-d-Y');
+
+
         if($this->create_folder($save_to_path))
            return new ProcessStatus(true,$save_to_path);
 

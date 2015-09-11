@@ -42,34 +42,12 @@ class IUSVG extends IUSVGBase {
 
         parent::__construct();
 
-        $this->subprimary="";
-
-        if(strlen($p)>24){
-            //get words
-            $string=  wordwrap($p, 24, "@");
-
-            if(strpos($string,'@')!==false){
-                $strings = explode("@",$string);
-                $this->primary=strtoupper($strings[0]);
-
-                if(isset($strings[1]))
-                    $this->subprimary=strtoupper($strings[1]);
-            }else{
-
-                $this->primary = substr($p,0,24);
-                $this->subprimary=substr($p,24,strlen($p));
-
-            }
-
-
-        }else{
-
-            $this->primary = strtoupper($p);
-
-        }
+        $this->primary=strtoupper($p);
 
         $this->secondary=strtoupper($s);
-        $this->tertiary=$t;
+
+
+        $this->tertiary=ucwords(strtolower($t));
         $key =$v-1;
         $func = $this->lookup[$key];
 
@@ -89,7 +67,7 @@ class IUSVG extends IUSVGBase {
     public function signatureOne(){
         if((!$this->required_if_allofThese(array($this->primary))))return "";
 
-        if($this->subprimary!="")return "";
+        //if($this->subprimary!="")return "";
 
         $font = self::$primary_font['svgfile'];
         $text = $this->primary;
@@ -119,7 +97,7 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
     public function signatureTwo(){
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
-        if($this->subprimary!="")return "";
+       // if($this->subprimary!="")return "";
 
 
         $svgFont = new SVGFont();
@@ -173,7 +151,7 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
-        if($this->subprimary!="")return "";
+     //   if($this->subprimary!="")return "";
 
 
         $svgFont = new SVGFont();
@@ -193,11 +171,12 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
 
         /**  PRIMARY $font */
         $font = self::$primary_font['svgfile'];
-        if(strlen($this->primary)+strlen($this->secondary)>=24){
-            $text = substr($this->primary,0,(24-strlen($this->secondary)));
+        if(strlen($this->primary)+strlen($this->secondary)>=50){
+            $text = substr($this->primary,0,(50-strlen($this->secondary)));
         }else{
             $text = $this->primary;
         }
+
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
         $result = $svgFont->textToPaths($text, self::PRIMARY_FONT_SIZE,$extents);
@@ -241,7 +220,7 @@ viewBox='-$this->xref -$this->trident_serif  $total_width $this->tabHeight'>$res
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
-        if($this->subprimary!="")return "";
+       // if($this->subprimary!="")return "";
 
 
         $svgFont = new SVGFont();
@@ -290,7 +269,7 @@ width=\"$total_width\"  height=\"$view_port_height\"
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
-        if($this->subprimary!="")return "";
+       // if($this->subprimary!="")return "";
 
 
         $svgFont = new SVGFont();
@@ -332,7 +311,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
     {
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
-        if($this->subprimary!="")return "";
+       // if($this->subprimary!="")return "";
 
 
         $svgFont = new SVGFont();
@@ -395,7 +374,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
-        if($this->subprimary!="")return "";
+       // if($this->subprimary!="")return "";
 
 
 
@@ -463,7 +442,32 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))
             return "";
 
-        if($this->subprimary=="")return"";
+        /** @var SUB PRIMARY $svgFont */
+
+        $subprimary='';
+        $primary='';
+        if(strlen($this->primary)>24){
+            //get words
+            $string=  wordwrap($this->primary, 24, "@");
+            if(strpos($string,'@')!==false){
+                $strings = explode("@",$string);
+                $primary=strtoupper($strings[0]);
+
+                if(isset($strings[1]))
+                    $subprimary=strtoupper($strings[1]);
+            }else{
+
+                $primary = substr($this->primary,0,24);
+                $subprimary=substr($this->primary,24,strlen($this->primary));
+
+            }
+        }
+        else{
+            $primary = strtoupper($this->primary);
+        }
+
+        if($subprimary=='')return;
+
 
 
         $svgFont = new SVGFont();
@@ -481,20 +485,14 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
         $font=self::$primary_font['svgfile'];
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
-        $pXML1 = $svgFont->textToPaths($this->primary, self::PRIMARY_FONT_SIZE,$extents);
+        $pXML1 = $svgFont->textToPaths($primary, self::PRIMARY_FONT_SIZE,$extents);
         $p1_width =$this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
 
 
         $font=self::$primary_font['svgfile'];
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
-        $subprimary='';
-        if($this->subprimary!=''){
-            $subprimary = $this->subprimary;
-        }else{
-            $subprimary=$this->primary;
 
-        }
         $pXML2 = $svgFont->textToPaths($subprimary, self::PRIMARY_FONT_SIZE,$extents);
         $p2_width =$this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
 
@@ -515,7 +513,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
 
         $total_width = (($p_width>$s_width?$p_width:$s_width)>$t_width?($p_width>$s_width?$p_width:$s_width):$t_width)
-            + $this->tabWidth + $this->refPts;
+            + $this->tabWidth + $this->refPts+$this->refPts;
 
 
         $this->init($total_width+$this->refPts/2,$view_port_height+$this->refPts/2,$view_port_height);
@@ -548,7 +546,6 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
-        if($this->subprimary!="")return "";
 
 
         $svgFont = new SVGFont();
@@ -566,7 +563,12 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
         /**  SECONDARY TEXT  */
         $font = self::$secondary_font['svgfile'];
-        $text = $this->secondary;
+        if(strlen($this->primary)+strlen($this->secondary)>=50){
+            $text = substr($this->secondary,0,(50-strlen($this->primary)));
+        }else{
+            $text = $this->secondary;
+        }
+
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
         $sXML = $svgFont->textToPaths($text, self::SECONDARY_FONT_SIZE,$extents);
@@ -580,8 +582,6 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
         $font = self::$tertiary_font['svgfile'];
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
         $tXML = $svgFont->textToPaths($this->tertiary, self::TERTIARY_FONT_SIZE,$extents);
-
-
 
         $this->init($total_width+$this->refPts/2,$this->tabHeight);
 

@@ -6,7 +6,7 @@
                     class="full-width"><h2>Build your custom lock-up</h2>
 
                 <p>Marketing lock-ups help schools, departments, and other units stay consistent to the Indiana University brand.</p>
-                <p>While traditional IU signatures are used for letterheads, envelopes, business cards, and internal documents, lock-ups are used for digital marketing, websites, brochures—and virtually everything else.</p>
+                <p>While official IU signatures are used for letterheads, envelopes, business cards, and internal documents, lock-ups are used for all marketing channels—digital, print, web, and virtually everything else.</p>
 
             </div></div></section>
 

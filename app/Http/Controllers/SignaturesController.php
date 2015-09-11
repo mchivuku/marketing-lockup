@@ -44,7 +44,7 @@ class SignaturesController extends Controller {
 
     public function leftnavigation(){
         $navigation = array(array('route_name'=>'signatures.create',
-            'text'=>'Create Lock-up',
+            'text'=>'Create Marketing Lock-up',
             'url'=>\URL::to(action('SignaturesController@create'))));
 
         \View::share('leftnavigation',$navigation);
@@ -67,7 +67,7 @@ class SignaturesController extends Controller {
          if(isset($inputs['message']))  $this->flash($inputs['message'],(isset($inputs['type'])
              ?$inputs['type']:Models\ViewModels\Alerts::SUCCESS));
 
-         return $this->view('signatures')->model($model)->title('Manage Lock-ups');
+         return $this->view('signatures')->model($model)->title('Manage Marketing Lock-ups');
 
     }
 
@@ -216,7 +216,7 @@ class SignaturesController extends Controller {
 
         $signature = new Models\Signature();
         \View::share('editmode',false);
-        return $this->view('addEditSignature')->model($signature)->title('Create Lock-up');
+        return $this->view('addEditSignature')->model($signature)->title('Create Marketing Lock-up');
     }
 
 
@@ -225,7 +225,7 @@ class SignaturesController extends Controller {
         $signature  = Models\Signature::find($id);
         \View::share('editmode',true);
 
-        return $this->view('addEditSignature')->model($signature)->title('Edit Lock-up');
+        return $this->view('addEditSignature')->model($signature)->title('Edit Marketing Lock-up');
 
     }
 
@@ -330,7 +330,7 @@ class SignaturesController extends Controller {
         $model->signatureid = $signatureId;
         $model->signature  =  Models\Signature::where('signatureid','=',$signatureId)->first();
 
-        return $this->view('signature-review')->model($model)->title('Review Lock-up');
+        return $this->view('signature-review')->model($model)->title('Review Marketing Lock-up');
 
     }
 

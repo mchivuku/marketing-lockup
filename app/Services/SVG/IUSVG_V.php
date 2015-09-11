@@ -9,6 +9,7 @@
 namespace App\Services\SVG;
 
 
+
 class IUSVG_V extends IUSVGBase {
 
     protected $text_xml="";
@@ -18,7 +19,7 @@ class IUSVG_V extends IUSVGBase {
         'signatureThree',
         'signatureFour',
         'signatureFive'
-       );
+    );
 
     const PRIMARY_FONT_SIZE   =   32.64;
     const SECONDARY_FONT_SIZE =   32.64;
@@ -44,17 +45,13 @@ class IUSVG_V extends IUSVGBase {
         $this->primary = strtoupper($p);
 
         $this->secondary=strtoupper($s);
-        $this->tertiary=$t;
+        $this->tertiary=ucwords(strtolower($t));
         $key =$v-1;
         $func = $this->lookup[$key];
 
         $this->xref = 8;
 
         call_user_func(array($this,$func));
-    }
-
-    private function isLongPrimary(){
-        return strlen($this->primary)>24?true:false;
     }
 
 
@@ -65,48 +62,11 @@ class IUSVG_V extends IUSVGBase {
 
         if(!$this->required_if_allofThese(array($this->primary)))return "";
 
-        if($this->isLongPrimary())return "";
-
-        $font = self::$primary_font['svgfile'];
-        $text = $this->primary;
-
-        $svgFont = new SVGFont();
-        $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
-
-        $result = $svgFont->textToPaths($text, self::PRIMARY_FONT_SIZE,$extents);
-        $total_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
-
-        $text_y =  $this->tabHeight+2*($this->refPts+$this->refPts/2)+$this->refPts/2;
-        $trident_y =  $this->refPts+$this->refPts/2;
-
-        $trident_x = $total_width/2 - $this->tabWidth/2;
-
-        $total_text_height = $text_y + $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
-
-        $this->init($total_width+$this->refPts+5,$total_text_height+$this->refPts,$this->tabHeight,
-            $trident_x,
-            $trident_y);
-
-      $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
-     height=\"$total_text_height\"
-     viewBox='0 -$total_text_height  $total_width $total_text_height'>$result</svg>");
-
-    }
-
-    /**
-     * Signature Two - contains one element - Primary, second line secondary
-     */
-    public function signatureTwo(){
-
-        //rules
-        if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
-
-        if($this->isLongPrimary())return "";
-
+        $texts =$this->getprimary();
         $svgFont = new SVGFont();
 
         $font = self::$primary_font['svgfile'];
-        $text = $this->primary;
+        $text = $texts['p'];
 
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
@@ -114,16 +74,14 @@ class IUSVG_V extends IUSVGBase {
         $p_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
         $p_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
 
+        $sXML="";$s_width=0;$s_height=0;
+        if($texts['subp']!=''){
+            $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
+            $sXML = $svgFont->textToPaths($texts['subp'], self::PRIMARY_FONT_SIZE,$extents);
+            $s_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
+            $s_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
 
-        $font = self::$secondary_font['svgfile'];
-        $text = $this->secondary;
-
-        $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
-        $sXML = $svgFont->textToPaths($text, self::TERTIARY_FONT_SIZE,$extents);
-        $s_width = $this->funitsToPx($extents['w'],self::TERTIARY_FONT_SIZE,$extents['u']);
-        $s_height =  $this->funitsToPx($extents['h'],self::TERTIARY_FONT_SIZE,$extents['u']);
-
-
+        }
         if($p_width>$s_width)
             $total_width = $p_width;
         else
@@ -141,7 +99,8 @@ class IUSVG_V extends IUSVGBase {
 
 
         $p_y = $total_height - ($this->refPts + $this->refPts/2) - $s_height - $p_height + $this->refPts - 1 ;
-        $s_y = $p_y+$p_height + $this->refPts - 4; // -4 parallax  - primary parallax
+
+        $s_y = $p_y + $p_height + $this->refPts + $this->refPts-4; // -4 parallax  - primary parallax
 
         $this->init($total_width+$this->refPts+5,$total_height,$this->tabHeight,
             $trident_x,
@@ -150,6 +109,96 @@ class IUSVG_V extends IUSVGBase {
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
      height=\"$total_height\"
      viewBox='-$p_x -$p_y  $total_width $total_height'>$pXML</svg>");
+
+        if($sXML!="")
+            $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
+     height=\"$total_height\"
+     viewBox='-$s_x -$s_y  $total_width $total_height'>$sXML</svg>");
+
+
+    }
+
+    /**
+     * Signature Two - contains one element - Primary, second line secondary
+     */
+    public function signatureTwo(){
+
+        //rules
+        if(!$this->required_if_allofThese(array($this->primary,$this->secondary)))return "";
+
+        /** @var PRIMARY $pXML2 */
+        $pXML2='';
+        $p2_width=0;
+        $p2_height=0;
+
+        $svgFont = new SVGFont();
+        $font = self::$primary_font['svgfile'];
+        $texts = $this->getprimary();
+
+        $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
+
+        $pXML1 = $svgFont->textToPaths($texts['p'], self::PRIMARY_FONT_SIZE,$extents);
+        $p1_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
+        $p1_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
+
+        if($texts['subp']!=''){
+            $pXML2 = $svgFont->textToPaths($texts['subp'], self::PRIMARY_FONT_SIZE,$extents);
+            $p2_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
+            $p2_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
+
+        }
+        $p_width = $p1_width>$p2_width?$p1_width:$p2_width;
+
+        //parallax
+        $p_height = $pXML2!=""?$p1_height+$p2_height + 2*$this->refPts-4:$p1_height;
+
+        $font = self::$secondary_font['svgfile'];
+        $text = $this->secondary;
+
+        $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
+        $sXML = $svgFont->textToPaths($text, self::TERTIARY_FONT_SIZE,$extents);
+        $s_width = $this->funitsToPx($extents['w'],self::TERTIARY_FONT_SIZE,$extents['u']);
+        $s_height =  $this->funitsToPx($extents['h'],self::TERTIARY_FONT_SIZE,$extents['u']);
+
+
+        if($p_width>$s_width)
+            $total_width = $p_width;
+        else
+            $total_width=$s_width;
+
+
+        $p1_x = $total_width/2 - $p1_width/2;
+        $p2_x = $total_width/2 - $p2_width/2;
+
+        $s_x = $total_width/2 - $s_width/2;
+        $trident_x = $total_width/2 - $this->tabWidth/2;
+        $trident_y = 15;
+
+        $total_height  = ($this->refPts + $this->refPts/2) + $this->tabHeight + ($this->refPts + $this->refPts/2) +
+            $p_height+($this->refPts + $this->refPts/2)+$s_height+($this->refPts + $this->refPts/2);
+
+
+
+
+        $p1_y = $total_height - ($this->refPts + $this->refPts/2) - $s_height - $p_height + $this->refPts - 1 ;
+        $p2_y = $p1_y + $p2_height + $this->refPts + $this->refPts-4; // -4 parallax  - primary parallax
+
+        $s_y = $p1_y + $p_height + $this->refPts - 4; // -4 parallax  - primary parallax
+
+        $this->init($total_width+$this->refPts+5,$total_height,$this->tabHeight,
+            $trident_x,
+            $trident_y);
+
+
+        $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
+     height=\"$total_height\"
+     viewBox='-$p1_x -$p1_y  $total_width $total_height'>$pXML1</svg>");
+
+        if($pXML2!=''){
+            $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
+     height=\"$total_height\"
+     viewBox='-$p2_x -$p2_y  $total_width $total_height'>$pXML2</svg>");
+        }
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
      height=\"$total_height\"
@@ -167,19 +216,34 @@ class IUSVG_V extends IUSVGBase {
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
-        if($this->isLongPrimary())return "";
 
-        $svgFont = new SVGFont();
-
-        $font = self::$primary_font['svgfile'];
-        $text = $this->primary;
 
         //Primary
+        $pXML2='';
+        $p2_width=0;
+        $p2_height=0;
+
+        $svgFont = new SVGFont();
+        $font = self::$primary_font['svgfile'];
+        $texts = $this->getprimary();
+
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
-        $pXML = $svgFont->textToPaths($text, self::PRIMARY_FONT_SIZE,$extents);
-        $p_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
-        $p_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
+        $pXML1 = $svgFont->textToPaths($texts['p'], self::PRIMARY_FONT_SIZE,$extents);
+        $p1_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
+        $p1_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
+
+        if($texts['subp']!=''){
+            $pXML2 = $svgFont->textToPaths($texts['subp'], self::PRIMARY_FONT_SIZE,$extents);
+            $p2_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
+            $p2_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
+
+        }
+        $p_width = $p1_width>$p2_width?$p1_width:$p2_width;
+
+
+        //parallax
+        $p_height = $pXML2!=""?$p1_height+$p2_height + 2*$this->refPts-4:$p1_height;
 
 
         //secondary
@@ -211,7 +275,10 @@ class IUSVG_V extends IUSVGBase {
             $total_width=$t_width;
 
 
-        $p_x = $total_width/2 - $p_width/2;
+        $p1_x = $total_width/2 - $p1_width/2;
+        $p2_x = $total_width/2 - $p2_width/2;
+
+
         $s_x = $total_width/2 - $s_width/2;
         $t_x = $total_width/2 - $t_width/2;
 
@@ -222,9 +289,11 @@ class IUSVG_V extends IUSVGBase {
         $total_height  = ($this->refPts + $this->refPts/2) + $this->tabHeight + ($this->refPts + $this->refPts/2) +
             $p_height+($this->refPts + $this->refPts/2)+$s_height+($this->refPts + $this->refPts/2)+$t_height+ ($this->refPts + $this->refPts/2);
 
+        $p1_y = $total_height - (2*($this->refPts + $this->refPts/2)) - $s_height - $p_height  - 2 ;
+        $p2_y = $p1_y + $p2_height + $this->refPts + $this->refPts-4; // -4 parallax  - primary parallax
 
-        $p_y = $total_height - 2*($this->refPts + $this->refPts/2) - $s_height - $p_height - $t_height + $this->refPts - 1 ;
-        $s_y = $p_y+$p_height + $this->refPts - 4; // -4 parallax  - primary parallax
+
+        $s_y = $p1_y+$p_height + $this->refPts - 4; // -4 parallax  - primary parallax
 
         $t_y = $s_y+$s_height +$this->refPts +2; // -2 secondary parallax
 
@@ -235,7 +304,13 @@ class IUSVG_V extends IUSVGBase {
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
      height=\"$total_height\"
-     viewBox='-$p_x -$p_y  $total_width $total_height'>$pXML</svg>");
+     viewBox='-$p1_x -$p1_y  $total_width $total_height'>$pXML1</svg>");
+
+        if($pXML2!='')
+            $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
+     height=\"$total_height\"
+     viewBox='-$p2_x -$p2_y  $total_width $total_height'>$pXML2</svg>");
+
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
      height=\"$total_height\"
@@ -255,19 +330,33 @@ class IUSVG_V extends IUSVGBase {
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
-        if($this->isLongPrimary())return "";
-        $svgFont = new SVGFont();
-
-        $font = self::$primary_font['svgfile'];
-        $text = $this->primary;
 
         //Primary
+        $pXML2='';
+        $p2_width=0;
+        $p2_height=0;
+
+        $svgFont = new SVGFont();
+        $font = self::$primary_font['svgfile'];
+        $texts = $this->getprimary();
+
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
-        $pXML = $svgFont->textToPaths($text, self::PRIMARY_FONT_SIZE,$extents);
-        $p_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
-        $p_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
+        $pXML1 = $svgFont->textToPaths($texts['p'], self::PRIMARY_FONT_SIZE,$extents);
+        $p1_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
+        $p1_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
 
+        if($texts['subp']!=''){
+            $pXML2 = $svgFont->textToPaths($texts['subp'], self::PRIMARY_FONT_SIZE,$extents);
+            $p2_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
+            $p2_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
+
+        }
+        $p_width = $p1_width>$p2_width?$p1_width:$p2_width;
+
+
+        //parallax
+        $p_height = $pXML2!=""?$p1_height+$p2_height + 2*$this->refPts-4:$p1_height;
 
         //secondary
         $font = self::$secondary_font['svgfile'];
@@ -297,8 +386,9 @@ class IUSVG_V extends IUSVGBase {
         if($total_width<$t_width)
             $total_width=$t_width;
 
+        $p1_x = $total_width/2 - $p1_width/2;
+        $p2_x = $total_width/2 - $p2_width/2;
 
-        $p_x = $total_width/2 - $p_width/2;
         $s_x = $total_width/2 - $s_width/2;
         $t_x = $total_width/2 - $t_width/2;
 
@@ -312,9 +402,10 @@ class IUSVG_V extends IUSVGBase {
 
 
         $s_y = $total_height - 2*($this->refPts + $this->refPts/2) - $s_height - $p_height - $t_height - 2;
-        $p_y = $s_y+$s_height +$p_height + $this->refPts - 1 ; // -2 parallax  - secondary parallax
 
-        $t_y = $p_y+$p_height +$this->refPts - 4; // -4 secondary parallax
+        $p1_y = $s_y+$s_height + $this->refPts+15;
+        $p2_y = $p1_y + $p2_height + $this->refPts + $this->refPts-4; // -4 parallax  - primary parallax
+        $t_y = $p1_y+$p_height +$this->refPts - 4; // -4 secondary parallax
 
 
         $this->init($total_width+$this->refPts+5,$total_height,$this->tabHeight,
@@ -328,7 +419,13 @@ class IUSVG_V extends IUSVGBase {
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
      height=\"$total_height\"
-     viewBox='-$p_x -$p_y  $total_width $total_height'>$pXML</svg>");
+     viewBox='-$p1_x -$p1_y  $total_width $total_height'>$pXML1</svg>");
+
+        if($pXML2!='')
+            $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
+     height=\"$total_height\"
+     viewBox='-$p2_x -$p2_y  $total_width $total_height'>$pXML2</svg>");
+
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
      height=\"$total_height\"
@@ -344,18 +441,33 @@ class IUSVG_V extends IUSVGBase {
 
         //rules
         if(!$this->required_if_allofThese(array($this->primary,$this->secondary,$this->tertiary)))return "";
-        if($this->isLongPrimary())return "";
-        $svgFont = new SVGFont();
-
-        $font = self::$primary_font['svgfile'];
-        $text = $this->primary;
 
         //Primary
+        $pXML2='';
+        $p2_width=0;
+        $p2_height=0;
+
+        $svgFont = new SVGFont();
+        $font = self::$primary_font['svgfile'];
+        $texts = $this->getprimary();
+
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
 
-        $pXML = $svgFont->textToPaths($text, self::PRIMARY_FONT_SIZE,$extents);
-        $p_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
-        $p_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
+        $pXML1 = $svgFont->textToPaths($texts['p'], self::PRIMARY_FONT_SIZE,$extents);
+        $p1_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
+        $p1_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
+
+        if($texts['subp']!=''){
+            $pXML2 = $svgFont->textToPaths($texts['subp'], self::PRIMARY_FONT_SIZE,$extents);
+            $p2_width = $this->funitsToPx($extents['w'],self::PRIMARY_FONT_SIZE,$extents['u']);
+            $p2_height =  $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']);
+
+        }
+
+        $p_width = $p1_width>$p2_width?$p1_width:$p2_width;
+        //parallax
+        $p_height = $pXML2!=""?$p1_height+$p2_height + 2*$this->refPts-4:$p1_height;
+
 
 
         //secondary
@@ -381,7 +493,9 @@ class IUSVG_V extends IUSVGBase {
             $total_width=$s_width;
 
 
-        $p_x = $total_width/2 - $p_width/2;
+        $p1_x = $total_width/2 - $p1_width/2;
+        $p2_x = $total_width/2 - $p2_width/2;
+
         $s_x = $total_width/2 - $s_width/2;
 
 
@@ -392,7 +506,9 @@ class IUSVG_V extends IUSVGBase {
             $p_height+($this->refPts + $this->refPts/2)+$s_height+($this->refPts + $this->refPts/2)+ ($this->refPts + $this->refPts/2);
 
         $s_y = $total_height - 2*($this->refPts + $this->refPts/2) - $s_height - $p_height  -2;
-        $p_y = $s_y+$s_height+$this->refPts+$this->refPts + $this->refPts/2;
+        $p1_y = $s_y+$s_height + $this->refPts+15;
+        $p2_y = $p1_y + $p2_height + $this->refPts + $this->refPts-4; // -4 parallax  - primary parallax
+
 
 
         $this->init($total_width+$this->refPts+5,$total_height,$this->tabHeight,
@@ -405,9 +521,46 @@ class IUSVG_V extends IUSVGBase {
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
      height=\"$total_height\"
-     viewBox='-$p_x -$p_y  $total_width $total_height'>$pXML</svg>");
+     viewBox='-$p1_x -$p1_y  $total_width $total_height'>$pXML1</svg>");
+
+        if($pXML2!='')
+            $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"  width=\"$total_width\"
+     height=\"$total_height\"
+     viewBox='-$p2_x -$p2_y  $total_width $total_height'>$pXML2</svg>");
 
 
     }
 
+
+    private function getprimary(){
+
+        $text1="";
+        $text2="";
+
+        if(strlen($this->primary)>24){
+            //get words
+            $string=  wordwrap($this->primary, 24, "@");
+            if(strpos($string,'@')!==false){
+                $strings = explode("@",$string);
+                $text1=strtoupper($strings[0]);
+
+                if(isset($strings[1]))
+                    $text2=strtoupper($strings[1]);
+            }else{
+
+                $text1 = substr($this->primary,0,24);
+                $text2=substr($this->primary,24,strlen($this->primary));
+
+            }
+        }
+        else{
+            $text1 = strtoupper($this->primary);
+        }
+
+
+        return array('p'=>$text1,'subp'=>$text2);
+
+
+    }
 }
+

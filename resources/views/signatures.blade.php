@@ -29,7 +29,7 @@
 
                     </ul>
 
-                        <div id="tabs-content">
+                        <div id="tabs-content" class="panel">
 
                                         <div class="content active">
 
