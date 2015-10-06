@@ -10,59 +10,37 @@
 
                         {!! Form::open(array('url' => '/signatures/savesignature','id'=>"svgform",'method'=>'post')) !!}
 
-                          <div class="row">
-                                <div class="small-4 columns">
-                                    {!!  Form::label('named', 'Named School') !!}
-                                </div>
-                                <div class="small-8 columns">
-                                    {!!  Form::radio('named',1) !!}
-                                    {!!  Form::label('namedschool', 'Yes') !!}
-                                    {!!  Form::radio('named',0,array('checked'=>'checked')) !!}
-                                    {!!  Form::label('namedschool', 'No') !!}
-                                </div>
-                            </div>
 
-                    <div class="row">
-                        <div class="small-4 columns">
-                            <label for="primary">Primary (required) <br/><span class="help-text"id="replace-primary">(ex. Medicine, Psychology)</span></label>
-                        </div>
-                        <div class="small-8 columns">
-                            <input id="primary" name="p" placeholder='PRIMARY'  type="text" required  maxlength="51"   maxLen="50"
-                                   value="{{$model->primaryText}}">
-
-                        </div>
-                    </div>
+                            {!!  Form::label('named', 'Named School') !!}
+                            {!!  Form::radio('named',1) !!}
+                            {!!  Form::label('namedschool', 'Yes') !!}
+                            {!!  Form::radio('named',0,array('checked'=>'checked')) !!}
+                            {!!  Form::label('namedschool', 'No') !!}
 
 
-                            <div class="row">
-                                <div class="small-4 columns">
+                            <label for="primary">Primary (required) <br/><span class="help-text"id="replace-primary">(ex. Medicine, Psychology)</span>
+                                <input id="primary" name="p" placeholder='PRIMARY'  type="text" required  maxlength="51"   maxLen="50"
+                                       value="{{$model->primaryText}}">
+                            </label>
+
+
                                     <label for="secondary">Secondary<br/><span
-                                                class="help-text"id="replace-secondary">(ex. School of, Department of)</span></label>
-                                </div>
-                                <div class="small-8 columns">
-                                    <input id="secondary" name="s"   type="text" placeholder='SECONDARY'  maxlength="51"   maxLen="50"
-                                           value="{{$model->secondaryText}}" >
-
-                               </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="small-4 columns">
-            <label for="tertiary">Tertiary<br/><span class="help-text">(ex. Bloomington, Indianapolis)</span></label>
-                                </div>
-                                <div class="small-8 columns">
-                                    <input id="tertiary" name="t"  type="text" placeholder='Tertiary'  maxlength="51"   maxLen="50"
-                                           value="{{$model->tertiaryText}}">
-                                </div>
-                            </div>
+                                                class="help-text"id="replace-secondary">(ex. School of, Department of)</span>
+                                        <input id="secondary" name="s"   type="text" placeholder='SECONDARY'  maxlength="51"   maxLen="50"
+                                               value="{{$model->secondaryText}}">
+                                    </label>
 
 
-                          <div class="row">
-                               <div class="small-4 columns">
+
+
+                                 <label for="tertiary">Tertiary<br/><span class="help-text">(ex. Bloomington,
+                                       Indianapolis)</span>
+                                  <input id="tertiary" name="t"  type="text" placeholder='Tertiary'  maxlength="51"
+                                maxLen="50" value="{{$model->tertiaryText}}"></label>
+
+
+
                                    {!!  Form::label('type', 'Lock-up Orientation') !!}
-                             </div>
-                             <div class="small-8 columns">
-
                                      {!!  Form::radio('type','',array('checked'=>'checked')) !!}
                                      {!!  Form::label('svgType ', 'All') !!}
                                      {!!  Form::radio('type','h') !!}
@@ -70,8 +48,7 @@
                                      {!!  Form::radio('type','v') !!}
                                      {!!  Form::label('svgType ', 'Vertical') !!}
 
-                          </div>
-                           </div>
+
 
                             <div class="button-group right">
                                 <input type="submit" id="saveSignature" name="saveSignature"

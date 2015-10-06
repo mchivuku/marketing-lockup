@@ -40,18 +40,25 @@
     <section class="collapsed bg-none section" id="homepage-feature">
         <div class="row">
             <div class="layout">
+                    <div class="grid thirds">
 
-                    <div class="grid halves">
                         <div class="feature">
-                            <figure itemtype="http://schema.org/ImageObject" itemscope="itemscope" class="media image">
-                                <img src="{{asset("/img/AADSLockup.png")}}" itemprop="contentUrl"
-                                     alt="african american and african diaspora studies"></figure>
+                            <span class="help-text">Department, school, or unit</span>
+
+                            <figure itemtype="http://schema.org/ImageObject" itemscope="itemscope" class="media
+                            image" style="margin-top: 15px;">
+                                <img src="{{asset("/img/chemistry.png")}}" itemprop="contentUrl"
+                                     alt="department of chemistry">
+                            </figure>
 
                         </div>
                         <div class="feature">
-                            <figure itemtype="http://schema.org/ImageObject" itemscope="itemscope" class="media image">
+                            <span class="help-text">Named school</span>
+                            <figure itemtype="http://schema.org/ImageObject" itemscope="itemscope" class="media
+                            image"  style="margin-top: 15px;">
                                 <img src="{{asset("/img/kelley.png")}}" itemprop="contentUrl"
-                                     alt="kelley"></figure>
+                                     alt="kelley">
+                            </figure>
                         </div>
 
     </div></div></div></section>

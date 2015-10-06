@@ -187,15 +187,16 @@ class SVGConvert
     public function create_destination_folders(){
 
         $clean_string =function($string){
-            return str_replace(" ","_",strtolower($string));
+            $s =  str_replace(" ","_",strtolower($string));
+            return preg_replace("/[^a-zA-Z0-9.]/", "", $s);
         };
-        //Add Timestamp
 
+        //Add Timestamp
         $save_to_path = downloadPath."/".implode("_",array_filter(
                 array($clean_string($this->primary),$clean_string($this->secondary),$clean_string($this->tertiary))
             ));
 
-        //$save_to_path.=date('m-d-Y');
+        $save_to_path.='_'.date('m-d-Y');
 
 
         if($this->create_folder($save_to_path))
@@ -211,7 +212,7 @@ class SVGConvert
 
         // Removes non-empty directory
         $command = "rm -rf $name/";
-       exec($command);
+         exec($command);
 
     }
 

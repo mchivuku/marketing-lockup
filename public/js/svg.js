@@ -102,7 +102,7 @@ AjaxTabs = {
 
             // initialize datatable
             $('#signatureTable').dataTable({  "ordering": false,"info":false});
-            $('#signatureTable').table().data( "table" ).refresh();
+            $('#signatureTable').table().data("table").refresh();
 
             $(document).foundation('reflow');
 

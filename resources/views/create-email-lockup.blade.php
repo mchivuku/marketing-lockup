@@ -50,8 +50,10 @@
                 if ( $('#signatureForm').valid()){
 
                     $('#signatureOutput').hide();
+
                     $('#lnkEditFields').show();
                     $(".previewHeading").show();
+
                     $('#mainForm').hide();
 
                     $('#signatureOutputWithoutImage').children().remove();
@@ -62,7 +64,7 @@
                     $('#signatureOutputWithImage').children().remove();
                     $('#signatureOutputWithImage').append($('#signatureOutput').html());
                     $('#signatureOutputWithImage').show();
-                    $('#copy-instructions').show();
+                    $('.copy-instructions').show();
 
                     $('#previewDiv').show();
                     /*
@@ -89,7 +91,8 @@
                         $('#signatureOutputWithImage').hide();
                         $('#signatureOutput').show();
                         $('#previewDiv').hide();
-                        $('#copy-instructions').hide();
+                        $('.copy-instructions').hide();
+
                         $(this).hide();
                     })
                 }

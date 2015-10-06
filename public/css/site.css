@@ -902,3 +902,27 @@ table.tablesaw thead td {
     cursor: default;
     pointer-events: none;
 }
+
+.section-nav nav{
+    width:25%;
+}
+
+.highlight{
+    color:#951B1E;
+}
+
+.belt .half:last-child {
+    text-align: right;
+}
+.belt .half {
+    float: left;
+    width: 50%;
+}
+
+.belt a, .belt-links a, .skirt-nav a {
+    color: #fff;
+}
+
+.belt {
+    font-size: 0.875rem;
+}

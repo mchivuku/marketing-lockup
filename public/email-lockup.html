@@ -12,7 +12,8 @@
 
                     <p>Additions to these (such as quotes, notes, graphics, traditional department/unit signatures) are not permitted.</p>
 
-                    <p><span style="text-decoration: underline;"><strong>THIS ARTWORK IS INTENDED FOR DIGITAL USE ONLY&ndash;QUALITY IS NOT HIGH ENOUGH FOR PRINT REPRODUCTION</strong></span></p>
+                    <p><span class="highlight"><strong>THIS ARTWORK IS INTENDED FOR DIGITAL USE ONLY&ndash;QUALITY IS NOT
+                        HIGH  ENOUGH FOR PRINT REPRODUCTION</strong></span></p>
                 </div>
             </div>
         </div>
@@ -27,14 +28,14 @@
                 <h5 style="font-size: 13.2px; margin: 0;font-family: Arial, Helvetica, sans-serif;font-weight: bold;">{{signature.firstName + " " + signature.lastName}}</h5>
                 <p ng-if="signature.title1.length > 0" style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial,Helvetica, sans-serif;font-size: 11px; ">{{signature.title1}}</p>
                 <p ng-if="signature.title2.length > 0" style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.title2}}</p>
-                <p ng-if="signature.title1.primaryunit > 0"  style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.primaryunit + " " + signature.department}}</p>
-                <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family:Arial,Helvetica, sans-serif;font-size: 11px;">{{signature.address.roomandbuilding }}<span  id="address-comma"
+                <p ng-if="signature.primaryunit.length > 0"  style="margin-top: 1px; padding: 0px; margin-bottom: 0px;font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.primaryunit + " " + signature.department}}</p>
+                <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family:Arial,Helvetica, sans-serif;font-size: 11px;">{{signature.address.roomandbuilding }}
                 <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial,Helvetica, sans-serif;font-size: 11px;">
                                 <span ng-show="signature.address.city">
-                                    {{signature.address.city }}
+                                    {{signature.address.city}}
                                 </span>
-                                <span id="city-state-comma" ng-if="signature.address.state.length > 0 && ng.signature.address.city.length > 0">
-                                    {{","}}
+                                <span ng-if="signature.address.state.length > 0 && signature.address.city.length > 0">
+                                    {{", "}}
                                 </span>
                     {{ signature.address.state + " " + signature.address.zipcode}}
                 </p>
@@ -53,13 +54,13 @@
 
         </div>
         <div id="previewDiv">
-            <div class="text" id="copy-instructions" style="display:none;">
+            <div class="text copy-instructions" style="display:none;">
                 <p>Once your IU email signature is rendered below:</p>
 
                 <ol style="margin-left:20px;">
                     <li>Highlight the email signature with your cursor</li>
                     <li>Copy the signature</li>
-                    <li>Open your email application and go to Preferences</li>
+                    <li>Open your email application and go to preferences</li>
                     <li>Create new signature</li>
                     <li>Paste your new signature and save</li>
                 </ol>
@@ -68,9 +69,12 @@
 
             <h4 class="previewHeading" style="font-size: 14.9333px; margin: 5px 0px 5px 0px; font-family:Arial,Helvetica, sans-serif;">Signature with Logo</h4>
             <div class="boxBorder" id="signatureOutputWithImage" style="font-size: 11px; margin: 0;font-family: Arial, Helvetica, sans-serif;"></div>
-            <h4 class="previewHeading" style="font-size: 14.9333px; margin: 5px 0px 5px 0px;
-            font-family:Arial,Helvetica, sans-serif;">Signature without Logo <small>(Images can add unnecessary file size, they can appear as attachments, some webmail systems hide images by default, etc.)</small></h4>
-            <div class="boxBorder" id="signatureOutputWithoutImage" style="font-size: 11px; margin-bottom: 10px;font-family: Arial, Helvetica, sans-serif;"></div>
+            <div id="signature-note" style="display:none;" class="copy-instructions"><small>NOTE: Images can add
+                unnecessary file size, they can appear as attachments, some webmail systems hide images by default, etc.</small></div>
+            <h4 class="previewHeading" style="font-size: 14.9333px; margin: 15px 0px 5px 0px;
+            font-family:Arial,Helvetica, sans-serif;">Signature without Logo </h4>
+            <div class="boxBorder" id="signatureOutputWithoutImage"
+                 style="font-size: 11px;margin-bottom: 10px;font-family: Arial, Helvetica, sans-serif;"></div>
             <input type="button" class="small button" value="Edit Signature"
                    name="editSignature"
                    id="lnkEditFields">

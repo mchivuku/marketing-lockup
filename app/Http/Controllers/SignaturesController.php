@@ -239,6 +239,8 @@ class SignaturesController extends Controller {
     public function save(){
 
         $inputs = \Input::all();
+
+
         $message="";
         $user = $this->currentUser;
 
@@ -255,6 +257,7 @@ class SignaturesController extends Controller {
 
                 $signature->updated_at = $timestamp;
                 $signature->named = $inputs['named'];
+
                 $signature->save();
 
 
@@ -366,7 +369,7 @@ class SignaturesController extends Controller {
             $obj  = $this->construct_ldap_object($signature->username);
             \Mail::send('emails.approve', $d, function($message)use($obj)
             {
-                $message->to($obj->email, $obj->name)->subject('Lock-up Approved!');
+                $message->to($obj->email, $obj->name)->subject('Marketing Lock-up Approved!');
             });
 
             //update that email has been sent;
@@ -375,11 +378,10 @@ class SignaturesController extends Controller {
             $review->save();
             $signature->save();
 
-
             return json_encode(array('status'=>true,'message'=>'Successfully completed the build/approval process'));
         }
 
-        return  json_encode(array('status'=>false,'message'=>$return->message));
+        return  json_encode(array('status'=>false,'message'=>'Failed to create the lockup'));
 
     }
 
@@ -395,7 +397,7 @@ class SignaturesController extends Controller {
 
 
         if($signature->statusId == $review_status->id){
-            return json_encode(array('status'=>false,'message'=>'Lock-up is already denied'));
+            return json_encode(array('status'=>false,'message'=>'Marketing Lock-up is already denied'));
         }
 
 
@@ -409,7 +411,7 @@ class SignaturesController extends Controller {
         $obj  = $this->construct_ldap_object($signature->username);
         \Mail::send('emails.denied', $d, function($message)use($obj)
         {
-            $message->to($obj->email, $obj->name)->subject('Lock-up Request Denied!');
+            $message->to($obj->email, $obj->name)->subject('Marketing Lock-up Request Denied!');
         });
 
 

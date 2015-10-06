@@ -44,33 +44,17 @@ class SVGCommandBuilder{
 
         // 1. PRINT WEB - with transparent background
         // 2. convert -background none svg.svg svg_version2.png,convert -identify -resize 200%
-        return  $this->__getSVGToFormatCommand("png",array('-background none','-resize 200%','-quality 95',
+        return  $this->__getSVGToFormatCommand("png",array('-background none','-quality 05',
+            'png:compression-level=9',
            '-density 300'));
 
     }
-
-   /* public function getSVGToJPGLowResolutionCommand()
-    {
-        $options = array();
-
-        //1. resolution
-        $options[] = "-density 72";   //dpi - 72
-        $options[] = "-resize 200%";  //size 200%;
-        $options[] = "-quality 6";    //quality 6
-
-        $info = pathinfo($this->source);
-        $dest = $info['dirname']."/".$info['filename']."_72dpi.jpg";
-
-
-        return  $this->__getSVGToFormatCommand("jpg",$options,$dest);
-
-    }*/
 
     public function getSVGToJPGHighResolutionCommand()
     {
         $options = array();
         $options[] = "-density 300";
-        $options[] = "-resize 200%";  //size 200%;
+       // $options[] = "-resize 200%";  //size 200% / Brian said remove resize option;
         $options[] = "-quality 12";   // quality 12
 
         $info = pathinfo($this->source);

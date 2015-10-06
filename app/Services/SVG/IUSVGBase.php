@@ -12,6 +12,13 @@ class IUSVGBase extends SVGBase {
     protected $tabWidth = 58;
     protected $tabColor;
 
+    protected $primary_leading_x =  0.41;
+
+    protected $secondary_leading_x = 0.35;
+    protected $tertiary_leading_x = 0.3;
+
+
+
     function __construct() {
         parent::__construct();
 
@@ -51,22 +58,19 @@ class IUSVGBase extends SVGBase {
 	transform="'.$translate.'"/>';
         $this->addXMLStr($this->xml, $logo);
     }
-    function required_if_allofThese($parameters=array()){
-        $valid = false;
+
+    function required($parameters=array()){
 
         $is_null_empty = function($str){
             return isset($str)&& $str!="";
         };
 
-        foreach($parameters as $param)
-        {
-            if($is_null_empty($param))
-                $valid=true;
-            else
-                $valid=false;
-        }
+        $filtered_items = array_filter($parameters, function($item)use(&$is_null_empty){
+            return !$is_null_empty($item);
+        });
 
-        return $valid;
+
+        return !count($filtered_items)>0;
     }
 
 }

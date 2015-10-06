@@ -82,8 +82,6 @@ class Signature extends Model {
                 $output = $previews($alltags['h'],'App\Services\SVG\IUSVG');
                 $output .= $previews($alltags['v'],'App\Services\SVG\IUSVG_V');
             }
-
-
         }else{
             $alltags =$this->getAllSchoolTags();
             if($type!=''){
