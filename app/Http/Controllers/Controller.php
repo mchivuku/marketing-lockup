@@ -41,7 +41,8 @@ abstract class Controller extends BaseController {
         // Layout - pass data for the partial views in the layout
         $this->renderNavigation();
 
-
+        $from =  \Config::get('mail.from');
+        \View::share(array('contactMail' => $from['address']));
 
     }
 

@@ -10,16 +10,14 @@ namespace App\Services;
 
 require_once 'Attributes.php';
 
-//TODO : move passwords;
-
 class LDAPService
 {
 
     protected $ldapconn;
-    protected $domain='LDAP://ads.iu.edu/';
-    protected $port=389;
-    protected $user='pagriet';
-    protected $password='we love hawa11an p1zza and sh1rts';
+    protected $domain;
+    protected $port;
+    protected $user;
+    protected $password;
     protected $error;
     protected $sizeLimit = 20;
     const  DefaultSearchRoot = "OU=Accounts,DC=ads,DC=iu,DC=edu" ;
@@ -34,7 +32,8 @@ class LDAPService
     public function __construct(){
 
 
-       // $this->parseINI();
+        //initialization - get variables from config file.
+        $this->parseINI();
 
         $this->ldapconn   = ldap_connect($this->domain,$this->port);
 
@@ -56,9 +55,10 @@ class LDAPService
 
     public function parseINI()
     {
-       $prefs =    parse_ini_file(app_path().'/config/ldap.php');
-       foreach ($prefs as $k=>$v) $this->$k = $v;
-
+        $this->domain=\Config::get('ldap.domain');
+        $this->port = \Config::get('ldap.port');
+        $this->user = \Config::get('ldap.user');
+        $this->password = \Config::get('ldap.password');
     }
 
     public function search($search_fields){
@@ -106,11 +106,7 @@ class LDAPService
                     }
 
 
-
-
                 return $search_results;
-
-
 
             }
         }

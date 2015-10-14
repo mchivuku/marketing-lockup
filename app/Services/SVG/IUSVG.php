@@ -19,7 +19,8 @@ class IUSVG extends IUSVGBase {
         'signatureFour',
         'signatureFive',
         'signatureSix',
-        'signatureSeven','signatureEight',
+        'signatureSeven',
+        'signatureEight',
         'signatureNine');
 
     const PRIMARY_FONT_SIZE   =   32.64;

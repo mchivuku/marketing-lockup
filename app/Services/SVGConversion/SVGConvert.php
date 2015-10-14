@@ -14,9 +14,8 @@ use App\Services\SVG;
 
 require_once __DIR__."/../SVG/IUSVG.php";
 require_once __DIR__."/../SVG/IUSVG_PRINT.php";
-
-
 define('downloadPath',"/ip/iubrand/wwws/admin/public/downloads");
+
 /***
  * Class SVGConvert
  * Class the builds the imagick convert command

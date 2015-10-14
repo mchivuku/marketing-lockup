@@ -26,11 +26,15 @@ Route::group(array('prefix'=>'signatures'),function(){
     Route::get('/getSignatures', array('as'=>'signature-table',
         'uses'=>'SignaturesController@getSignatures'));
 
-    Route::get('/namedschoolimages',function(){
-        return view("named-school-image-examples");
+    //Form Toggle - AddEditSignature
+    Route::get('/namedschool',function(){
+        $inputs = \Input::all();
+        return view("includes/named-school-form",
+            array('primaryText'=>$inputs['p'],'secondaryText'=>$inputs['s'],'tertiaryText'=>$inputs['t']));
     });
-    Route::get('/allschoolimages',function(){
-        return view("all-school-image-examples");
+    Route::get('/allschool',function(){
+        $inputs = \Input::all();
+        return view("includes/non-named-school-form", array('primaryText'=>$inputs['p'],'secondaryText'=>$inputs['s'],'tertiaryText'=>$inputs['t']));
     });
 
 
@@ -44,6 +48,8 @@ Route::group(array('prefix'=>'signatures'),function(){
     Route::get("/approve", 'SignaturesController@approve');
     Route::get("/denied", 'SignaturesController@denied');
     Route::get("/download", 'SignaturesController@getDownload');
+
+
 
 
 });

@@ -1,15 +1,15 @@
-<div id="branding-bar" itemscope="itemscope" itemtype="http://schema.org/CollegeOrUniversity">
-        <div class="row pad">
-            <img src="//assets.iu.edu/brand/2.x/trident-large.jpg" alt="IU">
-            <h1>
-                <a href="http://www.iub.edu" title="Indiana University Bloomington" class="external">
-                    <span class="show-on-desktop" itemprop="name sourceOrganization provider">Indiana University Bloomington</span>
-                    <span class="show-on-tablet" itemprop="name sourceOrganization provider">Indiana University Bloomington</span>
-                    <span class="show-on-mobile" itemprop="name sourceOrganization provider">IU Bloomington</span>
-                </a>
-            </h1>
-        </div>
+<div id="branding-bar" itemscope="itemscope" itemtype="http://schema.org/CollegeOrUniversity" role="complementary" aria-labelledby="iu-campus">
+    <div class="row pad">
+        <img src="//assets.iu.edu/brand/2.x/trident-large.png" alt="IU" />
+        <p id="iu-campus">
+            <a href="http://www.iu.edu" title="Indiana University">
+                <span class="show-on-desktop" itemprop="name">Indiana University</span>
+                <span class="show-on-tablet" itemprop="name">Indiana University</span>
+                <span class="show-on-mobile" itemprop="name">IU</span>
+            </a>
+        </p>
     </div>
+</div>
 
 <div id="toggles">
     <div class="row pad">

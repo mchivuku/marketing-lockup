@@ -1,8 +1,5 @@
 <?php
 
-
-
-
 require_once app_path()."/Providers/BootFormsServiceProvider.php";
 return [
 

@@ -33,13 +33,11 @@ class SignaturesController extends Controller {
      *
      * @return void
      */
-
     public function __construct()
     {
 
         parent::__construct();
         $this->leftnavigation();
-
     }
 
     public function leftnavigation(){
@@ -223,8 +221,8 @@ class SignaturesController extends Controller {
     public function edit(){
         $id = \Input::get('signatureid');
         $signature  = Models\Signature::find($id);
-        \View::share('editmode',true);
 
+        \View::share('editmode',true);
         return $this->view('addEditSignature')->model($signature)->title('Edit Marketing Lock-up');
 
     }
@@ -246,6 +244,8 @@ class SignaturesController extends Controller {
 
         if(isset($inputs['signatureid'])){
             $signature = Models\Signature::find(\Input::get('signatureid'));
+
+
             \DB::transaction(function()use($signature,$user,$inputs)
             {
                 $timestamp = $this->getcurrentTimestamp();
@@ -259,7 +259,6 @@ class SignaturesController extends Controller {
                 $signature->named = $inputs['named'];
 
                 $signature->save();
-
 
             });
             $message = "Lock-up was updated successfully";
@@ -364,7 +363,7 @@ class SignaturesController extends Controller {
             $id = $this->saveSignatureReview($review_status,$signature,$inputs);
 
             $data =  isset($inputs['comment'])?$inputs['comment']:'';
-            $d = array("data" => $data);
+            $d = array("data" => $data,'admin'=>\Config::get('mail.from'));
 
             $obj  = $this->construct_ldap_object($signature->username);
             \Mail::send('emails.approve', $d, function($message)use($obj)
@@ -479,7 +478,6 @@ class SignaturesController extends Controller {
     function getDownload(){
         $inputs = \Input::all();
 
-       //todo: checks for everything. - CAS download
         $signature = Models\Signature::where('signatureid','=',$inputs['signatureid'])->first();
         $downloadpath = $signature->downloadPath;
 

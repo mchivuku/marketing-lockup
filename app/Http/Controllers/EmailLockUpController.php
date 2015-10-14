@@ -28,14 +28,11 @@ class EmailLockUpController extends Controller{
     {
         parent::__construct();
 
-
     }
-
 
     public function index(){
 
         return $this->view('create-email-lockup')->title('Create Email Signature');
-
     }
 
 

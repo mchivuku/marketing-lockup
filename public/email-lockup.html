@@ -29,15 +29,9 @@
                 <p ng-if="signature.title1.length > 0" style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial,Helvetica, sans-serif;font-size: 11px; ">{{signature.title1}}</p>
                 <p ng-if="signature.title2.length > 0" style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.title2}}</p>
                 <p ng-if="signature.primaryunit.length > 0"  style="margin-top: 1px; padding: 0px; margin-bottom: 0px;font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.primaryunit + " " + signature.department}}</p>
-                <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family:Arial,Helvetica, sans-serif;font-size: 11px;">{{signature.address.roomandbuilding }}
-                <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial,Helvetica, sans-serif;font-size: 11px;">
-                                <span ng-show="signature.address.city">
-                                    {{signature.address.city}}
-                                </span>
-                                <span ng-if="signature.address.state.length > 0 && signature.address.city.length > 0">
-                                    {{", "}}
-                                </span>
-                    {{ signature.address.state + " " + signature.address.zipcode}}
+                <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px;
+                font-family:Arial,Helvetica, sans-serif;font-size: 11px;">{{signature.address.roomandbuilding + " " + signature.address.address}}
+                <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial,Helvetica, sans-serif;font-size: 11px;"><span ng-show="signature.address.city">{{signature.address.city}}</span><span ng-if="signature.address.state.length > 0 && signature.address.city.length > 0">{{", "}}</span>{{signature.address.state + " " + signature.address.zipcode}}
                 </p>
                 <p  style="margin-top: 1px; padding: 0px;margin-bottom: 0px;font-family:Arial,Helvetica,sans-serif;font-size: 11px;" >
                     {{signature.phone.primary}}

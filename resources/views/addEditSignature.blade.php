@@ -10,55 +10,59 @@
 
                         {!! Form::open(array('url' => '/signatures/savesignature','id'=>"svgform",'method'=>'post')) !!}
 
-
-                            {!!  Form::label('named', 'Named School') !!}
+                        {!!  Form::label('named', 'Named School') !!}
+                    @if($editmode)
+                       @if($model->named==1)
+                            {!!  Form::radio('named',1,array('checked'=>'checked')) !!}
+                            {!!  Form::label('namedschool', 'Yes') !!}
+                            {!!  Form::radio('named',0) !!}
+                            {!!  Form::label('namedschool', 'No') !!}
+                       @else
                             {!!  Form::radio('named',1) !!}
                             {!!  Form::label('namedschool', 'Yes') !!}
                             {!!  Form::radio('named',0,array('checked'=>'checked')) !!}
                             {!!  Form::label('namedschool', 'No') !!}
+                       @endif
 
+                     @else
+                        {!!  Form::radio('named',1) !!}
+                        {!!  Form::label('namedschool', 'Yes') !!}
+                        {!!  Form::radio('named',0,array('checked'=>'checked')) !!}
+                        {!!  Form::label('namedschool', 'No') !!}
+                    @endif
 
-                            <label for="primary">Primary (required) <br/><span class="help-text"id="replace-primary">(ex. Medicine, Psychology)</span>
-                                <input id="primary" name="p" placeholder='PRIMARY'  type="text" required  maxlength="51"   maxLen="50"
-                                       value="{{$model->primaryText}}">
-                            </label>
+                    <div id="toggleElements">
+                        @if($model->named && $model->named==1)
+                            @include("...includes.named-school-form",
+                       array('primaryText'=>$model->primaryText,'secondaryText'=>$model->secondaryText,
+                      'tertiaryText'=>$model->tertiaryText))
+                        @else
+                            @include("...includes.non-named-school-form",
+                       array('primaryText'=>$model->primaryText,'secondaryText'=>$model->secondaryText,
+                      'tertiaryText'=>$model->tertiaryText))
+                        @endif
 
+                    </div>
 
-                                    <label for="secondary">Secondary<br/><span
-                                                class="help-text"id="replace-secondary">(ex. School of, Department of)</span>
-                                        <input id="secondary" name="s"   type="text" placeholder='SECONDARY'  maxlength="51"   maxLen="50"
-                                               value="{{$model->secondaryText}}">
-                                    </label>
+                         {!!  Form::label('type', 'Lock-up Orientation') !!}
+                         {!!  Form::radio('type','',array('checked'=>'checked')) !!}
+                         {!!  Form::label('svgType ', 'All') !!}
+                         {!!  Form::radio('type','h') !!}
+                         {!!  Form::label('svgType ', 'Horizontal') !!}
+                         {!!  Form::radio('type','v') !!}
+                         {!!  Form::label('svgType ', 'Vertical') !!}
 
-
-
-
-                                 <label for="tertiary">Tertiary<br/><span class="help-text">(ex. Bloomington,
-                                       Indianapolis)</span>
-                                  <input id="tertiary" name="t"  type="text" placeholder='Tertiary'  maxlength="51"
-                                maxLen="50" value="{{$model->tertiaryText}}"></label>
-
-
-
-                                   {!!  Form::label('type', 'Lock-up Orientation') !!}
-                                     {!!  Form::radio('type','',array('checked'=>'checked')) !!}
-                                     {!!  Form::label('svgType ', 'All') !!}
-                                     {!!  Form::radio('type','h') !!}
-                                     {!!  Form::label('svgType ', 'Horizontal') !!}
-                                     {!!  Form::radio('type','v') !!}
-                                     {!!  Form::label('svgType ', 'Vertical') !!}
-
-
+                    @if($model->signatureid)
+                        <input type="hidden" name="signatureid" value="{{$model->signatureid }}">
+                    @endif
 
                             <div class="button-group right">
                                 <input type="submit" id="saveSignature" name="saveSignature"
                                        value="Submit for Approval" class="small button">
-
                                 <input type="reset"  class="small button secondary clear-button" value="Clear">
 
                             </div>
-
-                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 
                     <!-- signature preview -->
@@ -81,8 +85,6 @@
 
                     {!! Form::close() !!}
 
-
-
                 </div>
             </div>
         </div>
@@ -92,11 +94,28 @@
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function(){
-
             $('#svgform').validate();
 
-            jQuery.validator.addMethod("maxLen", function (value, element, param) {
+            initializeformToggleInputs();
 
+            $('#svgform input:radio').on('change', function (e) {
+                update_form_elements($(this).val());
+
+                return;
+            });
+
+            $('.clear-button').click(function(event){
+                event.preventDefault();
+                $('#svgform input[type=text]').val('');
+                $('#signature-preview').empty('');
+                $('#duplicateButtons').hide();
+            });
+        });
+
+
+        function initializeformToggleInputs(){
+
+            jQuery.validator.addMethod("maxLen", function (value, element, param) {
                 if($(element).val().length > param) {
                     return false;
                 } else {
@@ -110,47 +129,44 @@
                 return;
             });
 
-            $('#svgform input:radio').on('change', function (e) {
-                update_label_on_toggle($(this).val());
-                updatePreview();
-                return;
-            });
+        }
 
-            $('.clear-button').click(function(event){
-                event.preventDefault();
-                $('#svgform input[type=text]').val('');
-                $('#signature-preview').empty('');
-                $('#duplicateButtons').hide();
-
-            });
-        });
 
         function updatePreview(){
             var form = $('#svgform');
             $('#duplicateButtons').hide();
+
             if(form.valid()){
                 $.get('getPreview',form.serialize(),function(data){
                     $('div#signature-preview').empty().append("<div id='example-images'>"+data+'</div>');
-                    console.log(data.length);
                     if(data.length>0){
                         $('#duplicateButtons').show();
                     }
 
                 });
+            }else{
+                $('div#signature-preview').empty().append("<div id='example-images'></div>");
             }
 
         }
 
-        function update_label_on_toggle(toggle){
+        function update_form_elements(toggle){
+            var elements = $( '#svgform' ).serializeArray();
+console.log(elements);
             if(toggle==0){
-                $('#replace-primary').html('(ex. Medicine, Psychology)');
-                $('#replace-secondary').html('(ex. School of, Department of)');
+                $.get('allschool',elements,function(data){
+                    $('#toggleElements').empty().append(data);
+                    initializeformToggleInputs();
+                    updatePreview();
+                });
+
             }else{
-                $('#replace-primary').html('(ex. Kelley, McKinney)');
-                $('#replace-secondary').html('(ex. School of Business, School of Law)');
-
+                $.get('namedschool',elements,function(data){
+                    $('#toggleElements').empty().append(data);
+                    initializeformToggleInputs();
+                    updatePreview();
+                });
             }
-
         }
     </script>
-    @endsection
+@endsection
