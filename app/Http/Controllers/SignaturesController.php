@@ -84,8 +84,7 @@ class SignaturesController extends Controller {
                 Models\Signature::with('signaturereviews','reviewstatus')->orderBy('updated_at','desc')->get();
 
             $CI = $this;
-
-                foreach($signatures as $signature){
+                 foreach($signatures as $signature){
                  //   $signature->preview = $signature->getSignatureThumbnail();
                     $signature->preview='';
                     $obj =  $CI->construct_ldap_object($signature->username);
@@ -192,8 +191,6 @@ class SignaturesController extends Controller {
         $s = $inputs['s'];
         $t = $inputs['t'];
         $named = $inputs['named'];
-        $type = $inputs['type'];
-
 
         $signature = new Models\Signature();
         $signature->primaryText= $p;
@@ -202,8 +199,38 @@ class SignaturesController extends Controller {
         $signature->named = $named;
 
 
-        return $signature->getSignaturePreview($type);
+        return $signature->getSignaturePreview();
 
+    }
+
+    public function getThumbnail(){
+
+        $inputs = \Input::all();
+        $signature = Models\Signature::where('signatureid','=',$inputs['id'])->first();
+        return $signature->getSignatureThumbnail();
+    }
+
+    public function getReviewComments(){
+            $inputs = \Input::all();
+             if(isset($inputs['signatureid'])){
+                 $signature =
+                     Models\Signature::with('signaturereviews','reviewstatus')
+                         ->where('signatureid','=',$inputs['signatureid'])
+                         ->first();
+                 $signature->signaturereviews->each(function($item)use($signature){
+                     if($signature->comments!="")
+                         $signature->comments.="; ";
+                     $signature->comments.= $item->comments;
+                 });
+
+                 $model = new Models\ViewModels\Modal();
+
+                 $model->content= view('viewcomments', array('model'=>$signature->comments));
+                 $model->title= 'Review Comments';
+                 $model->setAttribute('id','viewModel');
+
+                return view('modal',array('model'=>$model));
+            }
     }
 
     /**
@@ -212,18 +239,68 @@ class SignaturesController extends Controller {
      */
     public function create(){
 
-        $signature = new Models\Signature();
-        \View::share('editmode',false);
+        $inputs = \Input::all();
+        if(count($inputs)>0){
+            //read all post variables
+            $signature = new Models\Signature();
+            $signature->named = $inputs['named'];
+            $signature->primaryText = $inputs['p'];
+            $signature->secondaryText = $inputs['s'];
+            $signature->tertiaryText = $inputs['t'];
+
+            if(isset($inputs['signatureid']))
+                $signature->signatureid =$inputs['signatureid'];
+
+            \View::share('editmode',true);
+        }else{
+            $signature = new Models\Signature();
+            \View::share('editmode',false);
+        }
+
         return $this->view('addEditSignature')->model($signature)->title('Create Marketing Lock-up');
     }
 
 
     public function edit(){
+
         $id = \Input::get('signatureid');
         $signature  = Models\Signature::find($id);
 
         \View::share('editmode',true);
         return $this->view('addEditSignature')->model($signature)->title('Edit Marketing Lock-up');
+
+    }
+
+    public function confirm()
+    {
+        $inputs = \Input::all();
+
+        //read all post variables
+        $signature = new Models\Signature();
+        $signature->named = $inputs['named'];
+        $signature->primaryText = $inputs['p'];
+        $signature->secondaryText = $inputs['s'];
+        $signature->tertiaryText = $inputs['t'];
+
+        if(isset($inputs['signatureid'])){
+            $signature->signatureid =$inputs['signatureid'];
+
+            $backUrl =
+                link_to_action('SignaturesController@create', 'Back', array('p' => $inputs['p'],
+                    's' => $inputs['s'], 't' => $inputs['t'], 'signatureid' => $inputs['signatureid'],
+                    'named' => $inputs['named']), array('class' => 'button invert small'));
+
+        }else{
+            $backUrl =
+                link_to_action('SignaturesController@create', 'Back', array('p' => $inputs['p'],
+                    's' => $inputs['s'], 't' => $inputs['t'],
+                    'named' => $inputs['named']), array('class' => 'button invert small'));
+        }
+
+        \View::share("backLink", array('backLink'=>$backUrl));
+
+
+        return $this->view('confirmSignature')->model($signature)->title('Confirm Marketing Lock-up');
 
     }
 

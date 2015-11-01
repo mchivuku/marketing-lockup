@@ -8,7 +8,7 @@
 
                 <div class="full-width">
 
-                        {!! Form::open(array('url' => '/signatures/savesignature','id'=>"svgform",'method'=>'post')) !!}
+                        {!! Form::open(array('url' => '/signatures/confirmsignature','id'=>"svgform",'method'=>'post')) !!}
 
                         {!!  Form::label('named', 'Named School') !!}
                     @if($editmode)
@@ -44,21 +44,13 @@
 
                     </div>
 
-                         {!!  Form::label('type', 'Lock-up Orientation') !!}
-                         {!!  Form::radio('type','',array('checked'=>'checked')) !!}
-                         {!!  Form::label('svgType ', 'All') !!}
-                         {!!  Form::radio('type','h') !!}
-                         {!!  Form::label('svgType ', 'Horizontal') !!}
-                         {!!  Form::radio('type','v') !!}
-                         {!!  Form::label('svgType ', 'Vertical') !!}
-
                     @if($model->signatureid)
                         <input type="hidden" name="signatureid" value="{{$model->signatureid }}">
                     @endif
 
                             <div class="button-group right">
                                 <input type="submit" id="saveSignature" name="saveSignature"
-                                       value="Submit for Approval" class="small button">
+                                       value="Confirm for Approval" class="small button">
                                 <input type="reset"  class="small button secondary clear-button" value="Clear">
 
                             </div>
@@ -71,13 +63,15 @@
                             <div id='example-images'>
                                 {!!$model->getSignaturePreview()!!}
                             </div>
+
                         @endif
 
                     </div>
 
+
                     <div class="button-group right" id="duplicateButtons" style="display:none;">
                         <input type="submit" id="saveSignature" name="saveSignature"
-                               value="Submit for Approval" class="small button">
+                               value="Confirm for Approval" class="small button">
 
                         <input type="reset" class="small button secondary clear-button" value="Clear">
 

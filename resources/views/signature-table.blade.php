@@ -12,7 +12,8 @@ $table->header = array('Preview','Name','Status','Date','Review Comments','Actio
 
    $preview = $item->getSignatureThumbnail();
    //  $preview = 'Preview';
-    $preview_link = "<a data-reveal-id=\"viewModal\" href='signatures/getPreview?id=".$item->signatureid."'
+
+    $preview_link = "<a  data-reveal-id=\"viewModal\"   href='signatures/getPreview?id=".$item->signatureid."'
     class=\"modal\">Preview</a>";
 
      if($item->downloadPath!=''){
@@ -21,15 +22,24 @@ $table->header = array('Preview','Name','Status','Date','Review Comments','Actio
          $download_link="&nbsp;";
      }
 
+     //comments link
+     $comments_link = '';
+     if($item->comments!=""){
+         $comments_link = "<a data-reveal-id=\"viewModal\" href='signatures/getReviewComments?signatureid=".$item->signatureid."'
+    class=\"modal\">View</a>";
+
+     }else{
+         $comments_link='';
+     }
+
 
      $table->data[] = array(
              $preview_link,$item->name,
-            $item->reviewstatus->status,
-            $format_date_time($item->updated_at),
-            $item->comments,
-            $item->nextAction,
+             $item->reviewstatus->status,
+             $format_date_time($item->updated_at),
+             $comments_link,
+             $item->nextAction,
              $download_link
-
     );
 
 });

@@ -55,7 +55,7 @@ class Signature extends Model {
     }
 
     /** Get Preview for signatures  */
-    public function getSignaturePreview($type=''){
+    public function getSignaturePreview(){
 
         $output="";
         $previews = function($tags,$classname){
@@ -76,20 +76,15 @@ class Signature extends Model {
         if($this->named=='1'){
             // include = vertical and horizontal
             $alltags = $this->getNamedSchoolTags();
-            if($type!=''){
-                $output = $previews($alltags[$type],$this->classname[$type]);
-            }else{
+
                 $output = $previews($alltags['h'],'App\Services\SVG\IUSVG');
                 $output .= $previews($alltags['v'],'App\Services\SVG\IUSVG_V');
-            }
+
         }else{
             $alltags =$this->getAllSchoolTags();
-            if($type!=''){
-                $output = $previews($alltags[$type],$this->classname[$type]);
-            }else{
+
                 $output = $previews($alltags['h'],'App\Services\SVG\IUSVG');
                 $output .= $previews($alltags['v'],'App\Services\SVG\IUSVG_V');
-            }
 
 
         }
@@ -99,7 +94,11 @@ class Signature extends Model {
     }
 
     public function getSignatureThumbnail(){
-        return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,1);
+        if($this->named==1)
+          return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,4);
+        else
+            return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,5);
+
     }
 
     public function build(){

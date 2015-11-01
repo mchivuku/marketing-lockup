@@ -54,7 +54,7 @@ return [
 	|
 	*/
 
-	'from' => ['address' => 'admin@brand.iu.edu', 'name' => 'Brand Admin'],
+	'from' => ['address' => 'iubrand@iu.edu', 'name' => 'Brand Admin'],
 
 	/*
 	|--------------------------------------------------------------------------

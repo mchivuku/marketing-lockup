@@ -482,8 +482,12 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
                 $strings = explode("@",$string);
                 $primary=strtoupper($strings[0]);
 
-                if(isset($strings[1]))
-                    $subprimary=strtoupper($strings[1]);
+                if(count($strings)>1){
+                    $name = array_shift($strings);
+                    $subprimary = strtoupper(implode(' ', $strings));
+                }
+
+
             }else{
 
                 $primary = substr($this->primary,0,24);

@@ -547,8 +547,11 @@ class IUSVG_V extends IUSVGBase {
                 $strings = explode("@",$string);
                 $text1=strtoupper($strings[0]);
 
-                if(isset($strings[1]))
-                    $text2=strtoupper($strings[1]);
+                if(count($strings)>1){
+                    $name = array_shift($strings);
+                    $text2 = strtoupper(implode(' ', $strings));
+                }
+
             }else{
 
                 $text1 = substr($this->primary,0,24);

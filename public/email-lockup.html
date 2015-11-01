@@ -30,7 +30,9 @@
                 <p ng-if="signature.title2.length > 0" style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.title2}}</p>
                 <p ng-if="signature.primaryunit.length > 0"  style="margin-top: 1px; padding: 0px; margin-bottom: 0px;font-family: Arial, Helvetica, sans-serif;font-size: 11px;">{{signature.primaryunit + " " + signature.department}}</p>
                 <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px;
-                font-family:Arial,Helvetica, sans-serif;font-size: 11px;">{{signature.address.roomandbuilding + " " + signature.address.address}}
+                font-family:Arial,Helvetica, sans-serif;font-size: 11px;">{{signature.address.roomandbuilding}}</p>
+                <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px;
+                font-family:Arial,Helvetica, sans-serif;font-size: 11px;" ng-if="signature.address.address.length > 0">{{signature.address.address}}</p>
                 <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial,Helvetica, sans-serif;font-size: 11px;"><span ng-show="signature.address.city">{{signature.address.city}}</span><span ng-if="signature.address.state.length > 0 && signature.address.city.length > 0">{{", "}}</span>{{signature.address.state + " " + signature.address.zipcode}}
                 </p>
                 <p  style="margin-top: 1px; padding: 0px;margin-bottom: 0px;font-family:Arial,Helvetica,sans-serif;font-size: 11px;" >
@@ -41,7 +43,7 @@
                     {{signature.phone.mobile}}
                 </p>
                 <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family:Arial,Helvetica,sans-serif;font-size: 11px;"><a href="mailto:{{signature.web.email}}" target="_top">{{signature.web.email}}</a><span>{{" "}}</span></p>
-                <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;"><a href="{{signature.web.site%20}}">{{signature.web.site}}</a> <span>{{" "}}</span></p></div>
+                <p style="margin-top: 1px; padding: 0px; margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif;font-size: 11px;" ng-if="signature.web.site.length > 0"><a href="http://{{signature.web.site}}">{{signature.web.site}}</a> <span>{{" "}}</span></p></div>
                <div id="logoDiv" style="margin-bottom: 10px;">
                 <img alt="indiana-university-logo" src="https://brand.iu.edu/img/signatures/logos/iu-400.png"/></div>
 
@@ -94,6 +96,10 @@
                     <input name="logos" type="radio" value="iu-south-bend"/> <label for-radio="iu-south-bend">IU
                         South Bend</label> <img alt="indiana-university-logo" for-radio="iu-south-bend"
                                                 src="https://brand.iu.edu/img/signatures/logos/iu-south-bend-400.png" style="display: none;"/><br/>
+                    <input name="logos" type="radio" value="iu-south-east"/> <label for-radio="iu-south-east">IU
+                        Southeast</label> <img alt="indiana-university-logo" for-radio="iu-south-east"
+                                                src="https://brand.iu.edu/img/signatures/logos/iu-south-east-400.png"
+                                                style="display: none;"/><br/>
                     <input name="logos" type="radio" value="iupuc"/> <label for-radio="iupuc">IUPUC</label> <img
                             alt="indiana-university-logo" for-radio="iupuc"  src="https://brand.iu.edu/img/signatures/logos/iupuc-400.png" style="display: none;" /></fieldset>
             </div>
@@ -315,8 +321,7 @@
                     <div class="row">
                         <div class="large-12 columns">
                             <label for="web-site">Website
-                                <input  id="web-site"   name="web-site" ng-model="signature.web.site"
-                                        type="url"/>
+                                <input  id="web-site" type="text"  name="web-site" ng-model="signature.web.site"/>
 
                             </label>
                         </div></div>

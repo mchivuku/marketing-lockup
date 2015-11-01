@@ -37,11 +37,14 @@ Route::group(array('prefix'=>'signatures'),function(){
         return view("includes/non-named-school-form", array('primaryText'=>$inputs['p'],'secondaryText'=>$inputs['s'],'tertiaryText'=>$inputs['t']));
     });
 
-
     Route::get('/getPreview', array('as'=>'preview','uses'=>'SignaturesController@getPreview'));
+    Route::get('/getThumbnail', array('as'=>'thumbnail','uses'=>'SignaturesController@getThumbnail'));
 
+    Route::get('/getReviewComments', array('as'=>'reviewcomments','uses'=>'SignaturesController@getReviewComments'));
     Route::get('/review', array('as'=>'signaturereview','uses'=>'SignaturesController@review'));
 
+
+    Route::post('/confirmsignature', array('as'=>'confirm','uses'=>'SignaturesController@confirm'));
     Route::post('/savesignature', array('as'=>'save','uses'=>'SignaturesController@save'));
 
 
