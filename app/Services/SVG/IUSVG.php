@@ -8,8 +8,6 @@
 namespace App\Services\SVG;
 
 
-
-
 class IUSVG extends IUSVGBase {
 
     protected $text_xml="";
@@ -473,31 +471,11 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
         /** @var SUB PRIMARY $svgFont */
 
-        $subprimary='';
-        $primary='';
-        if(strlen($this->primary)>24){
-            //get words
-            $string=  wordwrap($this->primary, 24, "@");
-            if(strpos($string,'@')!==false){
-                $strings = explode("@",$string);
-                $primary=strtoupper($strings[0]);
+         $texts = $this->getprimary();
 
-                if(count($strings)>1){
-                    $name = array_shift($strings);
-                    $subprimary = strtoupper(implode(' ', $strings));
-                }
+        $subprimary=$texts['subp'];
+        $primary=$texts['p'];
 
-
-            }else{
-
-                $primary = substr($this->primary,0,24);
-                $subprimary=substr($this->primary,24,strlen($this->primary));
-
-            }
-        }
-        else{
-            $primary = strtoupper($this->primary);
-        }
 
         /** Secondary primary */
         if($subprimary=='')return;
@@ -608,7 +586,10 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
         $total_width= $p_width + $s_width + $this->tabWidth+$this->refPts + $this->refPts;
 
-        $s_ref =  $this->xref+$p_width+$this->refPts;
+        //10px between the words
+        $s_ref =  $this->xref+$p_width+($this->refPts-2);
+
+
         $sy = $this->trident_primary_top;
 
         /** Tertiary Text */
@@ -631,8 +612,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
             $s_h= $this->tabHeight;
 
 
-
-        $w = $total_width+$this->refPts;
+        $w = $total_width;
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$total_width\"
             height=\"$s_h\"

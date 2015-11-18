@@ -87,8 +87,7 @@ class SignaturesController extends Controller {
                  foreach($signatures as $signature){
                  //   $signature->preview = $signature->getSignatureThumbnail();
                     $signature->preview='';
-                    $obj =  $CI->construct_ldap_object($signature->username);
-                    $signature->name = sprintf("%s %s",$obj->firstName,$obj->lastName);
+                    $signature->name = isset($signature->fullName)?$signature->fullName:$signature->username;
 
                     /** Next state for the required action link */
                     if(stripos($signature->reviewstatus->status,'Pending')!==false){
@@ -176,10 +175,16 @@ class SignaturesController extends Controller {
 
 
         if(isset($inputs['id'])){
-            $signature = Models\Signature::where('signatureid','=',$inputs['id'])->first()->getSignaturePreview();
+            $signature = Models\Signature::where('signatureid','=',$inputs['id'])
+                ->first()->getSignaturePreview();
             $model = new Models\ViewModels\Modal();
 
-            $model->content=   $signature ;
+            $model->content= "<div class=\"panel\">
+
+    <div class=\"panel-body\">
+   $signature
+     </div>
+</div>";
             $model->title= 'Signature Preview';
             $model->setAttribute('id','viewModel');
 
@@ -318,16 +323,19 @@ class SignaturesController extends Controller {
 
         $message="";
         $user = $this->currentUser;
+        $obj =  $this->construct_ldap_object($user);
+        $name = sprintf("%s %s",$obj->firstName,$obj->lastName);
+
 
         if(isset($inputs['signatureid'])){
             $signature = Models\Signature::find(\Input::get('signatureid'));
 
-
-            \DB::transaction(function()use($signature,$user,$inputs)
+            \DB::transaction(function()use($signature,$user,$inputs,$name)
             {
                 $timestamp = $this->getcurrentTimestamp();
 
                 $signature->username =  $user;
+                $signature->fullName=$name;
                 $signature->primaryText =  $inputs['p'];
                 $signature->secondaryText =   $inputs['s'];
                 $signature->tertiaryText =   $inputs['t'];
@@ -347,11 +355,12 @@ class SignaturesController extends Controller {
             $signature = new Models\Signature();
             $review_status = Models\ReviewStatus::where('status','like','pending%')->first();
 
-            \DB::transaction(function()use($signature,$user,$inputs,$review_status)
+            \DB::transaction(function()use($signature,$user,$inputs,$review_status,$name)
             {
                 $timestamp = $this->getcurrentTimestamp();
 
                 $signature->username =  $user;
+                $signature->fullName=$name;
                 $signature->primaryText =  $inputs['p'];
                 $signature->secondaryText =   $inputs['s'];
                 $signature->tertiaryText =   $inputs['t'];
@@ -363,7 +372,6 @@ class SignaturesController extends Controller {
                 $signatureReview->signatureid = $signature->signatureid;
 
                 $signatureReview->save();
-
 
                 $signature->created_at = $timestamp;
                 $signature->updated_at = $timestamp;

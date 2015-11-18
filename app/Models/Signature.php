@@ -15,7 +15,8 @@ class Signature extends Model {
     protected $primaryKey = 'signatureid';
     protected $table = 'signature';
 
-    public $fillable = array('username', 'primaryText', 'secondaryText','tertiaryText','named');
+    public $fillable = array('username', 'primaryText', 'secondaryText','tertiaryText','named',
+        'fullName');
 
     public function signaturereviews(){
        return $this->hasMany('App\Models\SignatureReview','signatureid','signatureid');
@@ -93,11 +94,21 @@ class Signature extends Model {
         return $output===""?"No lock-ups to preview":$output;
     }
 
-    public function getSignatureThumbnail(){
-        if($this->named==1)
-          return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,4);
-        else
-            return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,5);
+    public function getSignatureThumbnail()
+    {
+        if ($this->named == 1) {
+            if ($this->tertiaryText != '')
+                return new IUSVG($this->primaryText, $this->secondaryText, $this->tertiaryText, 6);
+            else
+                return new IUSVG($this->primaryText, $this->secondaryText, $this->tertiaryText, 4);
+        } else
+        {
+            if($this->tertiaryText!='')
+                return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,7);
+            else
+                return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,5);
+        }
+
 
     }
 

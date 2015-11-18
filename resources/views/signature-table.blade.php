@@ -10,11 +10,11 @@ $table->header = array('Preview','Name','Status','Date','Review Comments','Actio
     };
 
 
-   $preview = $item->getSignatureThumbnail();
+   //$preview = $item->getSignatureThumbnail();
    //  $preview = 'Preview';
 
     $preview_link = "<a  data-reveal-id=\"viewModal\"   href='signatures/getPreview?id=".$item->signatureid."'
-    class=\"modal\">Preview</a>";
+    class=\"modal tiptext\">Preview <div class='thumbnail' data-attribute-id='".$item->signatureid."'></div></a>";
 
      if($item->downloadPath!=''){
          $download_link = "<a href='signatures/download?signatureid=".$item->signatureid."'>Download</a>";
@@ -63,11 +63,18 @@ $table->attributes = array('class'=>'tablesaw table','id'=>'signatureTable','dat
 
         $(document).ready(function() {
             $('#signatureTable').dataTable({  "ordering": false,"info": false});
-
-
         });
 
-
+        $(".tiptext").mouseover(function() {
+            var element = $(this).children('.thumbnail');
+            var id = element.attr('data-attribute-id');
+            $.get('signatures/getThumbnail?id='+id,null,function(data){
+                element.empty().html(data);
+            });
+            element.show();
+        }).mouseout(function() {
+            $(this).children(".thumbnail").hide();
+        });
     </script>
 @endsection
 
