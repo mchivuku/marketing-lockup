@@ -9,6 +9,7 @@ $table->header = array('Preview','Name','Status','Date','Review Comments','Actio
         return  "<span class=\"hideText\">".$date."</span>".date("F j, Y",strtotime($date));
     };
 
+<<<<<<< HEAD
   // $preview = $item->getSignatureThumbnail();
    //  $preview = 'Preview';
 
@@ -27,6 +28,14 @@ $table->header = array('Preview','Name','Status','Date','Review Comments','Actio
      $preview_link = "<a  data-reveal-id=\"viewModal\"   href='signatures/getPreview?id=".$item->signatureid."'
                       class=\"modal\">Preview</a>";
 
+=======
+
+   //$preview = $item->getSignatureThumbnail();
+   //  $preview = 'Preview';
+
+    $preview_link = "<a  data-reveal-id=\"viewModal\"   href='signatures/getPreview?id=".$item->signatureid."'
+    class=\"modal tiptext\">Preview <div class='thumbnail' data-attribute-id='".$item->signatureid."'></div></a>";
+>>>>>>> origin/master
 
      if($item->downloadPath!=''){
          $download_link = "<a href='signatures/download?signatureid=".$item->signatureid."'>Download</a>";
@@ -78,6 +87,7 @@ $table->attributes = array('class'=>'tablesaw table','id'=>'signatureTable','dat
     <script type="text/javascript" src="{{asset("js/tablesaw.stackonly.js")}}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+
             $('#signatureTable').dataTable({ "order": [[ 4, "desc" ]], "ordering": false,"info": false,"aoColumns" : [
                 {'bSortable' : false},
                 {"sType" : "string"},

@@ -6,6 +6,7 @@
  * Time: 11:02 AM
  */
 namespace App\Services\SVG;
+
 class SVGBase {
 
     public $fonts = array(
@@ -18,6 +19,7 @@ class SVGBase {
 
         $this->xml  = simplexml_load_string('<svg class="svg" version="1.1"  xml:space="preserve"
         xmlns="http://www.w3.org/2000/svg"/>');
+
     }
 
     function init($width, $height){
@@ -32,14 +34,14 @@ class SVGBase {
         $this->xml['preserveAspectRatio'] = "xMinYMin";
 
         $this->xml['viewBox']="0 0 $width $height";
-        $this->xml['width']=$width."px";
-        $this->xml['height']=$height."px";
-
+        $this->xml['width']=$w;
+        $this->xml['height']=$h;
 
 
     }
 
     function addXMLStr($parent, $childStr) {
+
 
         $parentDom = dom_import_simplexml($parent);
 
@@ -59,9 +61,11 @@ class SVGBase {
     }
 
     public function __toString() {
-        if($this->xml->children()->saveXML()!="")
-         return $this->prettyXML();
-        return "";
+
+        // 111 - character indicates just the header
+        if(strlen($this->xml->saveXML())===111)return "";
+
+        return $this->prettyXML();
     }
 
     function metrics($text='Hello world!', $font='bentonSansCond-Regular', $size=32, $maxWidth=400) {
@@ -90,4 +94,24 @@ class SVGBase {
     }
 
 
+    function required($parameters=array()){
+
+
+        $is_null_empty = function($str){
+            return isset($str) && $str!="" && strlen($str)>0;
+        };
+
+        foreach($parameters as $param)
+        {
+            // is not null or empty - continue
+            if($is_null_empty($param)){
+                continue;
+            }
+            else
+                return false;
+        }
+
+        return true;
+
+    }
 }

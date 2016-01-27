@@ -88,11 +88,18 @@ class SignaturesController extends Controller
                 Models\Signature::orderBy('updated_at', 'desc')->get();
 
             $CI = $this;
+<<<<<<< HEAD
             foreach ($signatures as $signature) {
                 $signature->preview='';
                     // $obj =  $CI->construct_ldap_object($signature->username);
                      $signature->name = isset($signature->fullName)?$signature->fullName:$signature->username;
                     // $signature->name=$signature->username;
+=======
+                 foreach($signatures as $signature){
+                 //   $signature->preview = $signature->getSignatureThumbnail();
+                    $signature->preview='';
+                    $signature->name = isset($signature->fullName)?$signature->fullName:$signature->username;
+>>>>>>> origin/master
 
                     /** Next state for the required action link */
                     if ($signature->statusId==self::PENDING_REVIEW) {
@@ -168,11 +175,25 @@ class SignaturesController extends Controller
         $inputs = \Input::all();
 
 
+<<<<<<< HEAD
         if (isset($inputs['id'])) {
             $signature = Models\Signature::where('signatureid', '=', $inputs['id'])->first()->getSignaturePreview();
             $model = new Models\ViewModels\Modal();
 
             $model->content= "<div class=\"panel\"><div class=\"panel-body\"> $signature </div></div>";
+=======
+        if(isset($inputs['id'])){
+            $signature = Models\Signature::where('signatureid','=',$inputs['id'])
+                ->first()->getSignaturePreview();
+            $model = new Models\ViewModels\Modal();
+
+            $model->content= "<div class=\"panel\">
+
+    <div class=\"panel-body\">
+   $signature
+     </div>
+</div>";
+>>>>>>> origin/master
             $model->title= 'Signature Preview';
             $model->setAttribute('id', 'viewModel');
 
@@ -311,13 +332,23 @@ class SignaturesController extends Controller
         $message="";
         $user = $this->currentUser;
         $obj =  $this->construct_ldap_object($user);
+<<<<<<< HEAD
         $name = sprintf("%s %s", $obj->firstName, $obj->lastName);
+=======
+        $name = sprintf("%s %s",$obj->firstName,$obj->lastName);
+
+>>>>>>> origin/master
 
         if (isset($inputs['signatureid'])) {
             $signature = Models\Signature::find(\Input::get('signatureid'));
 
+<<<<<<< HEAD
 
             \DB::transaction(function () use ($signature, $user, $inputs, $name) {
+=======
+            \DB::transaction(function()use($signature,$user,$inputs,$name)
+            {
+>>>>>>> origin/master
                 $timestamp = $this->getcurrentTimestamp();
 
                 $signature->username =  $user;
@@ -339,7 +370,12 @@ class SignaturesController extends Controller
             $signature = new Models\Signature();
             $review_status = Models\ReviewStatus::where('status', 'like', 'pending%')->first();
 
+<<<<<<< HEAD
             \DB::transaction(function () use ($signature, $user, $inputs, $review_status, $name) {
+=======
+            \DB::transaction(function()use($signature,$user,$inputs,$review_status,$name)
+            {
+>>>>>>> origin/master
                 $timestamp = $this->getcurrentTimestamp();
 
                 $signature->username =  $user;
@@ -355,7 +391,6 @@ class SignaturesController extends Controller
                 $signatureReview->signatureid = $signature->signatureid;
 
                 $signatureReview->save();
-
 
                 $signature->created_at = $timestamp;
                 $signature->updated_at = $timestamp;

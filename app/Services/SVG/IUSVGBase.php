@@ -2,24 +2,54 @@
 /**
  * Created by PhpStorm.
  * User: mchivuku
- * Date: 8/5/15
- * Time: 11:08 AM
+ * Date: 1/26/16
+ * Time: 8:11 PM
  */
+
 namespace App\Services\SVG;
+require_once 'SVGBase.php';
+
 class IUSVGBase extends SVGBase {
 
     protected $tabHeight = 68;
     protected $tabWidth = 58;
-    protected $tabColor;
+
 
     protected $primary_leading_x =  0.41;
-
     protected $secondary_leading_x = 0.35;
     protected $tertiary_leading_x = 0.3;
 
+    protected $primary,$secondary,$tertiary,$subprimary, $subsecondary;
 
+    function __construct($p,$s,$t,$split_p,$split_s) {
 
-    function __construct() {
+        // initialize primary, subprimary
+        if($split_p){
+            $result = $this->splitText(strtoupper($p));
+
+            $this->primary = $result[0];
+            $this->subprimary = $result[1];
+
+        }else{
+
+            $this->primary=strtoupper($p);
+        }
+
+        // split secondary
+        if($split_s){
+            // initialize secondary, subsecondary
+            $result = $this->splitText(strtoupper($s));
+
+            $this->secondary = $result[0];
+            $this->subsecondary = $result[1];
+
+        }else{
+
+            $this->secondary=strtoupper($s);
+        }
+
+        $this->tertiary=$t;
+
         parent::__construct();
 
     }
@@ -35,12 +65,13 @@ class IUSVGBase extends SVGBase {
         $this->addLogo($tab_x,$tab_y);
     }
 
-    function addTab($h,$x=0,$y=0){
+    function addTab($h,$x=0,$y=0) {
+
 
         $r = $this->xml->addChild('rect');
         $r['width'] = $this->tabWidth;
         $r['height'] = $h;
-        $r['fill'] = '#951B1E';;
+        $r['fill'] = '#951B1E';
         $r['x']="$x";
         $r['y']="$y";
 
@@ -59,18 +90,75 @@ class IUSVGBase extends SVGBase {
         $this->addXMLStr($this->xml, $logo);
     }
 
-    function required($parameters=array()){
+    /* Function to break primary into two words - Waiting for Approval
+    protected function getprimary(){
 
-        $is_null_empty = function($str){
-            return isset($str)&& $str!="";
-        };
+        $text1="";
+        $text2="";
+        if(strlen($this->primary)>24){
 
-        $filtered_items = array_filter($parameters, function($item)use(&$is_null_empty){
-            return !$is_null_empty($item);
-        });
+           $words = preg_split('/\s+/', $this->primary);
+           $length = 0;
+           $last_part = 0;
+            for (; $last_part < count($words); ++$last_part) {
+                $length += strlen($words[$last_part]);
+                if ($length > 24) { break; }
+            }
 
+            $text1 = strtoupper(implode(" ",array_slice($words, 0, $last_part+1)));
+            $text2=  strtoupper(implode(" ", array_slice($words, $last_part+1,count($words))));
 
-        return !count($filtered_items)>0;
+        }
+        else{
+            $text1 = strtoupper($this->primary);
+            $text2="";
+        }
+
+        return array('p'=>$text1,'subp'=>$text2);
+    }*/
+
+    private function splitText($text){
+
+        if(strlen($text)>24){
+            //get words
+            $string=  wordwrap($text, 24, "@");
+            if(strpos($string,'@')!==false){
+                $strings = explode("@",$string);
+                $text1=strtoupper($strings[0]);
+
+                if(count($strings)>1){
+                    $name = array_shift($strings);
+                    $text2 = strtoupper(implode(' ', $strings));
+                }
+
+            }else{
+
+                $text1 = substr($text,0,24);
+                $text2=substr($text,24,strlen($text));
+
+            }
+        }
+        else{
+            $text1 = strtoupper($text);
+            $text2="";
+        }
+
+        return array($text1,$text2);
+
     }
+
+    protected function getprimary(){
+        $result = $this->splitText($this->primary);
+        $this->primary = $result[0];
+        $this->subPrimary = $result[1];
+    }
+
+
+    protected function getsecondary(){
+        $result= $this->splitText($this->primary);
+        $this->secondary = $result[0];
+        $this->subsecondary = $result[1];
+    }
+
 
 }

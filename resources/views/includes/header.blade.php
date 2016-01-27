@@ -21,7 +21,7 @@
     <meta content="Marking Lockup Tool" itemprop="name"/>
 
 
-    <link href="{{asset("assets/bower_components/foundation/css/foundation.min.css")}}" rel="stylesheet">
+    <link href="{{asset("bower_components/foundation/css/foundation.min.css")}}" rel="stylesheet">
     <link href="https://fonts.iu.edu/style.css?family=BentonSans:regular,bold%7CBentonSansCond:regular%7CGeorgiaPro:regular" rel="stylesheet">
     <link href="https://assets.iu.edu/web/fonts/icon-font.css" rel="stylesheet">
 
@@ -36,6 +36,5 @@
 
     <!-- Include Javascript -->
     <script src="https://assets.iu.edu/web/1.5/libs/modernizr.min.js" type="text/javascript"></script>
-
 
 </head>

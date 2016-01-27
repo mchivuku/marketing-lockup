@@ -15,10 +15,13 @@ class Signature extends Model {
     protected $primaryKey = 'signatureid';
     protected $table = 'signature';
 
-    public $fillable = array('username', 'primaryText', 'secondaryText','tertiaryText','named','fullName');
+
+
+    public $fillable = array('username', 'primaryText', 'secondaryText','tertiaryText','named','campus',
+        'fullName');
 
     public function signaturereviews(){
-       return $this->hasMany('App\Models\SignatureReview','signatureid','signatureid');
+        return $this->hasMany('App\Models\SignatureReview','signatureid','signatureid');
     }
 
     public function reviewstatus(){
@@ -29,7 +32,12 @@ class Signature extends Model {
     private $classname  = array('h'=>'App\Services\SVG\IUSVG','v'=>'App\Services\SVG\IUSVG_V');
 
     /** Helper Functions  */
-    public function getNamedSchoolTags(){return array('h'=>array(2,4,6,9),'v'=>array(1,2,3));}
+    public function getNamedSchoolTags(){
+        if(in_array($this->campus,Campus::getIUPUILikeCampuses()))
+            return array('h'=>array(2,4,6,9,13,14),'v'=>array(1,2,3,6,7));
+
+        return array('h'=>array(2,4,6,9),'v'=>array(1,2,3));
+    }
     public function getAllSchoolTags(){return array('h'=> array(1,3,5,7,8),'v'=>array(1,4,5));}
 
 
@@ -60,13 +68,14 @@ class Signature extends Model {
         $output="";
         $previews = function($tags,$classname){
             $output="";
+
             foreach($tags as $tag){
 
                 $svg = new $classname($this->primaryText,$this->secondaryText,
                     $this->tertiaryText,$tag);
 
                 if($svg!="")
-                 $output.= "<div id='svg-preview'>".$svg."</div>";
+                    $output.= "<div id='svg-preview'>".$svg."</div>";
             }
 
 
@@ -77,31 +86,41 @@ class Signature extends Model {
             // include = vertical and horizontal
             $alltags = $this->getNamedSchoolTags();
 
-                $output = $previews($alltags['h'],'App\Services\SVG\IUSVG');
-                $output .= $previews($alltags['v'],'App\Services\SVG\IUSVG_V');
+            $output =  $previews($alltags['h'],'App\Services\SVG\IUSVG');
+            $output .= $previews($alltags['v'],'App\Services\SVG\IUSVG_V');
 
         }else{
             $alltags =$this->getAllSchoolTags();
 
-                $output = $previews($alltags['h'],'App\Services\SVG\IUSVG');
-                $output .= $previews($alltags['v'],'App\Services\SVG\IUSVG_V');
+            $output = $previews($alltags['h'],'App\Services\SVG\IUSVG');
+            $output .= $previews($alltags['v'],'App\Services\SVG\IUSVG_V');
 
 
         }
 
-
         return $output===""?"No lock-ups to preview":$output;
     }
 
-    public function getSignatureThumbnail(){
-        if($this->named==1)
-          return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,4);
-        else
-            return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,5);
+    public function getSignatureThumbnail()
+    {
+        if ($this->named == 1) {
+            if ($this->tertiaryText != '')
+                return new IUSVG($this->primaryText, $this->secondaryText, $this->tertiaryText, 6);
+            else
+                return new IUSVG($this->primaryText, $this->secondaryText, $this->tertiaryText, 4);
+        } else
+        {
+            if($this->tertiaryText!='')
+                return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,7);
+            else
+                return new IUSVG($this->primaryText,$this->secondaryText,$this->tertiaryText,5);
+        }
+
 
     }
 
     public function build(){
+
 
         $svg_convert = new SVGConvert(
             $this->primaryText,
@@ -109,7 +128,7 @@ class Signature extends Model {
             $this->tertiaryText,
             ($this->named==0)?$this->getHorizontalAllSchoolTags():$this->getHorizontalNamedSchoolTags(),
             ($this->named==0)?$this->getVerticalAllSchoolTags():$this->getVerticalNamedSchoolTags()
-            );
+        );
 
         $return = $svg_convert->build();
         return $return;
