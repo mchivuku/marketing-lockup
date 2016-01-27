@@ -12,7 +12,7 @@
 </label>
 
 
-<label for="tertiary">Tertiary<br/><span class="help-text">(ex. Bloomington,Indianapolis)</span>
+<label for="tertiary">Tertiary<br/><span class="help-text">(ex. Campus, office or unit)</span>
     <input id="tertiary" name="t"  type="text" placeholder='Tertiary'  value="{{$tertiaryText}}">
 </label>
 
