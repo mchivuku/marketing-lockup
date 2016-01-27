@@ -2,60 +2,77 @@
 
 @section('content')
 
+    <?php
+
+
+    $parameters =  array('primaryText'=>$model->primaryText,
+            'secondaryText'=>$model->secondaryText,
+            'tertiaryText'=>$model->tertiaryText,'named'=>$model->named,'campus'=>$model->campus);
+
+    if(isset($editMode))
+        $parameters['editMode']=$editMode;
+
+    ?>
+
     <section class="collapsed bg-none section" id="content">
         <div class="row">
             <div class="layout">
 
-                <div class="full-width">
+                <div class="full-width" ng-app="addEditSignature">
 
-                        {!! Form::open(array('url' => '/signatures/confirmsignature','id'=>"svgform",'method'=>'post')) !!}
+                    <div id="errorMessage"></div>
 
-                        {!!  Form::label('named', 'Named School') !!}
-                    @if($editmode)
-                       @if($model->named==1)
-                            {!!  Form::radio('named',1,array('checked'=>'checked')) !!}
+                    {!! Form::open(array('url' => '/signatures/confirmsignature','id'=>"svgform",'method'=>'post')) !!}
+
+                    {!!  Form::label('campus', 'Campus') !!}
+
+                    {!!  Form::select('campus',
+                       $allcampuses,
+                       $model->campus,
+                       ['ng-model'=>'campus','ng-change'=>'initform()'])
+                    !!}
+
+                    <div ng-show="campus.length>0">
+                        <div ng-if="!find(campus,iupuiLikeCampuses)">
+                            {!!  Form::label('named', 'Named School') !!}
+
+                            {!!  Form::radio('named',1,null,['ng-model'=>'named','ng-change'=>'toggle_named_school_buttons(named)','ng-checked'=>$model->named]) !!}
                             {!!  Form::label('namedschool', 'Yes') !!}
-                            {!!  Form::radio('named',0) !!}
-                            {!!  Form::label('namedschool', 'No') !!}
-                       @else
-                            {!!  Form::radio('named',1) !!}
-                            {!!  Form::label('namedschool', 'Yes') !!}
-                            {!!  Form::radio('named',0,array('checked'=>'checked')) !!}
-                            {!!  Form::label('namedschool', 'No') !!}
-                       @endif
 
-                     @else
-                        {!!  Form::radio('named',1) !!}
-                        {!!  Form::label('namedschool', 'Yes') !!}
-                        {!!  Form::radio('named',0,array('checked'=>'checked')) !!}
-                        {!!  Form::label('namedschool', 'No') !!}
-                    @endif
+                            {!!  Form::radio('named',0,null,['ng-model'=>'named','ng-change'=>'toggle_named_school_buttons(named)','ng-checked'=>$model->named]) !!}
+                            {!!  Form::label('namedschool', 'No') !!}
 
-                    <div id="toggleElements">
-                        @if($model->named && $model->named==1)
-                            @include("...includes.named-school-form",
-                       array('primaryText'=>$model->primaryText,'secondaryText'=>$model->secondaryText,
-                      'tertiaryText'=>$model->tertiaryText))
-                        @else
-                            @include("...includes.non-named-school-form",
-                       array('primaryText'=>$model->primaryText,'secondaryText'=>$model->secondaryText,
-                      'tertiaryText'=>$model->tertiaryText))
+                        </div>
+
+                        <div ng-if="find(campus,iupuiLikeCampuses)">
+                            {!!  Form::hidden('named',1,['ng-model'=>'named'])!!}
+
+                        </div>
+
+                        <div id="loadform">
+                            @if(in_array($model->campus,$iupuilikecampuses))
+                                @include("..includes.iupui-like-addEditSignature",$parameters)
+                            @else
+                                @include("..includes.allcampus-addEditSignature",$parameters)
+                            @endif
+                        </div>
+
+
+                        @if($model->signatureid)
+                            <input type="hidden" name="signatureid" value="{{$model->signatureid }}">
                         @endif
+
+                        <div class="button-group right">
+                            <input type="submit" id="saveSignature" name="saveSignature"
+                                   value="Confirm for Approval" class="button">
+                            <input type="button"  class="button invert clear" value="Clear">
+
+                        </div>
 
                     </div>
 
-                    @if($model->signatureid)
-                        <input type="hidden" name="signatureid" value="{{$model->signatureid }}">
-                    @endif
 
-                            <div class="button-group right">
-                                <input type="submit" id="saveSignature" name="saveSignature"
-                                       value="Confirm for Approval" class="small button">
-                                <input type="reset"  class="small button secondary clear-button" value="Clear">
-
-                            </div>
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
 
                     <!-- signature preview -->
                     <div id="signature-preview">
@@ -71,11 +88,11 @@
 
                     <div class="button-group right" id="duplicateButtons" style="display:none;">
                         <input type="submit" id="saveSignature" name="saveSignature"
-                               value="Confirm for Approval" class="small button">
-
-                        <input type="reset" class="small button secondary clear-button" value="Clear">
+                               value="Confirm for Approval" class="button">
+                        <input type="button" class="button invert clear" value="Clear">
 
                     </div>
+
 
                     {!! Form::close() !!}
 
@@ -86,81 +103,155 @@
 
 @endsection
 @section('scripts')
+    <script type="text/javascript" src="{{asset("bower_components/angular/angular.min.js")}}"></script>
+
     <script type="text/javascript">
-        $(document).ready(function(){
-            $('#svgform').validate();
 
-            initializeformToggleInputs();
+        angular.module('addEditSignature', []).run(['$rootScope',  function($rootScope) {
 
-            $('#svgform input:radio').on('change', function (e) {
-                update_form_elements($(this).val());
-
-                return;
-            });
-
-            $('.clear-button').click(function(event){
-                event.preventDefault();
-                $('#svgform input[type=text]').val('');
-                $('#signature-preview').empty('');
-                $('#duplicateButtons').hide();
-            });
-        });
+            // global initialize
+            $rootScope.campus = "<?php echo $model->campus;?>";
+            $rootScope.iupuiLikeCampuses=   <?php echo json_encode($iupuilikecampuses);?>  ;
+            $rootScope.allcampuses=  <?php echo json_encode($allcampuses);?>  ;
 
 
-        function initializeformToggleInputs(){
+            $rootScope.named = "<?php echo isset($model->named)?$model->named:1;?>";
 
-            jQuery.validator.addMethod("maxLen", function (value, element, param) {
-                if($(element).val().length > param) {
-                    return false;
-                } else {
-                    return true;
+            $rootScope.toggle_named_school_buttons = function(toggle){
+
+                // initialize
+                if(toggle == undefined)
+                    toggle = 1;
+
+
+                var elements = buildFormElements();
+
+                if(toggle==0){
+
+                    $.get('allschool',elements,function(data){
+                        $('.toggleElements').empty().append(data);
+                        initializeInput();
+                        loadPreview();
+                    });
+
+                }else{
+                    $.get('namedschool',elements,function(data){
+                        $('.toggleElements').empty().append(data);
+                        initializeInput();
+                        loadPreview();
+                    });
                 }
-            }, "You have reached the maximum number of characters allowed for this field.");
+            };
+
+            $rootScope.find = function(needle,haystack){
+
+                // convert json object to json array
+                var arr = $.map(haystack, function(el) { return el });
+
+                for(i=0;i<arr.length;i++){
+
+                    if(arr[i]==needle)
+                        return true;
+                }
+                return false;
+
+            };
 
 
-            $('#svgform input[type=text]').on('keyup', function (e) {
-                updatePreview();
-                return;
+
+            $rootScope.initform= function(){
+
+                angular.element('#svgform input[type=text]:not(.default-primary)').val('');
+                var elements = buildFormElements();
+
+
+                if($rootScope.find($rootScope.campus,$rootScope.iupuiLikeCampuses)){
+
+
+                    $.get('iupuiform',elements,function(data){
+                        $('#loadform').empty().append(data);
+                        initializeInput();
+                        angular.element('#svgform input[type=text]:not(.default-primary)').val('');
+                        angular.element('#signature-preview').empty('');
+                        angular.element('#duplicateButtons').hide();
+                    });
+
+
+                }else{
+
+                    $.get('allcampusform',elements,function(data){
+                        $('#loadform').empty().append(data);
+                        initializeInput();
+                        angular.element('#svgform input[type=text]:not(.default-primary)').val('');
+                        angular.element('#signature-preview').empty('');
+                        angular.element('#duplicateButtons').hide();
+                    });
+
+                }
+
+                angular.element('.clear').click(function (event) {
+                    event.preventDefault();
+                    angular.element('#svgform input[type=text]:not(.default-primary)').val('');
+                    angular.element('#signature-preview').empty('');
+                    angular.element('#duplicateButtons').hide();
+                });
+
+                $('#svgform').validate();
+
+            };
+
+            angular.element(document).ready(function(){
+
+                $('#svgform input[type=text]').on('keyup', function (e) {
+                    loadPreview();
+                });
+
+                angular.element('.clear').click(function (event) {
+                    event.preventDefault();
+                    angular.element('#svgform input[type=text]:not(.default-primary)').val('');
+                    angular.element('#signature-preview').empty('');
+                    angular.element('#duplicateButtons').hide();
+                });
+
+                $rootScope.$apply();
             });
 
-        }
+            var loadPreview = function(){
 
+                var elements = buildFormElements();
 
-        function updatePreview(){
-            var form = $('#svgform');
-            $('#duplicateButtons').hide();
+                $('#duplicateButtons').hide();
 
-            if(form.valid()){
-                $.get('getPreview',form.serialize(),function(data){
+                $.get('getPreview',elements,function(data){
+
                     $('div#signature-preview').empty().append("<div id='example-images'>"+data+'</div>');
-                    if(data.length>0){
+
+                    console.log($.isEmptyObject($(data).find('svg')));
+                    if($(data).find('svg').length>0){
                         $('#duplicateButtons').show();
                     }
-
-                });
-            }else{
-                $('div#signature-preview').empty().append("<div id='example-images'></div>");
-            }
-
-        }
-
-        function update_form_elements(toggle){
-            var elements = $( '#svgform' ).serializeArray();
-
-            if(toggle==0){
-                $.get('allschool',elements,function(data){
-                    $('#toggleElements').empty().append(data);
-                    initializeformToggleInputs();
-                    updatePreview();
                 });
 
-            }else{
-                $.get('namedschool',elements,function(data){
-                    $('#toggleElements').empty().append(data);
-                    initializeformToggleInputs();
-                    updatePreview();
+
+
+            };
+
+            var buildFormElements = function(){
+                var elements = $( '#svgform' ).serializeArray();
+                return elements;
+            };
+
+
+            var initializeInput = function(){
+
+                $('#svgform input[type=text]').on('keyup', function (e) {
+                    loadPreview();
                 });
-            }
-        }
+            };
+
+
+        }]);
+
+
     </script>
 @endsection

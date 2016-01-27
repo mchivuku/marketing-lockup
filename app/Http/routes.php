@@ -19,7 +19,11 @@ Route::get('/home', 'HomeController@index');
 Route::group(array('prefix'=>'signatures'),function(){
 
     Route::get('/', array('as'=>'signatures',
-             'uses'=>'SignaturesController@index'));
+        'uses'=>'SignaturesController@index'));
+
+
+
+    Route::get('/createStepOne', array('as'=>'createStepOne','uses'=>'SignaturesController@createStepOne'));
 
     Route::get('/create', array('as'=>'create','uses'=>'SignaturesController@create'));
     Route::get('/edit', array('as'=>'edit','uses'=>'SignaturesController@edit'));
@@ -29,12 +33,62 @@ Route::group(array('prefix'=>'signatures'),function(){
     //Form Toggle - AddEditSignature
     Route::get('/namedschool',function(){
         $inputs = \Input::all();
-        return view("includes/named-school-form",
-            array('primaryText'=>$inputs['p'],'secondaryText'=>$inputs['s'],'tertiaryText'=>$inputs['t']));
+
+        $data = array('primaryText'=>$inputs['p'],'secondaryText'=>$inputs['s'],'tertiaryText'=>$inputs['t']);
+
+        return View::make("includes.named-school-form",$data);
+
     });
+
+    Route::get('/iupuiform',function(){
+        $inputs = \Input::all();
+
+
+        if(!isset($inputs['p']))
+            $inputs['p']='';
+        if(!isset($inputs['s']))
+            $inputs['s']='';
+        if(!isset($inputs['t']))
+            $inputs['t']='';
+
+        if(!isset($inputs['campus']))
+            $inputs['campus']="";
+
+        if(!isset($inputs['named']))
+            $inputs['named']=0;
+
+        return View::make("includes/iupui-like-addEditSignature", array('primaryText'=>$inputs['p'],'secondaryText'=>$inputs['s'],'tertiaryText'=>$inputs['t'],
+            'named'=>$inputs['named'],'campus'=>$inputs['campus']));
+
+    });
+
+    Route::get('/allcampusform',function(){
+        $inputs = \Input::all();
+
+        if(!isset($inputs['p']))
+            $inputs['p']='';
+        if(!isset($inputs['s']))
+            $inputs['s']='';
+        if(!isset($inputs['t']))
+            $inputs['t']='';
+
+        if(!isset($inputs['named']))
+            $inputs['named']=1;
+
+        return View::make("includes.allcampus-addEditSignature", array('primaryText'=>$inputs['p'],'secondaryText'=>$inputs['s'],'tertiaryText'=>$inputs['t'],
+            'named'=>$inputs['named']));
+        //return view("includes/allcampus-addEditSignature",
+        // );
+    });
+
     Route::get('/allschool',function(){
         $inputs = \Input::all();
-        return view("includes/non-named-school-form", array('primaryText'=>$inputs['p'],'secondaryText'=>$inputs['s'],'tertiaryText'=>$inputs['t']));
+
+        if(!isset($inputs['named']))
+            $inputs['named']=0;
+
+        return view("includes/non-named-school-form", array('primaryText'=>$inputs['p'],'secondaryText'=>$inputs['s'],
+            'tertiaryText'=>$inputs['t']));
     });
 
     Route::get('/getPreview', array('as'=>'preview','uses'=>'SignaturesController@getPreview'));

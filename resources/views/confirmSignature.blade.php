@@ -15,23 +15,29 @@
                     {!!  Form::hidden('s', $model->secondaryText) !!}
                     {!!  Form::hidden('t', $model->tertiaryText) !!}
 
+
+                    {!!  Form::hidden('campus', $model->campus) !!}
+
+
+
                     @if($model->signatureid)
                         <input type="hidden" name="signatureid" value="{{$model->signatureid }}">
                     @endif
-
-                    @if($model->named==1)
                     <dl class="meta inline">
-                        <dt>Named School:</dt> <dd itemprop="namedschool">Yes</dd>
-                        <dt>Primary Text: </dt>
-                        <dd itemprop="primarytext">{{$model->primaryText}}</dd>
-                        <dt>Secondary Text: </dt><dd itemprop="secondaryText">{{$model->secondaryText}}</dd>
-                        @if(isset($model->tertiaryText) && $model->tertiaryText!="")
-                            <dt>Tertiary Text: </dt><dd itemprop="tertiaryText">{{$model->tertiaryText}}</dd>
-                       @endif
-                    </dl>
-                    @else
+                        <dt>Campus:</dt> <dd itemprop="campus">{{$model->campus}}</dd>
 
-                        <dl class="meta inline">
+                        @if($model->named==1)
+
+                            <dt>Named School:</dt> <dd itemprop="namedschool">Yes</dd>
+                            <dt>Primary Text: </dt>
+                            <dd itemprop="primarytext">{{$model->primaryText}}</dd>
+                            <dt>Secondary Text: </dt><dd itemprop="secondaryText">{{$model->secondaryText}}</dd>
+                            @if(isset($model->tertiaryText) && $model->tertiaryText!="")
+                                <dt>Tertiary Text: </dt><dd itemprop="tertiaryText">{{$model->tertiaryText}}</dd>
+                            @endif
+
+                        @else
+
                             <dt>Named School:</dt> <dd itemprop="nonnamedschool">No</dd>
                             <dt>Secondary Text: </dt><dd itemprop="secondaryText">{{$model->secondaryText}}</dd>
                             <dt>Primary Text: </dt>
@@ -39,21 +45,22 @@
                             @if(isset($model->tertiaryText) && $model->tertiaryText!="")
                                 <dt>Tertiary Text: </dt><dd itemprop="tertiaryText">{{$model->tertiaryText}}</dd>
                             @endif
-                        </dl>
 
-                    @endif
 
-                   <div class="text">
-                       <h2>Preview</h2>
-                       <!-- signature preview -->
-                       {!!$model->getSignaturePreview()!!}
-                   </div>
+                        @endif
+
+                    </dl>
+                    <div class="text">
+                        <h2>Preview</h2>
+                        <!-- signature preview -->
+                        {!!$model->getSignaturePreview()!!}
+                    </div>
 
 
                     <div class="button-group right">
                         {!! $backLink['backLink'] !!}
                         <input type="submit" id="saveSignature" name="saveSignature"
-                               value="Submit for Approval" class="small button">
+                               value="Submit for Approval" class="button">
 
                     </div>
 
