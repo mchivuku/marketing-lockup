@@ -7,6 +7,10 @@ ul.tabs li.tab-title {
     margin-bottom: 40px;
 }
 
+svg{
+    width:100%;
+}
+
 div#example-images{
 
     padding:10px;
@@ -925,4 +929,7 @@ table.tablesaw thead td {
 
 .belt {
     font-size: 0.875rem;
+}
+span.hideText{
+    display:none;
 }

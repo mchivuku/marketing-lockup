@@ -7,36 +7,37 @@
  */
 namespace App\Services;
 
-
-class NetworkId{
-
-    function __toString(){
+class NetworkId
+{
+    public function __toString()
+    {
         return "cn";
     }
-
 }
 
-class FirstName{
+class FirstName
+{
+    public function __toString()
+    { 
+       
 
-    function __toString(){
         return "givenname";
     }
-
 }
 
-class LastName{
-
-    function __toString(){
+class LastName
+{
+    public function __toString()
+    {
         return "sn";
     }
-
 }
 
 
-class Email{
-
-    function __toString(){
+class Email
+{
+    public function __toString()
+    {
         return "mail";
     }
-
 }

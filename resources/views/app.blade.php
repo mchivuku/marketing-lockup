@@ -61,28 +61,28 @@
 		</nav>
 	</div>
 
-
-
-
+ 
 	<!-- Scripts -->
 	<!-- javascript files -->
 	<!-- Include jQuery -->
 	<script src="{{asset("assets/bower_components/foundation/js/vendor/jquery.js")}}" type="text/javascript"></script>
 	<script src="//assets.iu.edu/web/2.x/js/global.js" type="text/javascript"></script>
 	<script src="//assets.iu.edu/search/2.x/search.js" type="text/javascript"></script>
-	<script type="text/javascript" language="javascript" src="{{ asset('/js/jquery.dataTables.min.js')}}"></script>
-	<script type="text/javascript" language="javascript" src="{{ asset('/js/dataTables.foundation.js') }}"></script>
-	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.js")}}"></script>
-	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.reveal.js")}}"></script>
-    <script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.alert.js")}}"></script>
-	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.offcanvas.js")}}"></script>
-
+	<script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.alert.js")}}"></script>
 	<script type="text/javascript" src="{{asset("bower_components/jquery-validation/dist/jquery.validate.min.js")}}"></script>
-
-	<script type="text/javascript" src="{{asset("js/tablesaw.stackonly.js")}}"></script>
-
 	<script src="{{asset("js/svg.js")}}" type="text/javascript"></script>
 
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var IUComm = window.IUComm || {};
+			IUComm.init && IUComm.init({
+				debug: true,
+				settings: {
+					bigNav: true
+				}
+			});
+		});
+	</script>
 </div>
 @yield('scripts')
 </body>

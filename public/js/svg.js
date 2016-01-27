@@ -5,9 +5,6 @@ $(document).foundation('reveal', 'reflow');
 
 $(document).ready(function(){
 
-    IUComm && IUComm.init( {debug:true} );
-
-
     jQuery.fn.exists = function(){return this.length>0;}
 
     if (!$('aside').exists()){

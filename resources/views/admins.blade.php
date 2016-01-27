@@ -52,6 +52,11 @@
 @endsection
 @section('scripts')
 
+    <script type="text/javascript" language="javascript" src="{{ asset('/js/jquery.dataTables.min.js')}}"></script>
+    <script type="text/javascript" language="javascript" src="{{ asset('/js/dataTables.foundation.js') }}"></script>
+    <script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.reveal.js")}}"></script>
+    <script type="text/javascript" src="{{asset("js/tablesaw.stackonly.js")}}"></script>
+
 <script type="text/javascript">
         $(document).ready(function() {
             $('#usersTable').dataTable({  "ordering": false,"info": false});

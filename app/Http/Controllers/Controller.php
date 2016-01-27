@@ -30,6 +30,7 @@ abstract class Controller extends BaseController {
 
         $this->currentUser = $_SERVER["HTTP_CAS_USER"];
 
+
         $user = Models\AppAdmin::where('username','=',$this->currentUser)->first();
         $this->isAdmin = isset($user)?true:false;
 

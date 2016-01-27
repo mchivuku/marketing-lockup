@@ -146,7 +146,7 @@
 
         function update_form_elements(toggle){
             var elements = $( '#svgform' ).serializeArray();
-console.log(elements);
+
             if(toggle==0){
                 $.get('allschool',elements,function(data){
                     $('#toggleElements').empty().append(data);

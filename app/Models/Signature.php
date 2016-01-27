@@ -15,7 +15,7 @@ class Signature extends Model {
     protected $primaryKey = 'signatureid';
     protected $table = 'signature';
 
-    public $fillable = array('username', 'primaryText', 'secondaryText','tertiaryText','named');
+    public $fillable = array('username', 'primaryText', 'secondaryText','tertiaryText','named','fullName');
 
     public function signaturereviews(){
        return $this->hasMany('App\Models\SignatureReview','signatureid','signatureid');

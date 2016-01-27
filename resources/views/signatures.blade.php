@@ -51,9 +51,3 @@
 
 @endsection
 
-@section('scripts')
-    <script type="text/javascript" src="{{asset("assets/bower_components/foundation/js/foundation/foundation.tab.js")}}"></script>
-
-
-@endsection
-
