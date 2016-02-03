@@ -57,7 +57,8 @@
                     </div>
 
 
-                    <div class="button-group right">
+
+                    <div class="grid right">
                         {!! $backLink['backLink'] !!}
                         <input type="submit" id="saveSignature" name="saveSignature"
                                value="Submit for Approval" class="button">

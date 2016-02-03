@@ -14,11 +14,11 @@
 
     ?>
 
-    <section class="collapsed bg-none section" id="content">
+    <section class="collapsed bg-none section" id="content" ng-app="addEditSignature">
         <div class="row">
             <div class="layout">
 
-                <div class="full-width" ng-app="addEditSignature">
+                <div class="full-width">
 
                     <div id="errorMessage"></div>
 
@@ -62,45 +62,56 @@
                             <input type="hidden" name="signatureid" value="{{$model->signatureid }}">
                         @endif
 
-                        <div class="button-group right">
-                            <input type="submit" id="saveSignature" name="saveSignature"
-                                   value="Confirm for Approval" class="button">
+
+
+
+                        <div class="grid right">
+                             <input type="submit" id="saveSignature" name="saveSignature"
+                                        value="Confirm for Approval" class="button">
                             <input type="button"  class="button invert clear" value="Clear">
 
                         </div>
 
+
+
+
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                        <!-- signature preview -->
+                        <div id="signature-preview">
+                            @if($editmode)
+                                <div id='example-images'>
+                                    {!!$model->getSignaturePreview()!!}
+                                </div>
+
+                            @endif
+
+                        </div>
+
+
+                        <div class="right grid" id="duplicateButtons" style="display:none;">
+                            <input type="submit" id="saveSignature" name="saveSignature"
+                                       value="Confirm for Approval" class="button">
+                           <input type="button" class="button invert clear" value="Clear">
+
+                        </div>
+
+
+
+                        {!! Form::close() !!}
+
                     </div>
 
 
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                    <!-- signature preview -->
-                    <div id="signature-preview">
-                        @if($editmode)
-                            <div id='example-images'>
-                                {!!$model->getSignaturePreview()!!}
-                            </div>
+                </div>
 
-                        @endif
-
-                    </div>
-
-
-                    <div class="button-group right" id="duplicateButtons" style="display:none;">
-                        <input type="submit" id="saveSignature" name="saveSignature"
-                               value="Confirm for Approval" class="button">
-                        <input type="button" class="button invert clear" value="Clear">
-
-                    </div>
-
-
-                    {!! Form::close() !!}
-
+                <div ng-show="campus.length>0" style="clear: both;padding-top:20px;">
+                    <p class="subheader lockup-notes">If your unit has special characters, such as an accent or surname prefix (Mc, Mac, or De), <a class="email" href="mailto:{{$contactMail}}" rel="nofollow">contact IU Communications </a>for a custom marketing lockup.</p>
                 </div>
             </div>
         </div>
     </section>
-
 @endsection
 @section('scripts')
     <script type="text/javascript" src="{{asset("bower_components/angular/angular.min.js")}}"></script>
