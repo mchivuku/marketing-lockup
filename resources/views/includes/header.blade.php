@@ -29,7 +29,6 @@
     <link href="https://assets.iu.edu/web/2.x/css/global.css" rel="stylesheet" type="text/css">
     <link href="https://assets.iu.edu/brand/2.x/brand.css" rel="stylesheet" type="text/css">
     <link href="https://assets.iu.edu/search/2.x/search.css" rel="stylesheet" type="text/css">
-    <link href="https://assets.iu.edu/_assets/css/site.css" rel="stylesheet" type="text/css">
     <link href="{{asset("css/dataTables.foundation.min.css")}}" rel="stylesheet">
     <!-- Include Stylesheets -->
     <link href="{{asset("css/site.css")}}" rel="stylesheet" type="text/css">

@@ -958,4 +958,18 @@ form .grid .button {
     margin-bottom: 5px;
 }
 
+main { position: relative; padding-top: 10px; }
+code {display:block;}
+@media only screen and (min-width: 64.063em) {
+    main { padding-top: 50px; }
+    /*#home main { padding-top: 0; }*/
+    /*#home nav.main { border-bottom: 0; }*/
 
+    /*
+    nav.main li { padding: 0 15px; }
+
+    nav.main li.first { padding-right: 15px;}
+    nav.main li.last { padding-left: 15px;}
+    */
+
+}

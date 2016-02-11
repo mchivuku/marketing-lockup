@@ -96,11 +96,11 @@ class SignaturesController extends Controller {
                         .$signature->signatureid );
 
                     $signature->nextAction="";
-                    if($this->currentUser==$signature->username){
+                   // if($this->currentUser==$signature->username){
                         $edit_link =\URL::to(action('SignaturesController@edit') . '?signatureid='
                             .$signature->signatureid );
                         $signature->nextAction.= "<a  href='$edit_link'>Edit</a> | ";
-                    }
+                   // }
 
                     $link_name = 'Approve/Deny';
                     $signature->nextAction .="<a  href='$next_action_link'>$link_name</a>";
@@ -358,20 +358,22 @@ class SignaturesController extends Controller {
             {
                 $timestamp = $this->getcurrentTimestamp();
 
-                $signature->username =  $user;
-                $signature->fullName=$name;
+                //$signature->username =  $user;
+                //$signature->fullName=$name;
                 $signature->primaryText =  $inputs['p'];
                 $signature->secondaryText =   $inputs['s'];
                 $signature->tertiaryText =   $inputs['t'];
                 $signature->campus = $inputs['campus'];
                 $signature->updated_at = $timestamp;
                 $signature->named = $inputs['named'];
+                $signature->updated_by = $name;
 
                 $signatureReview = new Models\SignatureReview();
                 $signatureReview->reviewstatus = $review_status->id;
                 $signatureReview->created_at =$timestamp;
                 $signatureReview->updated_at = $timestamp;
                 $signatureReview->signatureid = $signature->signatureid;
+                $signatureReview->updated_by = $name;
                 $signatureReview->save();
                 $signature->save();
 
@@ -401,6 +403,8 @@ class SignaturesController extends Controller {
                 $signature->created_at = $timestamp;
                 $signature->updated_at = $timestamp;
                 $signature->statusId = $review_status->id;
+                $signature->updated_by = $name;
+
 
                 $signature->save();
 
@@ -409,6 +413,7 @@ class SignaturesController extends Controller {
                 $signatureReview->created_at =$timestamp;
                 $signatureReview->updated_at = $timestamp;
                 $signatureReview->signatureid = $signature->signatureid;
+                $signatureReview->updated_by = $name;
 
                 $signatureReview->save();
 

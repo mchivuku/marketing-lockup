@@ -18,7 +18,7 @@ class Signature extends Model {
 
 
     public $fillable = array('username', 'primaryText', 'secondaryText','tertiaryText','named','campus',
-        'fullName');
+        'fullName','updated_by');
 
     public function signaturereviews(){
         return $this->hasMany('App\Models\SignatureReview','signatureid','signatureid');
