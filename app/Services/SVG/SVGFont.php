@@ -43,6 +43,7 @@ class SVGFont {
             }
         }
 
+
         return $unicode;
     }
 
