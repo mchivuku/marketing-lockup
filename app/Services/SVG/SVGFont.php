@@ -7,6 +7,7 @@
 
 namespace App\Services\SVG;
 
+
 class SVGFont {
 
     protected $id = '';
@@ -90,18 +91,38 @@ class SVGFont {
 
     }
 
-    public function checkkerningPatterns($char,$nextchar,&$correction=null){
+
+    public function checkkerningPatterns($char,$nextchar,$unicode_char,&$correction=null){
+
+
         $kerning_array =
-            array("FA"=>150, "PA" => 150, "TA"=>150, "YA"=>150, "WA"=>150, "AV"=>150, "AW"=>150, "AT"=>150,
+            array("FA"=>150, "PA" => 150, "TA"=>150, "YA"=>150,
+                  "WA"=>150, "AV"=>150, "AW"=>150, "AT"=>150,
                   "PJ"=>150, "FJ"=>150, "OJ"=>120,"AY"=>190);
 
         $string =  $char.$nextchar;
 
+        // Fix for alphabets
         if(array_key_exists($string,$kerning_array)){
             $correction = $kerning_array[$string];
+            return true;
+        }
+
+
+        // fix for special characters  - curly quote character
+        if($unicode_char === 8217){
+
+            if(ord($nextchar)>=97 && ord($nextchar)<=122){
+                $correction=150;
+            }else{
+                $correction=90;
+            }
 
             return true;
         }
+
+
+
 
         return false;
 
@@ -121,15 +142,11 @@ class SVGFont {
         $horizAdvY = 0;
         $totalhorizAdvX=0;
 
-        // $horizAdvY = $this->ascent + $this->descent;
 
         foreach($lines as $text) {
 
             $utf8text = $text;
-            $kerning_pattern=false;
-
-
-            $text = $this->utf8ToUnicode($text);
+            $text = $this->utf8ToUnicode(html_entity_decode(str_replace("'",'&#8217;',$text)));
 
             $size =  ((float)$asize) / $this->unitsPerEm;
             $result .= "<g transform=\"scale({$size}) translate(0, {$horizAdvY})\">";
@@ -138,22 +155,34 @@ class SVGFont {
 
             for($i = 0; $i < count($text); $i++) {
 
+
+                $kerning_pattern = false;
+                $error= 0;
+
+
                 $letter = $text[$i];
                 $letter_utf8 = $utf8text[$i];
-                $error= null;
 
 
                 // Not when you reach the last character
-                if($i<count($text)-1)
-                    $kerning_pattern = $this->checkkerningPatterns($letter_utf8,$utf8text[$i+1],$error);
+                if($i<count($text)-1){
+
+                    // check character patterns
+                    $kerning_pattern=   $this->checkkerningPatterns($letter_utf8,
+                        $utf8text[$i+1],$letter,
+                        $error);
+
+
+                }
 
 
                 $result .= "<path transform=\"translate({$horizAdvX},{$horizAdvY}) rotate(180) scale(-1, 1)\" d=\"{$this->glyphs[$letter]->d}\" />";
 
-                if($kerning_pattern){
+                if($kerning_pattern==true){
                     $horizAdvX += $this->glyphs[$letter]->horizAdvX - $error;
                     $totalhorizAdvX += $this->glyphs[$letter]->horizAdvX;
-                }else{
+                }
+                else{
                     $horizAdvX += $this->glyphs[$letter]->horizAdvX;
                     $totalhorizAdvX += $this->glyphs[$letter]->horizAdvX;
                 }
@@ -166,6 +195,7 @@ class SVGFont {
 
         $extents = array('w'=>$totalhorizAdvX, 'h'=>$horizAdvY, 'l'=>count($lines),'s'=>$size,
                          'u'=>$this->unitsPerEm,'ascent'=>$this->ascent,'descent'=>$this->descent);
+
 
         return $result;
     }

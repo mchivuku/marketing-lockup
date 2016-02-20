@@ -541,6 +541,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
 
     /** Signature Nine is to give - primary, secondary and tertiary in the second line */
+    /** Signature Nine is to give - primary, secondary and tertiary in the second line */
     public function signatureNine(){
 
         //rules
@@ -568,7 +569,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
         $sXML = $svgFont->textToPaths($text, self::SECONDARY_FONT_SIZE,$extents);
         $s_width = $this->funitsToPx($extents['w'],self::SECONDARY_FONT_SIZE,$extents['u']);
 
-        $total_width= $p_width + $s_width + $this->tabWidth+ $this->refPts + $this->refPts;
+        $total_ps_width= $p_width + $s_width + $this->refPts;
         $sHeight= $this->funitsToPx($extents['h'],self::PRIMARY_FONT_SIZE,$extents['u']) - $this->secondary_leading_x;
 
 
@@ -581,6 +582,15 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
         $font = self::$tertiary_font['svgfile'];
         $svgFont->load("/ip/fonts/wwws/fonts/$font.svg");
         $tXML = $svgFont->textToPaths($this->tertiary, self::TERTIARY_FONT_SIZE,$extents);
+        $t_width  = $this->funitsToPx($extents['w'],self::TERTIARY_FONT_SIZE,$extents['u']);
+
+
+        $total_width=(($total_ps_width>=$t_width)?$total_ps_width:$t_width);
+
+        $total_width+= $this->tabWidth + $this->refPts + $this->refPts +
+            (2*$this->refPts) + $this->refPts/2;
+
+
 
         $this->init($total_width+$this->refPts/2,$this->tabHeight);
 
@@ -605,7 +615,7 @@ width=\"$view_port_width\"  height=\"$view_port_height\"
 
         $this->addXMLStr($this->xml,"<svg xmlns=\"http://www.w3.org/2000/svg\"
                  width=\"$total_width\"  height=\"$this->tabHeight\"
-             viewBox='-$this->xref -58  $total_width $this->tabHeight'>
+             viewBox='-$this->xref -58  $w $this->tabHeight'>
              $tXML</svg>");
 
     }
