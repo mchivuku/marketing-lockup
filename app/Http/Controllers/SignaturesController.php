@@ -326,9 +326,7 @@ class SignaturesController extends Controller {
         }
 
         \View::share("backLink", array('backLink'=>$backUrl));
-
-
-        return $this->view('confirmSignature')->model($signature)->title('Confirm Marketing Lock-up');
+         return $this->view('confirmSignature')->model($signature)->title('Confirm Marketing Lock-up');
 
     }
 
