@@ -18,8 +18,8 @@ $anchor_link = function($path,$text,$children=false){
 }
 ?>
 
-<li  class="first">{!!$anchor_link('signatures/create','Create Marketing Lock-up')!!}</li>
-<li>{!!$anchor_link('signatures','Manage Marketing Lock-ups')!!}</li>
+<li  class="first">{!!$anchor_link('signatures/create','Create Marketing Lockup')!!}</li>
+<li>{!!$anchor_link('signatures','Manage Marketing Lockups')!!}</li>
 
 <li>{!!$anchor_link('emaillockup','Create Email Signature')!!}</li>
 

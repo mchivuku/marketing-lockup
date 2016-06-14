@@ -17,7 +17,7 @@
 	<div class="inner-wrap">
 		<header>
 			<div class="row pad">
-				<h1><a href="{{url("/")}}">Marketing <span>Lock-up</span></a></h1>
+				<h1><a href="{{url("/")}}">Marketing <span>Lockup</span></a></h1>
 			</div>
 		</header>
 

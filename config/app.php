@@ -201,10 +201,13 @@ return [
 		'Html' => 'Collective\Html\HtmlFacade',
 
 
-
-
-
     ],
+
+	'downloadPath'=>'/ip/iubrand/wwws/admin/public/downloads',
+	'instructions_readme_docs'=>[ 'location'=>'/ip/iubrand/wwws/admin/public/lockupInstructions/',
+		'files'=>[['src'=>'Lockup_conversion_instructions.pdf','dest'=>'Lockup\ conversion\ instructions.pdf'],
+			["src"=>'lockup\ readme.rtf',"dest"=>'lockup\ readme.rtf']]]
+
 
 ];
 

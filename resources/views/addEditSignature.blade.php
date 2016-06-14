@@ -114,7 +114,7 @@
     </section>
 @endsection
 @section('scripts')
-    <script type="text/javascript" src="{{asset("bower_components/angular/angular.min.js")}}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.4/angular.min.js"></script>
 
     <script type="text/javascript">
 
@@ -122,16 +122,15 @@
 
             // global initialize
             $rootScope.campus = "<?php echo $model->campus;?>";
-            $rootScope.iupuiLikeCampuses=   <?php echo json_encode($iupuilikecampuses);?>  ;
+            $rootScope.iupuiLikeCampuses=  <?php echo json_encode($iupuilikecampuses);?>  ;
             $rootScope.allcampuses=  <?php echo json_encode($allcampuses);?>  ;
 
-
-            $rootScope.named = "<?php echo isset($model->named)?$model->named:1;?>";
+            $rootScope.named = "<?php echo isset($model->named)?$model->named:0;?>";
 
             $rootScope.toggle_named_school_buttons = function(toggle){
 
                 // initialize
-                if(toggle == undefined)
+                if(toggle === 'undefined')
                     toggle = 1;
 
 
@@ -177,8 +176,6 @@
 
 
                 if($rootScope.find($rootScope.campus,$rootScope.iupuiLikeCampuses)){
-
-
                     $.get('iupuiform',elements,function(data){
                         $('#loadform').empty().append(data);
                         initializeInput();
@@ -189,10 +186,12 @@
 
 
                 }else{
-
+                    elements[2].value=0;
                     $.get('allcampusform',elements,function(data){
                         $('#loadform').empty().append(data);
                         initializeInput();
+                        $('input[name="named"][value="' + 0 + '"]').prop('checked', true);
+                        $rootScope.named=0;
                         angular.element('#svgform input[type=text]:not(.default-primary)').val('');
                         angular.element('#signature-preview').empty('');
                         angular.element('#duplicateButtons').hide();
@@ -205,6 +204,8 @@
                     angular.element('#svgform input[type=text]:not(.default-primary)').val('');
                     angular.element('#signature-preview').empty('');
                     angular.element('#duplicateButtons').hide();
+                    $('input[name="named"][value="' + 0 + '"]').prop('checked', true);
+                    $rootScope.named=0;
                 });
 
                 $('#svgform').validate();
@@ -213,9 +214,11 @@
 
             angular.element(document).ready(function(){
 
-                $('#svgform input[type=text]').on('keyup', function (e) {
+
+                $('#primary, #secondary, #tertiary').on('input keyup', function (e) {
                     loadPreview();
                 });
+
 
                 angular.element('.clear').click(function (event) {
                     event.preventDefault();
@@ -237,7 +240,6 @@
 
                     $('div#signature-preview').empty().append("<div id='example-images'>"+data+'</div>');
 
-                    console.log($.isEmptyObject($(data).find('svg')));
                     if($(data).find('svg').length>0){
                         $('#duplicateButtons').show();
                     }
@@ -255,9 +257,10 @@
 
             var initializeInput = function(){
 
-                $('#svgform input[type=text]').on('keyup', function (e) {
+                $('#primary, #secondary, #tertiary').on('input keyup', function (e) {
                     loadPreview();
                 });
+
             };
 
 

@@ -1,4 +1,4 @@
-<h1>Your Indiana University Marketing Lock-up is approved.</h1>
+<h1>Your Indiana University Marketing Lockup is approved.</h1>
 
 <p>You may download your files in the admin area of the brand.iu.edu website by clicking here:(<a href="https://brand.iu.edu/admin/public/index.php/signatures">https://brand.iu.edu/admin/public/index.php/signatures</a>)</p>
 

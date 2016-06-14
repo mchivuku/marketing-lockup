@@ -33,13 +33,10 @@ class Signature extends Model {
 
     /** Helper Functions  */
     public function getNamedSchoolTags(){
-        if(in_array($this->campus,Campus::getIUPUILikeCampuses()))
-            return array('h'=>array(2,4,6,9,13,14),'v'=>array(1,2,3,6,7));
-
-        return array('h'=>array(2,4,6,9),'v'=>array(1,2,3));
+        return array('h'=>array(2,4,6,9,13,14,15,16),'v'=>array(1,2,3,6,7));
     }
-    public function getAllSchoolTags(){return array('h'=> array(1,3,5,7,8),'v'=>array(1,4,5));}
 
+    public function getAllSchoolTags(){return array('h'=> array(1,3,5,7,8,10,11,12,17,18),'v'=>array(1,4,5,8,9));}
 
     private function getHorizontalAllSchoolTags(){
         $tags = $this->getAllSchoolTags();
@@ -98,7 +95,7 @@ class Signature extends Model {
 
         }
 
-        return $output===""?"No lock-ups to preview":$output;
+        return $output===""?"No lockups to preview":$output;
     }
 
     public function getSignatureThumbnail()

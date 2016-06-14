@@ -43,7 +43,7 @@ class SignaturesController extends Controller {
 
     public function leftnavigation(){
         $navigation = array(array('route_name'=>'signatures.create',
-            'text'=>'Create Marketing Lock-up',
+            'text'=>'Create Marketing Lockup',
             'url'=>\URL::to(action('SignaturesController@create'))));
 
         \View::share('leftnavigation',$navigation);
@@ -58,7 +58,7 @@ class SignaturesController extends Controller {
     {
         $model =new \StdClass;
 
-        $model->states = array_merge(array(array('id'=>0,'status'=>'All Lock-ups')),Models\ReviewStatus::all()
+        $model->states = array_merge(array(array('id'=>0,'status'=>'All Lockups')),Models\ReviewStatus::all()
             ->toArray());
         $model->content = $this->getSignatures();
 
@@ -66,7 +66,7 @@ class SignaturesController extends Controller {
         if(isset($inputs['message']))  $this->flash($inputs['message'],(isset($inputs['type'])
             ?$inputs['type']:Models\ViewModels\Alerts::SUCCESS));
 
-        return $this->view('signatures')->model($model)->title('Manage Marketing Lock-ups');
+        return $this->view('signatures')->model($model)->title('Manage Marketing Lockups');
 
     }
 
@@ -271,7 +271,7 @@ class SignaturesController extends Controller {
 
 
         return $this->view('addEditSignature')
-            ->model($signature)->title('Create Marketing Lock-up');
+            ->model($signature)->title('Create Marketing Lockup');
     }
 
 
@@ -291,7 +291,7 @@ class SignaturesController extends Controller {
         \View::share('iupuilikecampuses',Models\Campus::getIUPUILikeCampuses());
 
 
-        return $this->view('addEditSignature')->model($signature)->title('Edit Marketing Lock-up');
+        return $this->view('addEditSignature')->model($signature)->title('Edit Marketing Lockup');
 
     }
 
@@ -326,7 +326,7 @@ class SignaturesController extends Controller {
         }
 
         \View::share("backLink", array('backLink'=>$backUrl));
-         return $this->view('confirmSignature')->model($signature)->title('Confirm Marketing Lock-up');
+         return $this->view('confirmSignature')->model($signature)->title('Confirm Marketing Lockup');
 
     }
 
@@ -376,7 +376,7 @@ class SignaturesController extends Controller {
                 $signature->save();
 
             });
-            $message = "Lock-up was updated successfully";
+            $message = "Lockup was updated successfully";
 
         }
         else{
@@ -417,7 +417,7 @@ class SignaturesController extends Controller {
 
 
             });
-            $message = "Lock-up was created successfully";
+            $message = "Lockup was created successfully";
         }
 
 
@@ -453,7 +453,7 @@ class SignaturesController extends Controller {
         $model->signatureid = $signatureId;
         $model->signature  =  Models\Signature::where('signatureid','=',$signatureId)->first();
 
-        return $this->view('signature-review')->model($model)->title('Review Marketing Lock-up');
+        return $this->view('signature-review')->model($model)->title('Review Marketing Lockup');
 
     }
 
@@ -469,7 +469,7 @@ class SignaturesController extends Controller {
         //check if the signature is approved.
         $approved_id = Models\ReviewStatus::where('status','like','approve%')->first()->id;
         if($signature->statusId == $approved_id){
-            return json_encode(array('status'=>false,'message'=>'Lock-up is already approved'));
+            return json_encode(array('status'=>false,'message'=>'Lockup is already approved'));
         }
 
         $return = $signature->build();
@@ -489,7 +489,7 @@ class SignaturesController extends Controller {
             $obj  = $this->construct_ldap_object($signature->username);
             \Mail::send('emails.approve', $d, function($message)use($obj)
             {
-                $message->to($obj->email, $obj->name)->subject('Marketing Lock-up Approved!');
+                $message->to($obj->email, $obj->name)->subject('Marketing Lockup Approved!');
             });
 
             //update that email has been sent;
@@ -517,7 +517,7 @@ class SignaturesController extends Controller {
 
 
         if($signature->statusId == $review_status->id){
-            return json_encode(array('status'=>false,'message'=>'Marketing Lock-up is already denied'));
+            return json_encode(array('status'=>false,'message'=>'Marketing Lockup is already denied'));
         }
 
 
@@ -531,7 +531,7 @@ class SignaturesController extends Controller {
         $obj  = $this->construct_ldap_object($signature->username);
         \Mail::send('emails.denied', $d, function($message)use($obj)
         {
-            $message->to($obj->email, $obj->name)->subject('Marketing Lock-up Request Denied!');
+            $message->to($obj->email, $obj->name)->subject('Marketing Lockup Request Denied!');
         });
 
 

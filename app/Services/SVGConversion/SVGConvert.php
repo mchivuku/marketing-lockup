@@ -14,7 +14,7 @@ use App\Services\SVG;
 
 require_once __DIR__."/../SVG/IUSVG.php";
 require_once __DIR__."/../SVG/IUSVG_PRINT.php";
-define('downloadPath',"/ip/iubrand/wwws/admin/public/downloads");
+
 
 /***
  * Class SVGConvert
@@ -43,6 +43,13 @@ class SVGConvert
 
     }
 
+    private function cleanString($string){
+
+        $s =  str_replace(" ","_",strtolower($string));
+        return preg_replace("/[^a-zA-Z0-9.]/", "", $s);
+
+    }
+
     /**
      * Build performs
      * 1. create destination folder
@@ -55,14 +62,15 @@ class SVGConvert
 
         if($status->status){
 
-            // save the source to the path
+            // save path
             $path = $status->message;
-            $this->save_source_svgs_and_convert($path);
+            $this->save_source_svgs_and_convert($path."/lockups/");
 
+            // Zip archive
             $z = new \ZipArchive();
             $parts =pathinfo($path);
 
-            $outputZipPath  = downloadPath."/".$parts['filename'].".zip";
+            $outputZipPath  = config('app.downloadPath')."/".$parts['filename'].".zip";
             $z->open($outputZipPath, \ZIPARCHIVE::CREATE);
 
             //open source path
@@ -70,32 +78,41 @@ class SVGConvert
 
                 while(false!==($entry=readdir($handle))){
 
-                    if($entry!="." && $entry!=".." && $entry!='errorlog.txt'
-                        //&&
-                       // !preg_match("/^(svg_print_([0-9]+).svg)$/i",$entry)
-                    ){
 
-                        $file = $path."/".$entry;
-                        $new_filename = substr($file,strrpos($file,'/') + 1);
-                        $z->addFile($file,$new_filename);
+                    if( $entry!="." && $entry!=".." && $entry!='errorlog.txt'){
 
+                        // lockups dir
+                        if(is_dir($path."/".$entry)){
+                            $lockups_dir = opendir($path."/".$entry);
+                            $z->addEmptyDir($entry);
+                            while(false!==($x=readdir($lockups_dir))){
+                                if( $x!="." && $x!=".." && $x!='errorlog.txt'){
+                                    $file = $path."/".$entry."/".$x;
+                                    $new_filename = substr($file,strrpos($file,'/') + 1);
+                                    $z->addFile($file, $entry."/".$new_filename);
+                                }
+                            }
+                            closedir($lockups_dir);
+                        }else{
+
+                            $file = $path."/".$entry;
+                            $new_filename = substr($file,strrpos($file,'/') + 1);
+                            $z->addFile($file,$new_filename);
+                        }
                     }
                 }
-                closedir($handle);
 
+                closedir($handle);
             }
 
             $z->close();
 
             //remove directory -
-             $this->delete_destination_folders($status->message);
+            $this->delete_destination_folders($status->message);
 
-
-            //remove the dir
             return $outputZipPath;
 
         }
-
 
         return null;
     }
@@ -111,7 +128,10 @@ class SVGConvert
         $CI = $this;
         // create svg fi le and run convert command
         $file_get_save = function($path,$classname,$filename,$tag)use($CI){
+
+
             $contents = (new $classname($CI->primary,$CI->secondary,$CI->tertiary,$tag));
+
             $name = $path."/".$filename.".svg";
             if($contents!="")
             {
@@ -124,42 +144,57 @@ class SVGConvert
         };
 
         // Horizontal
+        $count = 1;
         foreach($this->htags as $tag){
             //1.svg version -> web, 2. svg version for print;
-            $name = $file_get_save($path,'App\Services\SVG\IUSVG','svg_'.$tag,$tag);
-            $status =  ($name!="")?$this->convert_webversion($name):new ProcessStatus(true);
+
+            if(strlen($this->primary)>25){
+                $primary = substr($this->primary, 0, 25);
+                $filename = $this->cleanString($primary)."_lockup_".$count."_h";
+            }else{
+                $filename = $this->cleanString($this->primary)."_lockup_".$count."_h";
+            }
+
+
+            $name = $file_get_save($path,'App\Services\SVG\IUSVG',$filename,$tag);
+
+            $status =  ($name!="")?$this->convert_webversion($name):
+                new ProcessStatus(true);
 
             if($status->status===false){
                 return 'Failed to convert';
             }
-
-            $name = $file_get_save($path,'App\Services\SVG\IUSVG_PRINT','svg_print_'.$tag,$tag);
-            // no need to generate print versions
-            //$status =  ($name!="")?$this->convert_printversion($name):new ProcessStatus(true);
+            $count++;
 
         }
-
+        $count = 1;
         foreach($this->vtags as $tag){
 
-            //1.svg version -> web, 2. svg version for print;
-            $name = $file_get_save($path,'App\Services\SVG\IUSVG_V','svg_v_'.$tag,$tag);
-            $status =  ($name!="")?$this->convert_webversion($name):new ProcessStatus(true);
+            if(strlen($this->primary)>25){
+                $primary = substr($this->primary, 0, 25);
+                $filename = $this->cleanString($primary)."_lockup_".$count."_v";
+            }else{
+                $filename = $this->cleanString($this->primary)."_lockup_".$count."_v";
+            }
 
+            $name = $file_get_save($path,'App\Services\SVG\IUSVG_V',$filename,$tag);
+            $status =  ($name!="")?$this->convert_webversion($name):new ProcessStatus(true);
 
             if($status->status===false){
                 return 'Failed to convert';
             }
-
-            $name = $file_get_save($path,'App\Services\SVG\IUSVG_V_PRINT','svg_v_print_'.$tag,$tag);
-           // $status =  ($name!="")?$this->convert_printversion($name):new ProcessStatus(true);
+            $count++;
         }
 
         return new ProcessStatus(true,'Successfully completed the build');
 
     }
 
-
-    //help from php.net
+    /**
+     * Create Lockup download folder
+     * @param $pathname
+     * @return bool
+     */
     private function create_folder($pathname){
 
         //check with directory path exists
@@ -183,24 +218,45 @@ class SVGConvert
 
     }
 
+
+
     public function create_destination_folders(){
 
-        $clean_string =function($string){
-            $s =  str_replace(" ","_",strtolower($string));
-            return preg_replace("/[^a-zA-Z0-9.]/", "", $s);
-        };
 
         //Add Timestamp
-        $save_to_path = downloadPath."/".implode("_",array_filter(
-                array($clean_string($this->primary),$clean_string($this->secondary),$clean_string($this->tertiary))
+        $save_to_path = config('app.downloadPath')."/".implode("_",array_filter(
+                array($this->cleanString($this->primary),
+                    $this->cleanString($this->secondary),
+                    $this->cleanString($this->tertiary))
             ));
 
         $save_to_path.='_'.date('m-d-Y');
 
 
         if($this->create_folder($save_to_path))
-           return new ProcessStatus(true,$save_to_path);
+        {
+            //1. copy - pdf and readme txt file.
+            $exec = new Exec();
 
+
+            $docs =config('app.instructions_readme_docs');
+            foreach($docs['files'] as $doc){
+
+                $command = sprintf("cp %s %s",$docs['location'].$doc['src'],
+                    $save_to_path."/".$doc['dest']);
+                $exec->run($command);
+
+            }
+
+            // 2. create lockup folder
+            $mklockupfolder = sprintf("mkdir %s",
+                $save_to_path."/lockups");
+
+            $exec->run($mklockupfolder);
+
+            return new ProcessStatus(true,$save_to_path);
+
+        }
 
         return new ProcessStatus(false,"failed to create destination folder");
 
@@ -211,7 +267,7 @@ class SVGConvert
 
         // Removes non-empty directory
         $command = "rm -rf $name/";
-         exec($command);
+        exec($command);
 
     }
 
@@ -222,61 +278,13 @@ class SVGConvert
     public function convert_webversion($name){
 
         $result = "";
+        $command = new SVGCommandBuilder($name);
         $shell = new Exec();
-
 
         $info = pathinfo($name);
         $error_file_name = trim($info['dirname']."/"."errorlog".".txt");
-
-
-        $command = new SVGCommandBuilder($name);
-        $shell->run($command->getSVGToJPGHighResolutionCommand());
-
-        //failed
-        if($shell->getReturnValue()!=0){
-            if(file_exists($error_file_name))
-                $result .= (file_get_contents($error_file_name));
-
-        }
-
-        // No Resolution - JPG - remove
-       // $shell_jpg = new Exec();
-      //  $shell_jpg->run($command->getSVGToJPGLowResolutionCommand());
-
-     //   if($shell_jpg->getReturnValue()!=0){
-      //      $result.=file_get_contents($error_file_name);
-      //  }
-
-        $shell_png = new Exec();
-        $shell_png->run($command->getSVGToPNGCommand());
-
-
-        if($shell_png->getReturnValue()!=0){
-            if(file_exists($error_file_name))
-                $result .= (file_get_contents($error_file_name));
-        }
-
-        return $result!=""?new ProcessStatus(false,$result):new ProcessStatus(true);
-
-    }
-
-
-    /***
-     * Convert print version -> png
-     * @param $name
-     */
-    public function convert_printversion($name){
-        $result = "";
-        $shell = new Exec();
-
-
-        $info = pathinfo($name);
-        $error_file_name = trim($info['dirname']."/"."errorlog".".txt");
-
-        $command = new SVGCommandBuilder($name);
         $shell->run($command->getSVGToPNGCommand());
 
-
         if($shell->getReturnValue()!=0){
             if(file_exists($error_file_name))
                 $result .= (file_get_contents($error_file_name));
@@ -285,6 +293,9 @@ class SVGConvert
         return $result!=""?new ProcessStatus(false,$result):new ProcessStatus(true);
 
     }
+
+
+
 
 
 }

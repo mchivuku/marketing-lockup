@@ -7,7 +7,7 @@
 
 
 @section('scripts')
-    <script type="text/javascript" src="{{asset("bower_components/angular/angular.min.js")}}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.4/angular.min.js"></script>
     <!--script src="https://jqueryvalidation.org/files/dist/additional-methods.min.js"></script-->
 
     <script type="text/javascript">
@@ -86,7 +86,7 @@
 
                     $('#lnkEditFields').click(function(){
                         $('#mainForm').show();
-                        $('#previewText').html('Marketing Lock-Up Preview');
+                        $('#previewText').html('Marketing LockUp Preview');
                         $('#signatureOutputWithoutImage').hide();
                         $('#signatureOutputWithImage').hide();
                         $('#signatureOutput').show();

@@ -1,1 +1,1 @@
-<p>Marketing Lock-up Denied. Please review our comments and make changes in the admin area.(<a href="https://brand.iu.edu/admin/public/index.php/signatures">https://brand.iu.edu/admin/public/index.php/signatures</a>)</p>
+<p>Marketing Lockup Denied. Please review our comments and make changes in the admin area.(<a href="https://brand.iu.edu/admin/public/index.php/signatures">https://brand.iu.edu/admin/public/index.php/signatures</a>)</p>
