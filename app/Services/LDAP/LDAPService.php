@@ -138,7 +138,7 @@ class LDAPService
 
 
     private function extract_value($entry,$string){
-        return isset($entry[$string])?$entry[$string][0]:'';
+        return isset($entry[$string][0])?$entry[$string][0]:'';
     }
 
 

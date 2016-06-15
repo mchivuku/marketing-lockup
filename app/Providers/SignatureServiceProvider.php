@@ -40,6 +40,7 @@ class SignatureServiceProvider extends ServiceProvider {
             'LDAPService',
             'App\Services\LDAPService'
         );
+
         //SVG conversion library
         $this->app->bind(
             'SVGConvert',

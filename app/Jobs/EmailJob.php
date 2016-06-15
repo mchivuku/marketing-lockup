@@ -7,10 +7,12 @@
 
 
 namespace  App\Jobs;
-use App\Services\LDAPService;
+use App\Services\LDAPService as LDAPService;
 use Illuminate\Bus\Queueable;
 
 use App\Models as Models;
+
+require_once app_path()."/Services/LDAP/LDAPService.php";
 
 class EmailJob
 {
@@ -35,22 +37,25 @@ class EmailJob
             return $item['username'];
         });
 
-
         $ldapService = new LDAPService();
 
-        try{
-            foreach($usernames as $k=>$v){
-                $emails[] = ['name'=>sprintf("%s %s",$ldapService->getFirstName($v),$ldapService->getLastName($v)),
-                    'email'=>$ldapService->getEmail($v)];
-            }
-        }catch(\Exception $ex){
-            var_dump($ex->getMessage());
+        foreach($usernames as $k=>$v){
+            if($v == 'taramaso')continue; // person not present
+            $name = sprintf("%s %s",$ldapService->getFirstName($v),
+                   $ldapService->getLastName($v));
+
+            $email =$ldapService->getEmail($v);
+
+         /*   \Mail::send('emails.lockupNews',[],function($message)use($email,$name,$fd)
+            {
+                $message->to($email, $name)->subject('Marketing Lockup Update');
+                echo 'Sent to - '.$name."<".$email.">".PHP_EOL;
+                fputs($fd,$name."<".$email.">");
+            });*/
+
         }
 
-
-        print_r($emails);
         fclose($fd);
-
 
     }
 
