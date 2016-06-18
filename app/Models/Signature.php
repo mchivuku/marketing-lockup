@@ -33,10 +33,10 @@ class Signature extends Model {
 
     /** Helper Functions  */
     public function getNamedSchoolTags(){
-        return array('h'=>array(2,4,6,9,13,14,15,16),'v'=>array(1,2,3,6,7));
+        return array('h'=>array(2,4,6,9,12,13,14,15,16),'v'=>array(1,2,3,6,7));
     }
 
-    public function getAllSchoolTags(){return array('h'=> array(1,3,5,7,8,10,11,12,17,18),'v'=>array(1,4,5,8,9));}
+    public function getAllSchoolTags(){return array('h'=> array(1,3,5,7,8,10,11,17,18),'v'=>array(1,4,5,8,9));}
 
     private function getHorizontalAllSchoolTags(){
         $tags = $this->getAllSchoolTags();
