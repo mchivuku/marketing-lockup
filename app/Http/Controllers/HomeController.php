@@ -20,7 +20,7 @@ class HomeController extends Controller {
 	 */
 	public function __construct()
 	{
-        parent::__construct();
+		parent::__construct();
 	}
 
 	/**
@@ -30,8 +30,13 @@ class HomeController extends Controller {
 	 */
 	public function index()
 	{
-        View::share('title','Home');
-		return View::make('home');
+
+
+		return $this->view('home')
+			->pagePath('/tools/marketing-lockup/index')
+			->sectionPath('/tools')
+			->title('');
+
 	}
 
 

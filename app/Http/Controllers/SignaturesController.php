@@ -13,6 +13,7 @@ use App\Models as Models;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Redirect;
 use Validator;
 
 class SignaturesController extends Controller {
@@ -23,9 +24,7 @@ class SignaturesController extends Controller {
     | Signature Controller
     |--------------------------------------------------------------------------
     |
-    | This controller renders your application's "dashboard" for users that
-    | are authenticated. Of course, you are free to change or remove the
-    | controller as you wish. It is just here to get your app started!
+    |
     |
     */
 
@@ -38,16 +37,9 @@ class SignaturesController extends Controller {
     {
 
         parent::__construct();
-        $this->leftnavigation();
+
     }
 
-    public function leftnavigation(){
-        $navigation = array(array('route_name'=>'signatures.create',
-            'text'=>'Create Marketing Lockup',
-            'url'=>\URL::to(action('SignaturesController@create'))));
-
-        \View::share('leftnavigation',$navigation);
-    }
 
     /**
      * Show the application dashboard to the user.
@@ -61,12 +53,16 @@ class SignaturesController extends Controller {
         $model->states = array_merge(array(array('id'=>0,'status'=>'All Lockups')),Models\ReviewStatus::all()
             ->toArray());
         $model->content = $this->getSignatures();
+        $model->isAdmin = $this->isAdmin;
 
         $inputs = \Input::all();
         if(isset($inputs['message']))  $this->flash($inputs['message'],(isset($inputs['type'])
             ?$inputs['type']:Models\ViewModels\Alerts::SUCCESS));
 
-        return $this->view('signatures')->model($model)->title('Manage Marketing Lockups');
+        return $this->view('signatures.index')
+            ->model($model)->pagePath('/tools/marketing-lockup/manage')
+            ->sectionPath('/tools')
+            ->title('Manage Marketing Lockups');
 
     }
 
@@ -81,14 +77,17 @@ class SignaturesController extends Controller {
 
             $signatures =isset($inputs['status'])?
                 Models\Signature::with('signaturereviews','reviewstatus')
-                    ->where('statusId','=',$inputs['status'])->orderBy('updated_at','desc')->get():
-                Models\Signature::with('signaturereviews','reviewstatus')->orderBy('updated_at','desc')->get();
+                    ->where('statusId','=',$inputs['status'])
+                    ->orderBy('updated_at','desc')->get():
+                Models\Signature::with('signaturereviews','reviewstatus')
+                    ->orderBy('updated_at','desc')->get();
 
-            $CI = $this;
             foreach($signatures as $signature){
                 //   $signature->preview = $signature->getSignatureThumbnail();
                 $signature->preview='';
-                $signature->name = isset($signature->fullName)?$signature->fullName:$signature->username;
+                $signature->name = isset($signature->fullName)
+                    ?$signature->fullName."<br/>(".$signature->username.")"
+                    :$signature->username;
 
                 /** Next state for the required action link */
                 if(stripos($signature->reviewstatus->status,'Pending')!==false){
@@ -96,26 +95,34 @@ class SignaturesController extends Controller {
                         .$signature->signatureid );
 
                     $signature->nextAction="";
-                   // if($this->currentUser==$signature->username){
-                        $edit_link =\URL::to(action('SignaturesController@edit') . '?signatureid='
-                            .$signature->signatureid );
-                        $signature->nextAction.= "<a  href='$edit_link'>Edit</a> | ";
-                   // }
+                    $edit_link =\URL::to(action('SignaturesController@edit') . '?signatureid='
+                        .$signature->signatureid );
+                    $signature->nextAction.= "<a  href='$edit_link'>Edit</a> | ";
 
                     $link_name = 'Approve/Deny';
                     $signature->nextAction .="<a  href='$next_action_link'>$link_name</a>";
 
 
-                }else{
+                }
+                else if(stripos($signature->reviewstatus->status,'Denied')!==false) {
+                    $next_action_link =\URL::to(action('SignaturesController@unDenied') . '?signatureid='
+                        .$signature->signatureid );
+
+                    $signature->nextAction="";
+
+                    $link_name = 'Un-deny';
+                    $signature->nextAction .="<a  href='$next_action_link'>$link_name</a>";
+                }
+                else{
 
                     $signature->nextAction = $signature->reviewstatus->status;
 
                 }
 
                 $signature->signaturereviews->each(function($item)use($signature){
-                    if($signature->comments!="")
+                    if($signature->comments!=""  && $signature->statusId!=1)
                         $signature->comments.="; ";
-                    $signature->comments.= $item->comments;
+                    $signature->comments.= ($signature->statusId!=1)?$item->comments:"";
                 });
 
             }
@@ -133,8 +140,9 @@ class SignaturesController extends Controller {
             $CI = $this;
             foreach($signatures as $signature){
                 $signature->preview='';
-                $obj =  $CI->construct_ldap_object($signature->username);
-                $signature->name = sprintf("%s,%s",$obj->lastName,$obj->firstName);
+                $signature->name = isset($signature->fullName)
+                    ?$signature->fullName
+                    :$signature->username;
 
                 /** Next state for the required action link */
                 if(stripos($signature->reviewstatus->status,'Pending')!==false){
@@ -163,7 +171,7 @@ class SignaturesController extends Controller {
         $model->isAdmin = $this->isAdmin;
 
 
-        return view('signature-table',array('model'=>$model));
+        return view('signatures.signature-table',array('model'=>$model));
     }
 
 
@@ -221,15 +229,14 @@ class SignaturesController extends Controller {
                 Models\Signature::with('signaturereviews','reviewstatus')
                     ->where('signatureid','=',$inputs['signatureid'])
                     ->first();
-            $signature->signaturereviews->each(function($item)use($signature){
-                if($signature->comments!="")
-                    $signature->comments.="; ";
-                $signature->comments.= $item->comments;
-            });
+            $review_comments = $signature->signaturereviews->last();
+
+
+            $signature->comments= $review_comments->comments;
 
             $model = new Models\ViewModels\Modal();
 
-            $model->content= view('viewcomments', array('model'=>$signature->comments));
+            $model->content= view('signatures.viewcomments', array('model'=>$signature->comments));
             $model->title= 'Review Comments';
             $model->setAttribute('id','viewModel');
 
@@ -270,8 +277,10 @@ class SignaturesController extends Controller {
 
 
 
-        return $this->view('addEditSignature')
-            ->model($signature)->title('Create Marketing Lockup');
+        return $this->view('signatures.addEditSignature')
+            ->model($signature)
+            ->pagePath('/tools/marketing-lockup/create')
+            ->sectionPath('/tools')->title('Create Marketing Lockup');
     }
 
 
@@ -291,7 +300,10 @@ class SignaturesController extends Controller {
         \View::share('iupuilikecampuses',Models\Campus::getIUPUILikeCampuses());
 
 
-        return $this->view('addEditSignature')->model($signature)->title('Edit Marketing Lockup');
+        return $this->view('signatures.addEditSignature')->model($signature)
+            ->pagePath('/tools/marketing-lockup/manage')
+            ->sectionPath('/tools')
+            ->title('Edit Marketing Lockup');
 
     }
 
@@ -326,7 +338,11 @@ class SignaturesController extends Controller {
         }
 
         \View::share("backLink", array('backLink'=>$backUrl));
-         return $this->view('confirmSignature')->model($signature)->title('Confirm Marketing Lockup');
+        return $this->view('signatures.confirmSignature')
+            ->model($signature)
+            ->pagePath('/tools/marketing-lockup/manage')
+            ->sectionPath('/tools')
+            ->title('Confirm Marketing Lockup');
 
     }
 
@@ -421,10 +437,8 @@ class SignaturesController extends Controller {
         }
 
 
+        return redirect("manage.html?message=".$message."&type=".Models\ViewModels\Alerts::SUCCESS);
 
-
-        return \Redirect::action('SignaturesController@index',array('message'=>$message,
-            'type'=>Models\ViewModels\Alerts::SUCCESS));
 
 
 
@@ -453,7 +467,10 @@ class SignaturesController extends Controller {
         $model->signatureid = $signatureId;
         $model->signature  =  Models\Signature::where('signatureid','=',$signatureId)->first();
 
-        return $this->view('signature-review')->model($model)->title('Review Marketing Lockup');
+
+        return $this->view('signatures.signature-review')->model($model)
+             ->pagePath('/tools/marketing-lockup/manage')->sectionPath('/tools')
+             ->title('Review Marketing Lockup');
 
     }
 
@@ -462,6 +479,8 @@ class SignaturesController extends Controller {
      * @return mixed
      */
     public function approve(){
+
+
         $inputs =  \Input::all();
 
         $signature = Models\Signature::find($inputs['signatureid']);
@@ -531,7 +550,7 @@ class SignaturesController extends Controller {
         $obj  = $this->construct_ldap_object($signature->username);
         \Mail::send('emails.denied', $d, function($message)use($obj)
         {
-            $message->to($obj->email, $obj->name)->subject('Marketing Lockup Request Denied!');
+            $message->to($obj->email, $obj->name)->subject('Marketing Lockup Request Denied');
         });
 
 
@@ -542,6 +561,29 @@ class SignaturesController extends Controller {
 
         return json_encode(array('status'=>true,'message'=>'success'));
 
+    }
+
+
+    /***
+     * Method gets called when a signature is reset back to pending state
+     * @return mixed -
+     */
+    public function unDenied(){
+        $inputs =  \Input::all();
+
+        $signature = Models\Signature::find($inputs['signatureid']);
+        $review_status = Models\ReviewStatus::where('action','like','pending%')->first();
+
+        /** Transaction to implement all the changes in one go */
+        if(isset($signature))
+            $id = $this->saveSignatureReview($review_status,$signature,$inputs);
+
+        return
+            //redirect('manage?message="lockup has been un-denied successfully&type='.Models\ViewModels\Alerts::SUCCESS);
+
+            \Redirect::action('SignaturesController@index',
+            array('message'=>'lockup has been un-denied successfully',
+                'type'=>Models\ViewModels\Alerts::SUCCESS));
     }
 
     /**** Helper methods ****/
@@ -577,7 +619,7 @@ class SignaturesController extends Controller {
 
             $signatureReview->reviewstatus = $review_status->id;
             $signatureReview->reviewedby = $user;
-            $signatureReview->comments =  $inputs['comment'];
+            $signatureReview->comments =  isset($inputs['comment'])?$inputs['comment']:"";
             $signatureReview->created_at =$timestamp;
             $signatureReview->updated_at = $timestamp;
             $signatureReview->signatureid = $signature->signatureid;
@@ -608,15 +650,9 @@ class SignaturesController extends Controller {
         );
         $filename = basename($downloadpath);
 
-        header("Content-Type: application/zip");
-        header("Content-Disposition: attachment; filename=$filename");
-        header("Content-Length: " .filesize($downloadpath));
-
-        readfile($downloadpath);
-        exit;
+        return response()->download($downloadpath, $filename, $headers);
 
     }
-
 
 
 }

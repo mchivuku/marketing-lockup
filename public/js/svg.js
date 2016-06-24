@@ -13,7 +13,6 @@ $(document).ready(function(){
          $('.alert-box').parents('section').addClass('section');
     }
 
-
     ModalWindow.init();
     AjaxTabs.init();
 
@@ -99,7 +98,7 @@ AjaxTabs = {
 
             // initialize datatable
             $('#signatureTable').dataTable({  "ordering": false,"info":false});
-            $('#signatureTable').table().data("table").refresh();
+           $('#signatureTable').table().data("table").refresh();
 
             $(document).foundation('reflow');
 

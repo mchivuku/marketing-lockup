@@ -25,7 +25,7 @@
                        <h4>This generator takes the guesswork out of building your unit’s marketing lockup.</h4>
                         <p>You
                             can
-                            <a  href={{url('signatures/create')}} itemprop="url">design your lockup</a> using primary, secondary, and
+                            <a  href={{url('create')}} itemprop="url">design your lockup</a> using primary, secondary, and
                             tertiary naming systems. You also can <a  href={{url('emaillockup')}} itemprop="url">design a custom email lockup</a> that reproduces beautifully in the digital space.</p>
                         <p>The lockup generator uses variations in font weights to best display your unit’s name, based on the information you determine is primary, secondary, and tertiary. It also protects the space around the trident, and it produces a graphic that is optimized for digital communications. To optimize lockup for print, please follow the directions included in your download.</p>
 

@@ -3,9 +3,9 @@
         Options -MultiViews
     </IfModule>
 
-    RewriteEngine On
-    RewriteCond %{HTTP_HOST} !^brand.iu.edu [NC]
-    RewriteRule ^(.*)$ https://brand.iu.edu/admin/public/$1 [R=301,L]
+   RewriteEngine On
+   RewriteCond %{HTTP_HOST} !^brandiu.webtest.iu.edu [NC]
+   RewriteRule ^(.*)$ https://brandiu.webtest.iu.edu/laravel/marketing-lockup/public/$1 [R=301,L]
 
     # Redirect Trailing Slashes...
     RewriteRule ^(.*)/$ /$1 [L,R=301]

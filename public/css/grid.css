@@ -1,0 +1,59 @@
+.lockup-well {
+    background-color: #EDEDEA;
+    padding: 1.5rem 3rem;
+    position: relative;
+ }
+
+.lockup-well h2, .lockup-well h3, .lockup-well h4 {
+    font-size: 1.5rem;
+    color: #fff
+}
+
+.lockup-well  {
+    color: #DBD9D6
+}
+
+.lockup-well figure {
+    margin-bottom: 0
+}
+
+.lockup-feed .lockup-well h2, .lockup-feed .lockup-well h3, .lockup-feed .lockup-well
+h4 {
+    font-size: 1.5rem
+}
+
+@media only screen and (min-width: 40.0625em) {
+    .lockup-well {
+        padding: 2.1875rem 2.5rem;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        background: 0 0
+    }
+
+    .lockup-well h2, .lockup-well h3, .lockup-well h4 {
+        font-size: 1.75rem
+    }
+
+    .lockup-well:after {
+        position: absolute;
+        top: auto;
+        bottom: 0;
+        left: auto;
+        right: 0;
+        z-index: -1;
+        width: 1000px;
+        height: 1000px;
+        background-color: #EDEDEA;
+    }
+}
+
+@media only screen and (min-width: 64.0625em) {
+    .lockup-well {
+        padding: 1.5rem 3rem
+    }
+
+    .lockup-well h2, .lockup-well h3, .lockup-well h4 {
+        font-size: 2.5rem
+    }
+}

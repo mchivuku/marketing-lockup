@@ -1,6 +1,5 @@
 <?php
 
-require_once app_path()."/Providers/BootFormsServiceProvider.php";
 return [
 
 	/*
@@ -25,7 +24,7 @@ return [
 	|
 	*/
 
-	'url' => 'https://www.iu.edu/~iubrand/admin/',
+	'url' => 'https://brandiu.webtest.iu.edu/laravel/marketing-lockup',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -143,10 +142,10 @@ return [
 		'App\Providers\ConfigServiceProvider',
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
-        'App\Providers\BladeServiceProvider',
-		 'Collective\Html\HtmlServiceProvider',
-		 'Laracasts\Flash\FlashServiceProvider',
-
+		'App\Providers\BladeServiceProvider',
+		'Collective\Html\HtmlServiceProvider',
+		'Laracasts\Flash\FlashServiceProvider',
+		Yajra\Datatables\DatatablesServiceProvider::class
 
 	],
 
@@ -195,19 +194,20 @@ return [
 		'URL'       => 'Illuminate\Support\Facades\URL',
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
-        //,
+		//,
 		'Flash' => 'Laracasts\Flash\Flash',
 		'Form' => 'Collective\Html\FormFacade',
 		'Html' => 'Collective\Html\HtmlFacade',
 
 
-    ],
 
-	'downloadPath'=>'/ip/iubrand/wwws/admin/public/downloads',
-	'instructions_readme_docs'=>[ 'location'=>'/ip/iubrand/wwws/admin/public/lockupInstructions/',
+	],
+
+	'downloadPath'=>'/ip/brandiu/wwws/laravel/marketing-lockup/public/downloads',
+	'instructions_readme_docs'=>[ 'location'=>'/ip/brandiu/wwws/laravel/marketing-lockup/public/lockupInstructions/',
 		'files'=>[['src'=>'Lockup_conversion_instructions.pdf','dest'=>'Lockup\ conversion\ instructions.pdf'],
 			["src"=>'lockup\ readme.rtf',"dest"=>'lockup\ readme.rtf']]]
 
-
 ];
+
 

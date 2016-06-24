@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 use App\Models as Models;
 use App\Models\ViewModels as ViewModels;
+use Illuminate\Auth\Access\UnauthorizedException;
 
 
 /**
@@ -26,8 +27,17 @@ class AdministratorsController extends Controller{
      */
     public function __construct()
     {
-       parent::__construct();
 
+        parent::__construct();
+
+        // check if the user is an administrator;
+        $admin = Models\AppAdmin::where('username','=',$this->currentUser)->first();
+
+        // TODO: exception handling with Laravel
+        if(!isset($admin)) {
+            $url = $_ENV['HOME_PATH']."/error/401.html";
+            header('Location:'.$url);
+        }
 
     }
 
@@ -43,7 +53,7 @@ class AdministratorsController extends Controller{
 
         if(isset($inputs['message'])) {
             if($inputs['type']==ViewModels\Alerts::ALERT)
-              $this->error($inputs['message']);
+                $this->error($inputs['message']);
             else
                 $this->success($inputs['message']);
         }
@@ -55,7 +65,10 @@ class AdministratorsController extends Controller{
             $result[]=$this->construct_ldap_object($admin->username);
         }
 
-        return $this->view('admins')->model($result)->title('Manage Administrators');
+        return $this->view('admin.admins')->model($result)
+            ->pagePath('/tools/marketing-lockup/manage')
+            ->sectionPath('/tools')
+            ->title('Manage Administrators');
 
     }
 
@@ -74,7 +87,7 @@ class AdministratorsController extends Controller{
 
         if(isset($user)){
             $user_obj = $this->construct_ldap_object($username);
-            $model->content= view('viewadmin', array('model'=>$user_obj));
+            $model->content= view('admin.viewadmin', array('model'=>$user_obj));
             $model->title= sprintf("%s,%s",$user_obj->firstName,$user_obj->lastName);
 
         }else{
@@ -96,13 +109,15 @@ class AdministratorsController extends Controller{
 
         $inputs = \Input::all();
 
-        $user = Models\AppAdmin::where('username','=',$inputs['username'])->whereRaw('deleted_at is null')->first();
+        $user = Models\AppAdmin::where('username','=',$inputs['username'])
+            ->whereRaw('deleted_at is null')->first();
 
         if(isset($user)){
-            return \Redirect::action('AdministratorsController@index',array('message'=>'User couldn\'t be added as
+            return \Redirect::action('AdministratorsController@index',
+                array('message'=>'User couldn\'t be added as
             the user already exists','type'=>ViewModels\Alerts::ALERT));
 
-         }else{
+        }else{
             $user = new Models\AppAdmin();
             $user->username=$inputs['username'];
             $user->email = $inputs['email'];
@@ -110,8 +125,9 @@ class AdministratorsController extends Controller{
         }
 
 
-        return \Redirect::action('AdministratorsController@index',array('message'=>'User was added successfully',
-            'type'=>ViewModels\Alerts::SUCCESS));
+        return \Redirect::action('AdministratorsController@index',
+            array('message'=>'User has been added successfully',
+                'type'=>ViewModels\Alerts::SUCCESS));
 
     }
 
@@ -124,7 +140,9 @@ class AdministratorsController extends Controller{
         $inputs = \Input::all();
         Models\AppAdmin::where("username","=",$inputs['username'])->delete();
 
-        return  \Redirect::action('AdministratorsController@index',array('message'=>'User was deleted successfully','type'=>ViewModels\Alerts::SUCCESS));
+        return  \Redirect::action('AdministratorsController@index',
+            array('message'=>'User was deleted successfully',
+                'type'=>ViewModels\Alerts::SUCCESS));
     }
 
 
@@ -135,7 +153,8 @@ class AdministratorsController extends Controller{
     public function search(){
         $model = new Models\ViewModels\Modal();
         $model->title="User Search" ;
-        $model->content= view('addadmin',array('model'=> new ViewModels\ActiveDirectorySearchViewModel()));
+        $model->content= view('admin.addadmin',array('model'=>
+            new ViewModels\ActiveDirectorySearchViewModel()));
         $model->setAttribute('id','userSearch');
         return view('modal',array('model'=>$model));
     }
@@ -163,7 +182,9 @@ class AdministratorsController extends Controller{
             $user['addLink'] =  "<a  class='button tiny round' href='$link'>Add Admin</a>";
 
         });
-        return  \View::make('searchresults',array('model' => $results));
+
+
+        return  \View::make('admin.searchresults',array('model' => $results));
 
     }
 }

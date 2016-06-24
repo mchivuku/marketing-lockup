@@ -7,12 +7,11 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use App\Models as Models;
 use App\Services as Services;
 
-require_once app_path()."/Services/LDAP/LDAPService.php";
 
 
 abstract class Controller extends BaseController {
 
-	use DispatchesCommands, ValidatesRequests;
+    use DispatchesCommands, ValidatesRequests;
 
     protected $currentUser;
     protected $isAdmin;
@@ -27,34 +26,26 @@ abstract class Controller extends BaseController {
     public function __construct(){
 
         $this->middleware('cas');
+        $this->currentUser = $_SERVER["REMOTE_USER"];
 
-        $this->currentUser = $_SERVER["HTTP_CAS_USER"];
 
 
         $user = Models\AppAdmin::where('username','=',$this->currentUser)->first();
         $this->isAdmin = isset($user)?true:false;
 
+        // Admin
+        \View::share(array('admin' => $this->isAdmin));
+
 
         // Service
         $this->ldapService=new Services\LDAPService();
 
-
-        // Layout - pass data for the partial views in the layout
-        $this->renderNavigation();
-
         $from =  \Config::get('mail.from');
         \View::share(array('contactMail' => $from['address']));
 
-    }
-
-
-    private  function renderNavigation(){
-
-        return \View::share("navigation",
-            array('isAdmin'=>
-                $this->isAdmin));
 
     }
+
 
     private function render()
     {
@@ -77,6 +68,18 @@ abstract class Controller extends BaseController {
         $this->view = $layoutName;
         return $this;
 
+    }
+
+    protected function pagePath($pagePath)
+    {
+        \View::share(array('pagePath' =>$pagePath));
+        return $this;
+    }
+
+    protected function sectionPath($sectionPath)
+    {
+        \View::share(array('sectionPath' =>$sectionPath));
+        return $this;
     }
 
 
@@ -108,23 +111,23 @@ abstract class Controller extends BaseController {
     }
 
     public function flash($message,$type){
-      if(!isset($type))$type=Models\ViewModels\Alerts::INFORMATION;
-      switch($type){
-          case Models\ViewModels\Alerts::ALERT:
-               $this->error($message);
+        if(!isset($type))$type=Models\ViewModels\Alerts::INFORMATION;
+        switch($type){
+            case Models\ViewModels\Alerts::ALERT:
+                $this->error($message);
                 break;
-          case Models\ViewModels\Alerts::SUCCESS:
+            case Models\ViewModels\Alerts::SUCCESS:
                 $this->success($message); break;
-          case Models\ViewModels\Alerts::WARNING:
+            case Models\ViewModels\Alerts::WARNING:
                 $this->warning($message); break;
-          case Models\ViewModels\Alerts::SECONDARY:
+            case Models\ViewModels\Alerts::SECONDARY:
                 $this->secondary($message); break;
-          case Models\ViewModels\Alerts::INFORMATION:
+            case Models\ViewModels\Alerts::INFORMATION:
                 $this->information($message); break;
 
-          default: break;
+            default: break;
 
-      }
+        }
         return;
     }
 

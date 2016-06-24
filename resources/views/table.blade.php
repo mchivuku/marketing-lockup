@@ -1,14 +1,19 @@
 <?php
 //data - header, attributes
-$build_tr = function ($data){
+$header = $model->header;
+$build_tr = function ($data)use($header){
     if (is_null($data)) return false;
     if (is_object($data)) {
         $tr_row = (array)($data);
     } else
         $tr_row = $data;
     $row = '<tr>';
-    array_walk($tr_row, function ($item) use (&$row) {
-        $row .= '<td>' . $item . '</td>';
+    $count = 0;
+
+    array_walk($tr_row, function ($item) use (&$row,&$count,$header) {
+        $label = $header[$count];
+        $row .= '<td data-label="'.$label.'">' . $item . '</td>';
+        $count=$count+1;
     });
     $row .= '</tr>';
     return $row;
