@@ -285,6 +285,8 @@ class SVGConvert
         $error_file_name = trim($info['dirname']."/"."errorlog".".txt");
         $shell->run($command->getSVGToPNGCommand());
 
+		$this->createPDF($name);
+
         if($shell->getReturnValue()!=0){
             if(file_exists($error_file_name))
                 $result .= (file_get_contents($error_file_name));
@@ -294,6 +296,19 @@ class SVGConvert
 
     }
 
+    public function createPdf($name){
+        $svgName = $name;
+        $pdfName = str_replace('.svg', '.pdf', $name);
+
+        $cmd = '/ip/brandiu/bin/node/bin/node';
+        $script = '/ip/brandiu/.jay/svgtopdf/svgtopdf.js';
+        $inFile = $name;
+        $outFile = str_replace('.svg', '.pdf', $name);
+
+        $cmd = "$cmd $script $inFile $outFile\n";
+        exec($cmd);
+    }
+	
 
 
 
