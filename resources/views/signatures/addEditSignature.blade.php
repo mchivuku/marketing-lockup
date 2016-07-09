@@ -117,7 +117,8 @@
 
     <script type="text/javascript">
 
-        angular.module('addEditSignature', []).run(['$rootScope',  function($rootScope) {
+        angular.module('addEditSignature', []).run(['$rootScope',
+            function($rootScope) {
 
             // global initialize
             $rootScope.campus = "<?php echo $model->campus;?>";

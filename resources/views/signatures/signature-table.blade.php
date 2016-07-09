@@ -74,10 +74,10 @@ $table->attributes = array('class'=>'table mobile-labels','id'=>'signatureTable'
             $('#signatureTable').dataTable({  "ordering": false,"info": false});
 
             // Disable hover affect on mobile
-            if(!Modernizr.touch){
-                $(".tiptext").mouseover(function() {
+            if(Modernizr.touch===false) {
+                $(".tiptext").mouseover(function () {
                     showThumbnail((this))
-                }).mouseout(function() {
+                }).mouseout(function () {
                     hideThumbnail(this)
                 });
             }

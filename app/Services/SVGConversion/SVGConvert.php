@@ -8,7 +8,6 @@
 namespace App\Services\SVGConversion;
 
 
-
 //Download Path
 use App\Services\SVG;
 
@@ -230,7 +229,7 @@ class SVGConvert
                     $this->cleanString($this->tertiary))
             ));
 
-        $save_to_path.='_'.date('m-d-Y');
+        $save_to_path.='_'.date('m-d-Y_His');
 
 
         if($this->create_folder($save_to_path))
@@ -292,7 +291,9 @@ class SVGConvert
                 $result .= (file_get_contents($error_file_name));
         }
 
-        return $result!=""?new ProcessStatus(false,$result):new ProcessStatus(true);
+        return $result!=""?
+            new ProcessStatus(false,$result):
+            new ProcessStatus(true);
 
     }
 

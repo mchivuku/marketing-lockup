@@ -144,8 +144,7 @@ return [
 		'App\Providers\RouteServiceProvider',
 		'App\Providers\BladeServiceProvider',
 		'Collective\Html\HtmlServiceProvider',
-		'Laracasts\Flash\FlashServiceProvider',
-		Yajra\Datatables\DatatablesServiceProvider::class
+		'Laracasts\Flash\FlashServiceProvider'
 
 	],
 

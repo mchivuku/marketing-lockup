@@ -36,7 +36,7 @@ Route::get('/edit',
         'uses' => 'SignaturesController@edit'));
 
 
-Route::get('/getSignatures', array('as' => 'signature-table',
+Route::get('/getsignatures', array('as' => 'signature-table',
     'uses' => 'SignaturesController@getSignatures'));
 
 //Form Toggle - AddEditSignature
@@ -82,7 +82,8 @@ Route::get('/allcampusform', function () {
     $set_default('campus');
     $set_default('named',1);
 
-    return View::make("includes.allcampus-addEditSignature", array('primaryText' => $inputs['p'], 'secondaryText' => $inputs['s'], 'tertiaryText' => $inputs['t'],
+    return View::make("includes.allcampus-addEditSignature",
+        array('primaryText' => $inputs['p'], 'secondaryText' => $inputs['s'], 'tertiaryText' => $inputs['t'],
         'named' => $inputs['named']));
 });
 

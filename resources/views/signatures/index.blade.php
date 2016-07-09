@@ -16,14 +16,14 @@
                             <li class="tab-title active" role="presentation">
                                 <a href="#{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}" role="tab"
                                    tabindex="{{$model->states[$i]['id']}}" aria-selected="true"
-                                   data-target="{{Url::to("getSignatures")}}">{{$model->states[$i]['status']}}</a>
+                                   data-target="{{Url::to("getsignatures")}}">{{$model->states[$i]['status']}}</a>
                             </li>
 
                            @else
                             <li class="tab-title" role="presentation">
                                 <a href="#{{str_replace(" ","-",strtolower($model->states[$i]['status']))}}" role="tab"
                                    tabindex="{{$model->states[$i]['id']}}" aria-selected="true"
-                                   data-target="{{Url::to("getSignatures",array('status'=>$model->states[$i]['id']))}}">{{$model->states[$i]['status']}}</a>
+                                   data-target="{{Url::to("getsignatures")."?status=".$model->states[$i]['id']}}">{{$model->states[$i]['status']}}</a>
                             </li>
                             @endif
                         @endfor
@@ -42,7 +42,7 @@
 
                     @if($model->isAdmin)
                         <a href="{{url("/admin.html")}}"class="button right">
-                            Add New Administrator
+                           Admin
                         </a>
                     @endif
 

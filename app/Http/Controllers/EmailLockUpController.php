@@ -32,7 +32,9 @@ class EmailLockUpController extends Controller{
 
     public function index(){
 
-        return $this->view('create-email-lockup')->title('Create Email Signature');
+        return $this->view('create-email-lockup')
+            ->pagePath('/tools/email-signatures')
+            ->sectionPath('/tools')->title('Create Email Signature');
     }
 
 
